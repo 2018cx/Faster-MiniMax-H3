@@ -7,17 +7,24 @@ the open-weight omni-modal model that jointly generates video **and** synchroniz
 
 MiniMax released the H3 weights "to support further development, including fine-tuning", but ships **no
 trainer**. The Hugging Face Diffusers integration is inference-only. This repository fills the gap with a
-supervised rectified-flow trainer (~150 lines) built directly on the official Diffusers integration, plus a
-latent-caching preprocessor — and documents the four H3-specific numeric conventions that will silently
-corrupt your weights if you get them wrong (see [FIXES.md](FIXES.md); we learned them the hard way).
+supervised rectified-flow trainer built directly on the official Diffusers integration, plus latent-caching
+preprocessors — and documents the nine hard-won fixes behind it: five H3-specific numeric conventions that
+silently corrupt weights, and four LoRA × ZeRO-3 × long-sequence landmines (see [FIXES.md](FIXES.md); we
+learned every one of them the hard way).
+
+Proven at production scale: LoRA over 2,000 ~30-second clips (448×768, ~65k tokens per sequence, real
+stereo audio in the loss) on 8×A800, with lockstep validation and multi-day-run guard rails.
 
 ## How it works
 
 **Two-stage design** (so the 33B transformer is the only thing in GPU memory during training):
 
 1. **`prepare_cache.py`** — encodes each training sample offline: target video → H3-VisualVAE latents
-   (patchified rows), target audio → H3-AudioVAE latents, caption → Qwen3-VL layer-50 hidden states.
-   One `.pt` file per sample.
+   (patchified rows, cover-fit framing — never stretched), target audio → H3-AudioVAE latents
+   (`--encode-audio`; zero placeholder otherwise), caption → Qwen3-VL layer-50 hidden states. One `.pt`
+   file per sample. **`prepare_cache_pairs.py`** is the long-clip variant: it concatenates two
+   consecutively-shot clips into one ~30 s story-continuous sample (17n+5 re-alignment, seam index kept,
+   both audio tracks joined).
 2. **`train.py`** — loads only the transformer (`transformer` = FL2VA variant or `transformer_ref` = Ref2VA
    variant), rebuilds the packed video/audio/text sequence layout with the official
    `build_packed_sequence` / `build_row_timesteps` utilities, and optimizes a rectified-flow MSE loss.
@@ -32,18 +39,24 @@ peculiarities relative to the common SD3/Wan-style convention:
 The loss therefore noises `x_t = (1−σ)·x₀ + σ·ε` and regresses `pred → (x₀ − ε)`, with **two different σ
 per step**: video and audio use separate shifted schedules (`σ = shift·u / (1+(shift−1)·u)`, shift 12.0 for
 video and 3.0 for audio) sampled at the same `u`, mirroring how the two schedulers advance in lockstep at
-inference.
+inference. Real cached audio enters the loss at weight 1.0; zero-placeholder audio is trained at weight 0
+so the audio head is untouched but gradients stay synchronized ([FIXES.md](FIXES.md) #3).
+
+**Validation.** Samples whose `md5(sample_id) % 20 == 0` (~5%) form a deterministic val split. Every
+`--val-every` steps, all ranks run a lockstep evaluation on a fixed σ grid {0.3, 0.6, 0.9} with
+per-(file, σ) seeded noise — the val curve is a fixed function of the weights, comparable across steps and
+runs. `plot_loss.py` renders train + per-modality + VAL curves from `train.log`.
 
 **Trainable-parameter modes:**
 
 | `--trainable` | What trains | Use case |
 |---|---|---|
-| `heads` (default) | `proj_out` + `audio_proj_out` (~1M params) | smoke test the whole pipeline on one GPU |
-| `lora` | PEFT LoRA on `to_qkv`, `to_out.0`, `linear_1`, `linear_2` | practical single-node fine-tuning |
+| `heads` | `proj_out` + `audio_proj_out` (~1M params) | smoke test the whole pipeline on one GPU |
+| `lora` (default) | PEFT LoRA r=16 on `to_qkv`, `to_out.0`, `linear_1`, `linear_2` (~10.7M params) | practical single-node fine-tuning |
 | `all` | full 33B | requires `--strategy deepspeed` (ZeRO-3 config included) |
 
-Checkpoints store only trainable tensors for `heads`/`lora` (a few MB instead of ~66 GB — full-state
-serialization every 100 steps stalls rank 0 long enough to trip the NCCL watchdog; see FIXES.md #5).
+Checkpoints store only trainable tensors for `heads`/`lora` (a few MB instead of ~66 GB), gathered from
+ZeRO-3 shards; `--resume` loads them weight-only *before* `deepspeed.initialize` (FIXES.md #5/#9).
 
 ## Quickstart
 
@@ -60,40 +73,48 @@ python prepare_cache.py \
   --metadata path/to/train.jsonl \
   --output cache/train \
   --model /path/to/MiniMax-H3 \
-  --height 256 --width 256 --frames 22 --encode-text
+  --height 256 --width 256 --frames 22 --encode-text --encode-audio
 
 # 4. Train (single GPU smoke)
 CUDA_VISIBLE_DEVICES=0 python train.py \
   --model /path/to/MiniMax-H3 --variant ref2va \
   --cache cache/train --output runs/smoke \
-  --max-steps 10 --trainable heads
+  --max-steps 10 --trainable heads --strategy ddp
 
-# 4'. Multi-GPU (8x, DDP)
-python -m torch.distributed.run --nproc_per_node 8 train.py \
+# 4'. Multi-GPU LoRA (8x, DeepSpeed ZeRO-3) — the production path
+deepspeed --num_gpus 8 train.py \
   --model /path/to/MiniMax-H3 --variant ref2va \
-  --cache cache/train --output runs/heads_1000 \
-  --max-steps 1000 --trainable heads
+  --cache cache/train --output runs/lora \
+  --max-steps 800 --trainable lora --strategy deepspeed
 ```
 
 Constraints inherited from the model: `num_frames % 17 == 5`, height/width divisible by 32, 24 fps video,
 32 kHz stereo audio, `audio_latent_frames = round(num_frames / 24 * 40)`.
+
+**Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
+tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
+448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without
+re-encoding caches: `H3_MAX_LF=<n>` (env) truncates cached samples to *n* video latent frames at load
+time, and `--max-seq-tokens` (default 132000) is a pre-flight all-reduced skip gate. Details in
+[FIXES.md](FIXES.md) #8.
 
 ## Does it work?
 
 With the conventions wrong (timestep direction + velocity sign inverted), a heads-only run shows loss
 *rising* (7.2 → 9.5 over 10 steps). With the fixes in this repo, the same setup trains at loss ≈ 0.3–1.0,
 stable across 1000 steps on 8×A800, and the trained heads produce coherent generations when patched back
-into the inference pipeline. Details in [FIXES.md](FIXES.md).
+into the inference pipeline. The LoRA path runs 30-second 65k-token sequences with real audio at
+~7.5–8 min/step on 8×A800 (heads at 33k tokens: ~53 s/step). Details in [FIXES.md](FIXES.md).
 
 ## Current limitations
 
-- `prepare_cache.py` is the minimal cache path: it encodes the **target video only** — audio latents are
-  zero placeholders (the trainer detects this and zeroes the audio loss) and reference media are not yet
-  encoded into the conditioning sequence. Extending the cache to real audio + reference encoding is the
-  main open TODO for faithful Ref2VA training.
+- Reference media are not yet encoded into the conditioning sequence (H3 reference rows); captions and
+  target video/audio train, reference images/audio do not condition. This is the main open TODO for
+  faithful Ref2VA fine-tuning.
 - No sample shuffling between epochs; batch size is fixed at 1 sequence per step.
 - Sparse attention (used in H3's final training stage) is not released; training runs full attention, so
-  keep clips short / resolution moderate.
+  keep the ~70k-token budget above in mind.
+- `--resume` restores weights only (trainable-only checkpoints carry no optimizer state).
 
 ## Legal
 
