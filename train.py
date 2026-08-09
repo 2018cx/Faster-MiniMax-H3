@@ -308,9 +308,24 @@ def main():
                     # rank 0 long enough to trip the NCCL watchdog).
                     import deepspeed
                     named = [(n, p) for n, p in engine.module.named_parameters() if p.requires_grad]
+                    # The gather can race ZeRO-3's prefetcher ("Cannot partition
+                    # a param in flight") and hand rank 0 an EMPTY tensor — a
+                    # checkpoint that then crashes every future resume. Sync
+                    # first, validate what was read, and write atomically; a
+                    # skipped save is strictly better than a corrupt one.
+                    torch.cuda.synchronize()
                     with deepspeed.zero.GatheredParameters([p for _, p in named]):
                         if rank == 0:
-                            torch.save({"model": {n: p.detach().float().cpu().clone() for n, p in named}, "step": step}, args.output / f"checkpoint-{step}.pt")
+                            sd = {n: p.detach().float().cpu().clone() for n, p in named}
+                            empty = [n for n, t in sd.items() if t.numel() == 0]
+                            if empty:
+                                msg = f"SAVE_SKIPPED step={step} empty={len(empty)} e.g.{empty[:2]}"
+                                print(msg, flush=True)
+                                log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
+                            else:
+                                tmp = args.output / f".checkpoint-{step}.tmp"
+                                torch.save({"model": sd, "step": step}, tmp)
+                                os.replace(tmp, args.output / f"checkpoint-{step}.pt")
                     if torch.distributed.is_initialized():
                         torch.distributed.barrier()
                 elif engine is not None:
