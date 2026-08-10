@@ -299,8 +299,10 @@ def main():
                 message = f"step={step} loss={loss.item():.6f} loss_v={float(lv):.6f} loss_a={float(la):.6f} seq={seq_len} f={item.get('num_frames', '?')} sigma_v={float(sigma_v):.3f} audio_w={aw}"
                 print(message, flush=True)
                 log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {message}\n")
-            if n_val > 0 and step % args.val_every == 0:
-                run_validation(step)
+            # Checkpoint BEFORE validation: a validation forward leaves ZeRO-3
+            # prefetch state in flight, and a GatheredParameters gather right
+            # after it hits "Cannot partition a param in flight". Saving first
+            # keeps every save on the same clean post-step state.
             if step % args.ckpt_every == 0 or step == args.max_steps:
                 if engine is not None and args.trainable != "all":
                     # [FIX5] Save only trainable tensors, gathered from ZeRO-3
@@ -334,6 +336,8 @@ def main():
                     core = model.module if distributed else model
                     saved_model = {k: v for k, v in core.state_dict().items() if k in {n for n, p in core.named_parameters() if p.requires_grad}} if args.trainable != "all" else core.state_dict()
                     torch.save({"model": saved_model, "optimizer": optimizer.state_dict() if args.trainable != "all" else None, "step": step}, args.output / f"checkpoint-{step}.pt")
+            if n_val > 0 and step % args.val_every == 0:
+                run_validation(step)
         if step == steps_at_epoch_start:
             # Anti-spin guard: if the gate skipped every sample, fail loudly
             # instead of looping forever over an epoch that trains nothing.
