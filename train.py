@@ -135,6 +135,7 @@ def main():
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
+    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--trainable", choices=("heads", "lora", "all"), default="lora"); ap.add_argument("--resume", type=Path)
     ap.add_argument("--video-shift", type=float, default=12.0); ap.add_argument("--audio-shift", type=float, default=3.0)
     ap.add_argument("--val-every", type=int, default=100); ap.add_argument("--ckpt-every", type=int, default=50)
@@ -151,10 +152,13 @@ def main():
     device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
         torch.cuda.set_device(device)
+    torch.manual_seed(args.seed)
+    if device.type == "cuda":
+        torch.cuda.manual_seed_all(args.seed)
     log_handle = None
     if rank == 0:
         log_handle = (args.output / "train.log").open("a", buffering=1)
-        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy}\n")
+        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed}\n")
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
     # [FIX6] Under ZeRO-3 with PEFT-injected LoRA layers, torch's activation
     # checkpointing (reentrant AND non-reentrant) recomputes against already
