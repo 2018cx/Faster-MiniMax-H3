@@ -29,4 +29,4 @@ CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0,1,2,3,4,5,6,7}" \
   --model "$MODEL" --variant fl2va \
   --cache "$CACHE" --output "$OUT" \
   --max-steps 1 --seed 42 --trainable lora --strategy deepspeed \
-  --val-every 1000000 --ckpt-every 1000000 --max-seq-tokens 40000
+  --val-every 1000000 --ckpt-every 1000000 --max-seq-tokens 40000 "$@"

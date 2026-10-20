@@ -141,6 +141,7 @@ def main():
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--trainable", choices=("heads", "lora", "all"), default="lora"); ap.add_argument("--resume", type=Path)
+    ap.add_argument("--gradient-checkpointing", choices=("on", "off"), default="on")
     ap.add_argument("--video-shift", type=float, default=12.0); ap.add_argument("--audio-shift", type=float, default=3.0)
     ap.add_argument("--val-every", type=int, default=100); ap.add_argument("--ckpt-every", type=int, default=50)
     ap.add_argument("--max-seq-tokens", type=int, default=132000,
@@ -162,18 +163,18 @@ def main():
     log_handle = None
     if rank == 0:
         log_handle = (args.output / "train.log").open("a", buffering=1)
-        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed}\n")
+        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed} gradient_checkpointing={args.gradient_checkpointing}\n")
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
     # [FIX6] Under ZeRO-3 with PEFT-injected LoRA layers, torch's activation
     # checkpointing (reentrant AND non-reentrant) recomputes against already
     # re-partitioned parameters (shape [0]) and crashes. deepspeed's own
     # checkpointing cooperates with the ZeRO gather hooks.
-    if args.strategy == "deepspeed":
+    if args.gradient_checkpointing == "on" and args.strategy == "deepspeed":
         import deepspeed
         # Do NOT enable partition_activations / checkpoint_in_cpu here: both
         # slice the 0-d time-embedding scalar and crash the temb linear.
         model.enable_gradient_checkpointing(deepspeed.checkpointing.checkpoint)
-    else:
+    elif args.gradient_checkpointing == "on":
         model.enable_gradient_checkpointing()
     for p in model.parameters(): p.requires_grad_(args.trainable == "all")
     if args.trainable == "heads":
