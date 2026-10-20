@@ -139,6 +139,12 @@ def main():
                     help="cuDNN outputs retained inside activation checkpoints; 0 recomputes attention")
     ap.add_argument("--compile-norms", action=argparse.BooleanOptionalAction, default=True,
                     help="compile CUDA RMSNorm while preserving eager precision casts")
+    ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
+                    help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
+    ap.add_argument("--linear-cache-cpu-gib", type=float, default=64,
+                    help="maximum pinned host budget per rank, also limited by available node memory")
+    ap.add_argument("--linear-cache-max-entry-gib", type=float, default=1,
+                    help="recompute larger Linear outputs to preserve cache space for smaller outputs")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
@@ -171,14 +177,19 @@ def main():
     # checkpointing (reentrant AND non-reentrant) recomputes against already
     # re-partitioned parameters (shape [0]) and crashes. deepspeed's own
     # checkpointing cooperates with the ZeRO gather hooks.
+    linear_cache_enabled = (device.type == "cuda" and args.strategy == "deepspeed"
+                            and args.trainable == "lora"
+                            and (args.linear_cache_gpu_gib > 0 or args.linear_cache_cpu_gib > 0))
     if args.strategy == "deepspeed":
         import deepspeed
         # Do NOT enable partition_activations / checkpoint_in_cpu here: both
         # slice the 0-d time-embedding scalar and crash the temb linear.
         checkpoint = deepspeed.checkpointing.checkpoint
-        if device.type == "cuda" and args.attention_backend == "_native_cudnn" and args.attention_cache_gib > 0:
+        if device.type == "cuda" and ((args.attention_backend == "_native_cudnn" and args.attention_cache_gib > 0)
+                                      or linear_cache_enabled):
             from attention_checkpoint import install
-            checkpoint = install(model, checkpoint, args.attention_cache_gib)
+            checkpoint = install(model, checkpoint,
+                                 args.attention_cache_gib if args.attention_backend == "_native_cudnn" else 0)
             if rank == 0:
                 print(f"cuDNN attention checkpoint cache: {args.attention_cache_gib:g} GiB", flush=True)
         model.enable_gradient_checkpointing(checkpoint)
@@ -198,6 +209,14 @@ def main():
         count = install(model)
         if rank == 0:
             print(f"compiled RMSNorm modules: {count}; eager precision casts preserved", flush=True)
+    linear_cache = None
+    if linear_cache_enabled:
+        from frozen_linear_cache import install
+        linear_cache = install(model, args.linear_cache_gpu_gib, args.linear_cache_cpu_gib,
+                               args.linear_cache_max_entry_gib)
+        if rank == 0:
+            print(f"frozen Linear cache: modules={linear_cache.modules} gpu={linear_cache.gpu_limit} "
+                  f"host={linear_cache.cpu_limit} bytes/rank", flush=True)
     # [FIX9] Resume BEFORE DDP wrapping / deepspeed.initialize, while the
     # parameters are still full tensors. After ZeRO-3 partitioning a plain
     # load_state_dict sees shape-[0] shards and silently loads nothing.
@@ -370,6 +389,8 @@ def main():
     if device.type == "cuda" and args.compile_norms and rank == 0:
         from compiled_norm import report
         print(f"compiled RMSNorm statistics: {report()}", flush=True)
+    if linear_cache is not None and rank == 0:
+        print(f"frozen Linear cache statistics: {linear_cache.report()}", flush=True)
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:

@@ -103,6 +103,16 @@ Use `--no-compile-norms` for eager execution. By default, each process owns fres
 temporary compiler caches and removes them on exit; explicit `TRITON_CACHE_DIR`
 and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
 
+DeepSpeed LoRA training also retains frozen Linear outputs within each activation
+checkpoint using native PyTorch selective checkpointing. The defaults are
+`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 64` per rank, and
+`--linear-cache-max-entry-gib 1`. Larger outputs or budget misses recompute
+normally. Host storage uses a fixed pinned arena with asynchronous copies and
+prefetch; values are released during backward and never reused across updates.
+Choose budgets for the available GPU and host memory; setting both storage
+budgets to zero disables this cache. Runtime counters report actual cache use,
+recomputation, live entries, and peak GPU allocation.
+
 **Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
 tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
 448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without

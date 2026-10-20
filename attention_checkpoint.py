@@ -40,11 +40,15 @@ class _Cache:
         self.owner = owner
         self.records = {}
         self.bytes = 0
+        self.extensions = {}
 
     def clear(self):
         self.owner.retained -= self.bytes
         self.bytes = 0
         self.records.clear()
+        extensions, self.extensions = self.extensions, {}
+        for extension in extensions.values():
+            extension.clear()
 
     def __del__(self):
         self.clear()
