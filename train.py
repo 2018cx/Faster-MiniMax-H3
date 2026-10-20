@@ -131,6 +131,10 @@ def forward_loss(model, item, layout, device, sigma_v, sigma_a, noise_seed=None)
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", type=Path, required=True); ap.add_argument("--cache", type=Path, required=True); ap.add_argument("--output", type=Path, required=True)
+    # DeepSpeed's launcher injects this CLI argument and also exports
+    # LOCAL_RANK. Keep the argument for launcher compatibility; the runtime
+    # below deliberately reads the environment as its single source of truth.
+    ap.add_argument("--local_rank", type=int, default=-1)
     ap.add_argument("--variant", choices=("fl2va", "ref2va"), default="ref2va")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
