@@ -135,6 +135,8 @@ def main():
     ap.add_argument("--variant", choices=("fl2va", "ref2va"), default="ref2va")
     ap.add_argument("--attention-backend", default="_native_cudnn",
                     help="Diffusers SDPA backend on CUDA; use native for automatic selection")
+    ap.add_argument("--attention-cache-gib", type=float, default=32,
+                    help="cuDNN outputs retained inside activation checkpoints; 0 recomputes attention")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
@@ -171,7 +173,13 @@ def main():
         import deepspeed
         # Do NOT enable partition_activations / checkpoint_in_cpu here: both
         # slice the 0-d time-embedding scalar and crash the temb linear.
-        model.enable_gradient_checkpointing(deepspeed.checkpointing.checkpoint)
+        checkpoint = deepspeed.checkpointing.checkpoint
+        if device.type == "cuda" and args.attention_backend == "_native_cudnn" and args.attention_cache_gib > 0:
+            from attention_checkpoint import install
+            checkpoint = install(model, checkpoint, args.attention_cache_gib)
+            if rank == 0:
+                print(f"cuDNN attention checkpoint cache: {args.attention_cache_gib:g} GiB", flush=True)
+        model.enable_gradient_checkpointing(checkpoint)
     else:
         model.enable_gradient_checkpointing()
     for p in model.parameters(): p.requires_grad_(args.trainable == "all")
@@ -348,6 +356,10 @@ def main():
             # Anti-spin guard: if the gate skipped every sample, fail loudly
             # instead of looping forever over an epoch that trains nothing.
             raise RuntimeError(f"epoch swept with 0 executed steps (all samples over --max-seq-tokens? skips={n_len_skips})")
+    if args.strategy == "deepspeed" and hasattr(checkpoint, "saved") and rank == 0:
+        print(f"attention checkpoint cache: saved={checkpoint.saved} replayed={checkpoint.replayed} "
+              f"recomputed={checkpoint.recomputed} peak_bytes={checkpoint.peak_bytes} "
+              f"retained_bytes={checkpoint.retained}", flush=True)
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:

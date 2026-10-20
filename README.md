@@ -91,6 +91,13 @@ deepspeed --num_gpus 8 train.py \
 Constraints inherited from the model: `num_frames % 17 == 5`, height/width divisible by 32, 24 fps video,
 32 kHz stereo audio, `audio_latent_frames = round(num_frames / 24 * 40)`.
 
+CUDA training defaults to cuDNN SDPA. With DeepSpeed, `--attention-cache-gib 32`
+retains attention outputs and softmax statistics inside activation checkpoints,
+avoiding their recomputation during backward. This uses additional GPU memory;
+set `--attention-cache-gib 0` to recompute all attention, or lower the budget for
+longer sequences. The cache is discarded during backward and never reused across
+training steps. `--attention-backend native` restores automatic SDPA selection.
+
 **Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
 tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
 448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without
