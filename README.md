@@ -113,6 +113,13 @@ Choose budgets for the available GPU and host memory; setting both storage
 budgets to zero disables this cache. Runtime counters report actual cache use,
 recomputation, live entries, and peak GPU allocation.
 
+The cuDNN checkpoint path fuses rotary embedding and input layout with explicit
+eager rounding and a first-order autograd kernel. `--no-compile-rope` restores
+the native formula. Each new kernel variant checks its first output against the
+native result; a mismatch disables the fused path and is logged. Unsupported
+inputs, including trainable rotary tables, use the native formula with counted
+fallbacks. Higher-order gradients are not supported by the fused operator.
+
 **Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
 tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
 448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without

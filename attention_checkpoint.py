@@ -94,10 +94,17 @@ class CachedCudnnProcessor(MiniMaxH3AttnProcessor):
         query = attn.norm_q(query.unflatten(-1, (attn.heads, -1)))
         key = attn.norm_k(key.unflatten(-1, (attn.heads, -1)))
         value = value.unflatten(-1, (attn.heads, -1))
-        if rotary_emb is not None:
+        if rotary_emb is not None and getattr(self, "compile_rope", False):
+            from compiled_rope import rotary_head_major
+            query = rotary_head_major(query, *rotary_emb)
+            key = rotary_head_major(key, *rotary_emb)
+            value = value.transpose(1, 2).contiguous()
+        elif rotary_emb is not None:
             query = _apply_rotary_emb(query, *rotary_emb)
             key = _apply_rotary_emb(key, *rotary_emb)
-        query, key, value = (x.transpose(1, 2).contiguous() for x in (query, key, value))
+            query, key, value = (x.transpose(1, 2).contiguous() for x in (query, key, value))
+        else:
+            query, key, value = (x.transpose(1, 2).contiguous() for x in (query, key, value))
 
         if replay and id(self) in cache.records:
             hidden_states = _SavedAttention.apply(query, key, value, cache.records.pop(id(self)))
@@ -123,12 +130,13 @@ class CachedCudnnProcessor(MiniMaxH3AttnProcessor):
         return attn.to_out[1](attn.to_out[0](hidden_states))
 
 
-def install(model, checkpoint, max_gib=32):
+def install(model, checkpoint, max_gib=32, compile_rope=True):
     processors = {}
     for name, original in model.attn_processors.items():
         processor = CachedCudnnProcessor()
         processor._attention_backend = original._attention_backend
         processor._parallel_config = original._parallel_config
+        processor.compile_rope = compile_rope
         processors[name] = processor
     model.set_attn_processor(processors)
     return AttentionCheckpoint(checkpoint, int(max_gib * 1024**3))

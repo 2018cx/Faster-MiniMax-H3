@@ -139,6 +139,8 @@ def main():
                     help="cuDNN outputs retained inside activation checkpoints; 0 recomputes attention")
     ap.add_argument("--compile-norms", action=argparse.BooleanOptionalAction, default=True,
                     help="compile CUDA RMSNorm while preserving eager precision casts")
+    ap.add_argument("--compile-rope", action=argparse.BooleanOptionalAction, default=True,
+                    help="compile rotary embedding and attention input layout with eager precision casts")
     ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
                     help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
     ap.add_argument("--linear-cache-cpu-gib", type=float, default=64,
@@ -189,7 +191,8 @@ def main():
                                       or linear_cache_enabled):
             from attention_checkpoint import install
             checkpoint = install(model, checkpoint,
-                                 args.attention_cache_gib if args.attention_backend == "_native_cudnn" else 0)
+                                 args.attention_cache_gib if args.attention_backend == "_native_cudnn" else 0,
+                                 args.compile_rope)
             if rank == 0:
                 print(f"cuDNN attention checkpoint cache: {args.attention_cache_gib:g} GiB", flush=True)
         model.enable_gradient_checkpointing(checkpoint)
@@ -391,6 +394,9 @@ def main():
         print(f"compiled RMSNorm statistics: {report()}", flush=True)
     if linear_cache is not None and rank == 0:
         print(f"frozen Linear cache statistics: {linear_cache.report()}", flush=True)
+    if device.type == "cuda" and args.compile_rope and rank == 0:
+        from compiled_rope import report
+        print(f"compiled rotary statistics: {report()}", flush=True)
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:
