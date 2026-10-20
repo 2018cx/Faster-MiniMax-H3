@@ -105,7 +105,7 @@ and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
 
 DeepSpeed LoRA training also retains frozen Linear outputs within each activation
 checkpoint using native PyTorch selective checkpointing. The defaults are
-`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 64` per rank, and
+`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 96` per rank, and
 `--linear-cache-max-entry-gib 1`. Larger outputs or budget misses recompute
 normally. Host storage uses a fixed pinned arena with asynchronous copies and
 prefetch; values are released during backward and never reused across updates.

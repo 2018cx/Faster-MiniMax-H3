@@ -143,7 +143,7 @@ def main():
                     help="compile rotary embedding and attention input layout with eager precision casts")
     ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
                     help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
-    ap.add_argument("--linear-cache-cpu-gib", type=float, default=64,
+    ap.add_argument("--linear-cache-cpu-gib", type=float, default=96,
                     help="maximum pinned host budget per rank, also limited by available node memory")
     ap.add_argument("--linear-cache-max-entry-gib", type=float, default=1,
                     help="recompute larger Linear outputs to preserve cache space for smaller outputs")
