@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import glob
 import hashlib
+import json
 import os
 
 # [FIX8] Must take effect before `import torch`: long-sequence ZeRO-3 training
@@ -144,6 +145,8 @@ def main():
     ap.add_argument("--gradient-checkpointing", choices=("on", "off"), default="on")
     ap.add_argument("--checkpoint-blocks", type=int, default=-1,
                     help="number of leading transformer blocks to checkpoint; -1 means all")
+    ap.add_argument("--profile-block-calls", action="store_true",
+                    help="record per-block forward-call counts; use only in the separate profile phase")
     ap.add_argument("--video-shift", type=float, default=12.0); ap.add_argument("--audio-shift", type=float, default=3.0)
     ap.add_argument("--val-every", type=int, default=100); ap.add_argument("--ckpt-every", type=int, default=50)
     ap.add_argument("--max-seq-tokens", type=int, default=132000,
@@ -165,7 +168,10 @@ def main():
     log_handle = None
     if rank == 0:
         log_handle = (args.output / "train.log").open("a", buffering=1)
+        metrics_handle = (args.output / "metrics.jsonl").open("a", buffering=1)
         log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed} gradient_checkpointing={args.gradient_checkpointing} checkpoint_blocks={args.checkpoint_blocks}\n")
+    else:
+        metrics_handle = None
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
     # [FIX6] Under ZeRO-3 with PEFT-injected LoRA layers, torch's activation
     # checkpointing (reentrant AND non-reentrant) recomputes against already
@@ -191,6 +197,15 @@ def main():
             return module(*inputs)
 
         model._gradient_checkpointing_func = selective_checkpoint
+    block_call_counts = [0] * len(model.transformer_blocks)
+    profile_hooks = []
+    if args.profile_block_calls:
+        def count_block(index):
+            def hook(_module, _inputs, _output):
+                block_call_counts[index] += 1
+            return hook
+        profile_hooks = [block.register_forward_hook(count_block(i))
+                         for i, block in enumerate(model.transformer_blocks)]
     for p in model.parameters(): p.requires_grad_(args.trainable == "all")
     if args.trainable == "heads":
         for name, p in model.named_parameters():
@@ -309,6 +324,11 @@ def main():
                     print(msg, flush=True)
                     log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
                 continue
+            if device.type == "cuda":
+                torch.cuda.reset_peak_memory_stats(device)
+                step_begin = torch.cuda.Event(enable_timing=True)
+                step_end = torch.cuda.Event(enable_timing=True)
+                step_begin.record()
             loss, lv, la, aw = forward_loss(model, item, layout, device, sigma_v, sigma_a)
             # backward and step stay strictly adjacent — see [FIX7].
             if engine is not None:
@@ -316,12 +336,39 @@ def main():
                 engine.step()
             else:
                 optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(params, 1.0); optimizer.step()
+            if device.type == "cuda":
+                step_end.record()
+                step_end.synchronize()
+                step_ms = torch.tensor(step_begin.elapsed_time(step_end), device=device)
+                peak_bytes = torch.tensor(torch.cuda.max_memory_allocated(device), device=device, dtype=torch.int64)
+            else:
+                step_ms = torch.tensor(float("nan"), device=device)
+                peak_bytes = torch.tensor(0, device=device, dtype=torch.int64)
+            if distributed:
+                torch.distributed.all_reduce(step_ms, op=torch.distributed.ReduceOp.MAX)
+                torch.distributed.all_reduce(peak_bytes, op=torch.distributed.ReduceOp.MAX)
             step += 1
             if rank == 0:
                 seq_len = int(layout["token_tags"].numel())
-                message = f"step={step} loss={loss.item():.6f} loss_v={float(lv):.6f} loss_a={float(la):.6f} seq={seq_len} f={item.get('num_frames', '?')} sigma_v={float(sigma_v):.3f} audio_w={aw}"
+                metric = {
+                    "step": step,
+                    "loss": float(loss.item()),
+                    "loss_v": float(lv),
+                    "loss_a": float(la),
+                    "seq": seq_len,
+                    "frames": int(item.get("num_frames", -1)),
+                    "sigma_v": float(sigma_v),
+                    "audio_weight": float(aw),
+                    "step_seconds": float(step_ms.item() / 1000.0),
+                    "peak_allocated_bytes": int(peak_bytes.item()),
+                }
+                message = (f"step={step} loss={metric['loss']:.6f} loss_v={metric['loss_v']:.6f} "
+                           f"loss_a={metric['loss_a']:.6f} seq={seq_len} f={item.get('num_frames', '?')} "
+                           f"sigma_v={metric['sigma_v']:.3f} audio_w={aw} step_s={metric['step_seconds']:.6f} "
+                           f"peak_gib={metric['peak_allocated_bytes'] / 2**30:.3f}")
                 print(message, flush=True)
                 log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {message}\n")
+                metrics_handle.write(json.dumps(metric, sort_keys=True) + "\n")
             # Checkpoint BEFORE validation: a validation forward leaves ZeRO-3
             # prefetch state in flight, and a GatheredParameters gather right
             # after it hits "Cannot partition a param in flight". Saving first
@@ -365,11 +412,23 @@ def main():
             # Anti-spin guard: if the gate skipped every sample, fail loudly
             # instead of looping forever over an epoch that trains nothing.
             raise RuntimeError(f"epoch swept with 0 executed steps (all samples over --max-seq-tokens? skips={n_len_skips})")
+    if args.profile_block_calls and rank == 0:
+        json_dump = {
+            "schema": "faster-h3-block-profile@1",
+            "checkpoint_blocks": args.checkpoint_blocks,
+            "steps": step,
+            "block_forward_calls": block_call_counts,
+            "total_block_forward_calls": sum(block_call_counts),
+        }
+        (args.output / "block_profile.json").write_text(json.dumps(json_dump, indent=2) + "\n")
+    for hook in profile_hooks:
+        hook.remove()
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:
         log_handle.write(f"{datetime.now(timezone.utc).isoformat()} finished step={step}\n")
         log_handle.close()
+        metrics_handle.close()
 
 
 if __name__ == "__main__": main()

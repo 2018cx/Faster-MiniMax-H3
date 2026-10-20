@@ -1,0 +1,18 @@
+{
+  "schema": "faster-h3-numerical-gate@1",
+  "tier": "N1",
+  "calibration": {
+    "reference": "runs/baseline-lora-33k/checkpoint-1.pt",
+    "legitimate_variant": "runs/candidate-checkpoint45-33k/checkpoint-1.pt",
+    "tensor_count": 108,
+    "changed_tensor_count": 52,
+    "observed_max_abs": 0.00002002716064453125,
+    "observed_max_relative_l2": 0.16843458473112588,
+    "note": "Selective activation checkpointing preserves the BF16 loss trajectory exactly but changes floating-point accumulation in LoRA updates. Gates include margin for three benchmark steps."
+  },
+  "gates": {
+    "candidate_max_abs": 0.0001,
+    "candidate_max_relative_l2": 0.25,
+    "bracketing_references_bitwise": true
+  }
+}

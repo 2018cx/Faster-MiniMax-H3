@@ -1,0 +1,4 @@
+{
+  "checkpoint_blocks": -1,
+  "name": "full-activation-checkpointing-reference"
+}
