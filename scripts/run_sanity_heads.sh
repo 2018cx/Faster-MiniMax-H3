@@ -6,7 +6,7 @@ MODEL="${H3_MODEL:-$ROOT/.assets/model}"
 CACHE="${H3_SANITY_CACHE:-$ROOT/.assets/cache/sanity}"
 OUT="${H3_SANITY_OUT:-$ROOT/runs/sanity-heads}"
 
-if [[ ! -e "$CACHE" ]]; then
+if ! compgen -G "$CACHE/*.pt" >/dev/null; then
   "$ROOT/.venv/bin/python" "$ROOT/tools/make_synthetic_cache.py" \
     --output "$CACHE" --world-size 1 --train-files-per-rank 1 \
     --height 256 --width 256 --num-frames 22 --text-tokens 16
