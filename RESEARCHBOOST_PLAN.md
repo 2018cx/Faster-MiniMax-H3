@@ -10,7 +10,7 @@
 - Reference precision: BF16, as in the upstream trainer.
 - Reference workload: Ref2VA, LoRA rank 16 / alpha 32, DeepSpeed ZeRO-3,
   one sequence per rank, fixed synthetic cache, approximately 33.5k packed
-  tokens per sample.
+  tokens per sample (448x768, 328 frames, 64 text rows).
 - Target: at least 1.20x steady-state training-step speedup.  A fully
   validated result of at least 1.05x is an acceptable minimum when profiling
   shows that the remaining target is outside the stated constraints.

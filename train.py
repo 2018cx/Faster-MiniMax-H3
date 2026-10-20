@@ -44,7 +44,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset
 
 from diffusers import MiniMaxH3Transformer3DModel
-from diffusers.modular_pipelines.minimax_h3.packing import build_packed_sequence, build_row_timesteps
+from h3_compat import audio_latent_num_frames, build_packed_sequence, build_row_timesteps
 
 VAL_SIGMAS = (0.3, 0.6, 0.9)
 
@@ -76,8 +76,7 @@ class H3Cache(Dataset):
             tokens_per_lf = item["video"].shape[0] // lf_old
             nf_new = int(item["num_frames"] * max_lf / lf_old)
             nf_new = max(22, ((nf_new - 5) // 17) * 17 + 5)  # re-align to 17n+5 (22 = shortest valid clip)
-            from diffusers.modular_pipelines.minimax_h3.packing import audio_latent_num_frames as _alnf
-            n_a_new = min(_alnf(nf_new), n_a_old)
+            n_a_new = min(audio_latent_num_frames(nf_new), n_a_old)
             item["video"] = item["video"][: max_lf * tokens_per_lf]
             # Audio rows are channel-major ([ch0 x n_a_old, ch1 x n_a_old]):
             # slice each channel's block, then re-concatenate.

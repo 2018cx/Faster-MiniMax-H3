@@ -56,7 +56,8 @@ def main() -> None:
     if existing:
         raise SystemExit(f"refusing to overwrite {len(existing)} existing fixture files under {args.output}")
 
-    latent_frames = (args.num_frames - 1) // 4 + 1
+    # H3's visual VAE maps 17*n+5 pixel frames to 5*n+2 latent frames.
+    latent_frames = (args.num_frames - 5) // 17 * 5 + 2
     video_rows = latent_frames * (args.height // 32) * (args.width // 32)
     audio_frames = round(args.num_frames / 24 * 40)
     counts = {
