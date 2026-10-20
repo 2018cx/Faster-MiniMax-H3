@@ -137,6 +137,8 @@ def main():
                     help="Diffusers SDPA backend on CUDA; use native for automatic selection")
     ap.add_argument("--attention-cache-gib", type=float, default=32,
                     help="cuDNN outputs retained inside activation checkpoints; 0 recomputes attention")
+    ap.add_argument("--compile-norms", action=argparse.BooleanOptionalAction, default=True,
+                    help="compile CUDA RMSNorm while preserving eager precision casts")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
@@ -191,6 +193,11 @@ def main():
         # lora_dropout=0: the checkpointed recompute must be deterministic
         # (and at a few hundred steps the regularization buys little anyway).
         model.add_adapter(LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0, target_modules=["to_qkv", "to_out.0", "linear_1", "linear_2"], init_lora_weights="gaussian"))
+    if device.type == "cuda" and args.compile_norms:
+        from compiled_norm import install
+        count = install(model)
+        if rank == 0:
+            print(f"compiled RMSNorm modules: {count}; eager precision casts preserved", flush=True)
     # [FIX9] Resume BEFORE DDP wrapping / deepspeed.initialize, while the
     # parameters are still full tensors. After ZeRO-3 partitioning a plain
     # load_state_dict sees shape-[0] shards and silently loads nothing.
@@ -360,6 +367,9 @@ def main():
         print(f"attention checkpoint cache: saved={checkpoint.saved} replayed={checkpoint.replayed} "
               f"recomputed={checkpoint.recomputed} peak_bytes={checkpoint.peak_bytes} "
               f"retained_bytes={checkpoint.retained}", flush=True)
+    if device.type == "cuda" and args.compile_norms and rank == 0:
+        from compiled_norm import report
+        print(f"compiled RMSNorm statistics: {report()}", flush=True)
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:

@@ -98,6 +98,11 @@ set `--attention-cache-gib 0` to recompute all attention, or lower the budget fo
 longer sequences. The cache is discarded during backward and never reused across
 training steps. `--attention-backend native` restores automatic SDPA selection.
 
+CUDA RMSNorm uses PyTorch compilation with eager precision casts preserved.
+Use `--no-compile-norms` for eager execution. By default, each process owns fresh
+temporary compiler caches and removes them on exit; explicit `TRITON_CACHE_DIR`
+and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
+
 **Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
 tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
 448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without
