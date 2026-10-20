@@ -105,8 +105,8 @@ and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
 
 DeepSpeed LoRA training also retains frozen Linear outputs within each activation
 checkpoint using native PyTorch selective checkpointing. The defaults are
-`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 96` per rank, and
-`--linear-cache-max-entry-gib 1`. Larger outputs or budget misses recompute
+`--linear-cache-gpu-gib 24`, `--linear-cache-cpu-gib 176` per rank, and
+`--linear-cache-max-entry-gib 2`. Larger outputs or budget misses recompute
 normally. Host storage uses a fixed pinned arena with asynchronous copies and
 prefetch; values are released during backward and never reused across updates.
 Choose budgets for the available GPU and host memory; setting both storage
@@ -150,3 +150,13 @@ into the inference pipeline. The LoRA path runs 30-second 65k-token sequences wi
 Model weights are governed by the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE)
 (territory and usage restrictions apply; fine-tuned weights are Model Derivatives). This repository contains
 code only — no model weights and no training media.
+
+The pinned host arena uses separate power-of-two slabs of at most 32 GiB.
+PyTorch rounds each pinned allocation up to a power of two, so these slabs keep
+the allocated bytes within the requested arena budget. Slots and free ranges
+remain separate per slab; fragmentation falls back to native recomputation.
+The runtime report includes slab sizes and process-wide native pinned allocator
+counters, along with GPU peak allocation including prefetched tensors. On the
+8-H20 workload the 176 GiB host / 24 GiB GPU configuration caches every eligible
+frozen GEMM output within its checkpoint and releases every value before updates.
+The arena keeps storage for reuse across updates; it never replays values from earlier updates.

@@ -41,23 +41,35 @@ def _available_memory():
 
 
 class _Arena:
-    def __init__(self, size):
+    def __init__(self, size, max_slab_bytes=32 * 1024**3):
+        if max_slab_bytes < 256 or max_slab_bytes & (max_slab_bytes - 1):
+            raise ValueError("arena slab limit must be a power of two, at least 256 bytes")
         self.size = size // 256 * 256
-        self.buffer = torch.empty(self.size, dtype=torch.uint8, pin_memory=True)
-        self.free = [(0, self.size)]
+        self.buffers = []
+        self.free = []
+        remaining = self.size
+        # The native pinned allocator rounds EVERY request to a power of two.
+        # Exact power-of-two slabs prevent a 160-GiB arena allocating 256 GiB.
+        while remaining:
+            slab_size = 1 << (min(remaining, max_slab_bytes).bit_length() - 1)
+            self.buffers.append(torch.empty(slab_size, dtype=torch.uint8, pin_memory=True))
+            self.free.append([(0, slab_size)])
+            remaining -= slab_size
 
     def allocate(self, value):
         size = value.numel() * value.element_size()
         reserved = (size + 255) // 256 * 256
-        for index, (offset, length) in enumerate(self.free):
-            if length >= reserved:
-                self.free[index:index + 1] = [(offset + reserved, length - reserved)] if length > reserved else []
-                view = self.buffer.narrow(0, offset, size).view(value.dtype).reshape(value.shape)
-                return view, (offset, reserved)
+        for slab, ranges in enumerate(self.free):
+            for index, (offset, length) in enumerate(ranges):
+                if length >= reserved:
+                    ranges[index:index + 1] = [(offset + reserved, length - reserved)] if length > reserved else []
+                    view = self.buffers[slab].narrow(0, offset, size).view(value.dtype).reshape(value.shape)
+                    return view, (slab, offset, reserved)
         return None
 
     def release(self, slot):
-        ranges = sorted([*self.free, slot])
+        slab, offset, size = slot
+        ranges = sorted([*self.free[slab], (offset, size)])
         merged = []
         for offset, length in ranges:
             if merged and merged[-1][0] + merged[-1][1] == offset:
@@ -65,7 +77,7 @@ class _Arena:
                 merged.append((start, previous + length))
             else:
                 merged.append((offset, length))
-        self.free = merged
+        self.free[slab] = merged
 
 
 class _Record:
@@ -245,6 +257,9 @@ class LinearCache:
                 "gpu_peak": self.gpu_peak, "cpu_peak": self.cpu_peak,
                 "gpu_live": self.gpu_live, "cpu_live": self.cpu_live,
                 "pinned_arena_bytes": self.arena.size if self.arena else 0,
+                "pinned_arena_slab_bytes": [buffer.numel() for buffer in self.arena.buffers] if self.arena else [],
+                "host_allocator_bytes": {key: value for key, value in torch.cuda.memory.host_memory_stats().items()
+                                         if key.startswith(("allocated_bytes.", "reserved_bytes."))},
                 "cuda_max_allocated": torch.cuda.max_memory_allocated(self.device),
                 "cuda_max_reserved": torch.cuda.max_memory_reserved(self.device)}
 
@@ -262,7 +277,7 @@ def _forward(module, input):
     return block.replay(module, input) if replay else block.capture(module, input)
 
 
-def install(model, gpu_gib=16, cpu_gib=96, max_entry_gib=1):
+def install(model, gpu_gib=24, cpu_gib=176, max_entry_gib=2):
     owner = LinearCache(next(model.parameters()).device, gpu_gib, cpu_gib,
                         max_entry_gib=max_entry_gib)
     for module in model.modules():

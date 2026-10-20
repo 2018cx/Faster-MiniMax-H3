@@ -6,6 +6,7 @@ This is numerical validation only. Use bench.py for every performance result.
 from pathlib import Path
 import sys
 from types import SimpleNamespace
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -14,7 +15,7 @@ from torch.nn import functional as F
 from torch.utils._python_dispatch import _get_current_dispatch_mode
 
 from attention_checkpoint import _Cache, _active
-from frozen_linear_cache import install
+from frozen_linear_cache import install, _Arena
 
 
 def invoke(module, input, cache, replay):
@@ -57,7 +58,7 @@ def check(shape, cpu, dtype=torch.bfloat16, bias=False, entry_gib=3):
 def check_prefetch():
     model = torch.nn.Sequential(
         torch.nn.Linear(128, 256, bias=False, device="cuda", dtype=torch.bfloat16),
-        torch.nn.Linear(256, 128, bias=False, device="cuda", dtype=torch.bfloat16))
+        torch.nn.Linear(256, 256, bias=False, device="cuda", dtype=torch.bfloat16))
     model.requires_grad_(False)
     owner = install(model, gpu_gib=0, cpu_gib=1 / 64)
     value = torch.randn(1, 257, 128, device="cuda", dtype=torch.bfloat16, requires_grad=True)
@@ -82,6 +83,29 @@ def check_prefetch():
     print("bitwise two-checkpoint asynchronous prefetch PASS", flush=True)
 
 
+def check_arena_slabs():
+    before = torch.cuda.memory.host_memory_stats()["allocated_bytes.current"]
+    arena = _Arena(3072, max_slab_bytes=2048)
+    after = torch.cuda.memory.host_memory_stats()["allocated_bytes.current"]
+    assert after - before == 3072
+    assert [buffer.numel() for buffer in arena.buffers] == [2048, 1024]
+    a, slot_a = arena.allocate(torch.empty(900, dtype=torch.uint8))
+    b, slot_b = arena.allocate(torch.empty(900, dtype=torch.uint8))
+    c, slot_c = arena.allocate(torch.empty(900, dtype=torch.uint8))
+    assert slot_a[0] == slot_b[0] == 0 and slot_c[0] == 1
+    a.fill_(17); b.fill_(29); c.fill_(43)
+    assert a.eq(17).all() and b.eq(29).all() and c.eq(43).all()
+    assert arena.allocate(torch.empty(256, dtype=torch.uint8)) is None
+    arena.release(slot_b); arena.release(slot_a); arena.release(slot_c)
+    assert arena.free == [[(0, 2048)], [(0, 1024)]]
+    assert arena.allocate(torch.empty(2500, dtype=torch.uint8)) is None
+    print("exact pinned-byte budget, separate slabs, coalescing and fragmentation PASS", flush=True)
+    # Two 131584-byte outputs occupy different 256-KiB slabs. Exercise real
+    # asynchronous H2D prefetch/release with that layout and strict gradients.
+    with patch("frozen_linear_cache._Arena", side_effect=lambda size: _Arena(size, max_slab_bytes=256 * 1024)):
+        check_prefetch()
+
+
 if __name__ == "__main__":
     torch.manual_seed(1234)
     check((33750, 5376, 7168), cpu=False)
@@ -91,3 +115,4 @@ if __name__ == "__main__":
     check((3, 2688, 5376), cpu=True, dtype=torch.float32, bias=True)
     check((257, 128, 256), cpu=True, entry_gib=0)
     check_prefetch()
+    check_arena_slabs()

@@ -141,11 +141,11 @@ def main():
                     help="compile CUDA RMSNorm while preserving eager precision casts")
     ap.add_argument("--compile-rope", action=argparse.BooleanOptionalAction, default=True,
                     help="compile rotary embedding and attention input layout with eager precision casts")
-    ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
+    ap.add_argument("--linear-cache-gpu-gib", type=float, default=24,
                     help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
-    ap.add_argument("--linear-cache-cpu-gib", type=float, default=96,
+    ap.add_argument("--linear-cache-cpu-gib", type=float, default=176,
                     help="maximum pinned host budget per rank, also limited by available node memory")
-    ap.add_argument("--linear-cache-max-entry-gib", type=float, default=1,
+    ap.add_argument("--linear-cache-max-entry-gib", type=float, default=2,
                     help="recompute larger Linear outputs to preserve cache space for smaller outputs")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
