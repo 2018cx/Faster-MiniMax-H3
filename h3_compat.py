@@ -84,7 +84,7 @@ except ModuleNotFoundError:
             layout.audio_indices,
             layout.num_condition_video_rows,
             layout.num_condition_audio_rows,
-            int(layout.text_indices.numel()),
+            int(layout.sequence_length - layout.video_indices.numel() - layout.audio_indices.numel()),
             video_timestep,
             audio_timestep,
             condition_video_timestep,
