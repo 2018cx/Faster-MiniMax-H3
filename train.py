@@ -142,6 +142,8 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--trainable", choices=("heads", "lora", "all"), default="lora"); ap.add_argument("--resume", type=Path)
     ap.add_argument("--gradient-checkpointing", choices=("on", "off"), default="on")
+    ap.add_argument("--checkpoint-blocks", type=int, default=-1,
+                    help="number of leading transformer blocks to checkpoint; -1 means all")
     ap.add_argument("--video-shift", type=float, default=12.0); ap.add_argument("--audio-shift", type=float, default=3.0)
     ap.add_argument("--val-every", type=int, default=100); ap.add_argument("--ckpt-every", type=int, default=50)
     ap.add_argument("--max-seq-tokens", type=int, default=132000,
@@ -163,7 +165,7 @@ def main():
     log_handle = None
     if rank == 0:
         log_handle = (args.output / "train.log").open("a", buffering=1)
-        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed} gradient_checkpointing={args.gradient_checkpointing}\n")
+        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed} gradient_checkpointing={args.gradient_checkpointing} checkpoint_blocks={args.checkpoint_blocks}\n")
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
     # [FIX6] Under ZeRO-3 with PEFT-injected LoRA layers, torch's activation
     # checkpointing (reentrant AND non-reentrant) recomputes against already
@@ -176,6 +178,19 @@ def main():
         model.enable_gradient_checkpointing(deepspeed.checkpointing.checkpoint)
     elif args.gradient_checkpointing == "on":
         model.enable_gradient_checkpointing()
+    if args.gradient_checkpointing == "on" and args.checkpoint_blocks >= 0:
+        total_blocks = len(model.transformer_blocks)
+        if args.checkpoint_blocks > total_blocks:
+            raise SystemExit(f"--checkpoint-blocks must be in [0, {total_blocks}], got {args.checkpoint_blocks}")
+        checkpointed = {id(block) for block in model.transformer_blocks[: args.checkpoint_blocks]}
+        checkpoint_impl = model._gradient_checkpointing_func
+
+        def selective_checkpoint(module, *inputs):
+            if id(module) in checkpointed:
+                return checkpoint_impl(module, *inputs)
+            return module(*inputs)
+
+        model._gradient_checkpointing_func = selective_checkpoint
     for p in model.parameters(): p.requires_grad_(args.trainable == "all")
     if args.trainable == "heads":
         for name, p in model.named_parameters():
