@@ -8,7 +8,7 @@
   symlinks under `.assets/model`.
 - Hardware: 8 NVIDIA H20 96 GB GPUs on the assigned server.
 - Reference precision: BF16, as in the upstream trainer.
-- Reference workload: Ref2VA, LoRA rank 16 / alpha 32, DeepSpeed ZeRO-3,
+- Reference workload: FL2VA, LoRA rank 16 / alpha 32, DeepSpeed ZeRO-3,
   one sequence per rank, fixed synthetic cache, approximately 33.5k packed
   tokens per sample (448x768, 328 frames, 64 text rows).
 - Target: at least 1.20x steady-state training-step speedup.  A fully
@@ -16,7 +16,11 @@
   shows that the remaining target is outside the stated constraints.
 
 The numeric target is an explicit working assumption because the owner asked
-for a faster implementation without specifying a threshold.
+for a faster implementation without specifying a threshold. FL2VA is frozen
+because the supplied model directory contains a current-Diffusers conversion
+of FL2VA (verified against the original tensor values); Ref2VA is present only
+in the original checkpoint naming scheme and remains supported by the trainer
+when a converted checkpoint is supplied.
 
 ## Invariants
 

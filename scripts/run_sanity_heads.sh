@@ -14,7 +14,7 @@ fi
 
 CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}" \
   "$ROOT/.venv/bin/python" "$ROOT/train.py" \
-  --model "$MODEL" --variant ref2va \
+  --model "$MODEL" --variant fl2va \
   --cache "$CACHE" --output "$OUT" \
   --max-steps 1 --trainable heads --strategy ddp \
   --val-every 1000000 --ckpt-every 1000000 --max-seq-tokens 4096
