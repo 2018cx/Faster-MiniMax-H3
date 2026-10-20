@@ -277,7 +277,7 @@ def _forward(module, input):
     return block.replay(module, input) if replay else block.capture(module, input)
 
 
-def install(model, gpu_gib=24, cpu_gib=176, max_entry_gib=2):
+def install(model, gpu_gib=16, cpu_gib=184, max_entry_gib=2):
     owner = LinearCache(next(model.parameters()).device, gpu_gib, cpu_gib,
                         max_entry_gib=max_entry_gib)
     for module in model.modules():

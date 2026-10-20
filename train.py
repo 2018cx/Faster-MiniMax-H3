@@ -141,9 +141,9 @@ def main():
                     help="compile CUDA RMSNorm while preserving eager precision casts")
     ap.add_argument("--compile-rope", action=argparse.BooleanOptionalAction, default=True,
                     help="compile rotary embedding and attention input layout with eager precision casts")
-    ap.add_argument("--linear-cache-gpu-gib", type=float, default=24,
+    ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
                     help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
-    ap.add_argument("--linear-cache-cpu-gib", type=float, default=176,
+    ap.add_argument("--linear-cache-cpu-gib", type=float, default=184,
                     help="maximum pinned host budget per rank, also limited by available node memory")
     ap.add_argument("--linear-cache-max-entry-gib", type=float, default=2,
                     help="recompute larger Linear outputs to preserve cache space for smaller outputs")
@@ -392,8 +392,8 @@ def main():
     if device.type == "cuda" and args.compile_norms and rank == 0:
         from compiled_norm import report
         print(f"compiled RMSNorm statistics: {report()}", flush=True)
-    if linear_cache is not None and rank == 0:
-        print(f"frozen Linear cache statistics: {linear_cache.report()}", flush=True)
+    if linear_cache is not None:
+        print(f"frozen Linear cache statistics rank={rank}: {linear_cache.report()}", flush=True)
     if device.type == "cuda" and args.compile_rope and rank == 0:
         from compiled_rope import report
         print(f"compiled rotary statistics: {report()}", flush=True)

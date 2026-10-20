@@ -105,13 +105,13 @@ and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
 
 DeepSpeed LoRA training also retains frozen Linear outputs within each activation
 checkpoint using native PyTorch selective checkpointing. The defaults are
-`--linear-cache-gpu-gib 24`, `--linear-cache-cpu-gib 176` per rank, and
+`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 184` per rank, and
 `--linear-cache-max-entry-gib 2`. Larger outputs or budget misses recompute
 normally. Host storage uses a fixed pinned arena with asynchronous copies and
 prefetch; values are released during backward and never reused across updates.
 Choose budgets for the available GPU and host memory; setting both storage
-budgets to zero disables this cache. Runtime counters report actual cache use,
-recomputation, live entries, and peak GPU allocation.
+budgets to zero disables this cache. Final counters on every rank report actual
+cache use, recomputation, live entries, and peak GPU allocation.
 
 The cuDNN checkpoint path fuses rotary embedding and input layout with explicit
 eager rounding and a first-order autograd kernel. `--no-compile-rope` restores
@@ -157,6 +157,8 @@ the allocated bytes within the requested arena budget. Slots and free ranges
 remain separate per slab; fragmentation falls back to native recomputation.
 The runtime report includes slab sizes and process-wide native pinned allocator
 counters, along with GPU peak allocation including prefetched tensors. On the
-8-H20 workload the 176 GiB host / 24 GiB GPU configuration caches every eligible
+8-H20 workload the 184 GiB host / 16 GiB GPU configuration caches every eligible
 frozen GEMM output within its checkpoint and releases every value before updates.
+This split leaves more GPU headroom for temporary allocations than the former
+176 GiB host / 24 GiB GPU configuration.
 The arena keeps storage for reuse across updates; it never replays values from earlier updates.
