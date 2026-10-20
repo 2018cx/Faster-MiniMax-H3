@@ -133,6 +133,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", type=Path, required=True); ap.add_argument("--cache", type=Path, required=True); ap.add_argument("--output", type=Path, required=True)
     ap.add_argument("--variant", choices=("fl2va", "ref2va"), default="ref2va")
+    ap.add_argument("--attention-backend", default="_native_cudnn",
+                    help="Diffusers SDPA backend on CUDA; use native for automatic selection")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
@@ -157,6 +159,10 @@ def main():
         log_handle = (args.output / "train.log").open("a", buffering=1)
         log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy}\n")
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
+    # Select the installed fused SDPA implementation before checkpointing.
+    # Keep the automatic dispatcher available for other hardware and diagnosis.
+    if device.type == "cuda":
+        model.set_attention_backend(args.attention_backend)
     # [FIX6] Under ZeRO-3 with PEFT-injected LoRA layers, torch's activation
     # checkpointing (reentrant AND non-reentrant) recomputes against already
     # re-partitioned parameters (shape [0]) and crashes. deepspeed's own
