@@ -53,3 +53,13 @@ All eight endpoint comparisons must satisfy `abs(mean(candidate-reference) / ref
 The uninterrupted 50-update arms historically required about 100 minutes for reference and 60–64 minutes for candidate. The user explicitly exempted only these six mandatory final arms from the30-minute run limit; every diagnostic and optimization run remains under30minutes. The prepared validator launched at2026-10-21T17:39:59UTC, using the exact clean protected source. Arms will not be shortened, segmented or restarted to evade a limit. Fresh validation status is **RUNNING**, with no statistical verdict yet. The [machine-readable selection and exact evidence hashes](performance-data/repaired-selection.json) distinguish selection, diagnostics and authoritative speed acceptance from this pending gate. All 358 original failed-validation file hashes and both accepted rollback refs were reverified unchanged at closeout.
 
 The intended public destination is `2018cx/Faster-MiniMax-H3`. GitHub authentication must be verified as `2018cx` and repository nonexistence checked only after validation and all required audits pass. No GitHub checks or public writes have been performed during validation.
+
+## Recomputing recorded endpoints
+
+The standalone [raw-record audit](audit_validation_endpoints.py) reads a completed validation directory and verifies all2,400 per-rank records, paired contracts, checkpoint byte hashes and the eight original endpoint decisions. It requires no model execution or tensor loading. It reproduced the preserved original FAIL exactly before fresh candidate endpoints were available; see [control provenance](performance-data/endpoint-audit-control.json). This consumer does not replace checkpoint-content, runtime, source or publication audits.
+
+```bash
+python docs/audit_validation_endpoints.py /path/to/completed/validation --output /path/to/new-endpoint-audit.json
+```
+
+The output path must be new. Its audit status is separate from the observed scientific PASS/FAIL; the 2.0 bound and exact zero-SD rule are unchanged.

@@ -1,0 +1,15 @@
+{
+  "status": "REVIEWED_LIMITED_AUDIT_CONSUMER",
+  "helper_sha256": "05471ec1e0b3c73ba32bce38531f9527756d817af1383383697429bf95e8ba82",
+  "review_path": "runs/target-2x/repair-20261021-v1/authorization/endpoint-audit-helper-review.json",
+  "review_sha256": "e253f1146e9c5628210b1deac49e3cb6d28c7387ff26c49a98e6ae96d9e3b8bc",
+  "negative_control_path": "runs/target-2x/repair-20261021-v1/authorization/endpoint-audit-original-negative-control.json",
+  "negative_control_sha256": "2df76ae247b4e789793307481006a12ad1cd888e1cc3eb91de0014e6c3dcc95c",
+  "original_validation_summary_sha256": "c43d8e4da32bd85386419df2767609db063385207df837a5516e0984e5eb9394",
+  "negative_control_observed_statistical_status": "FAIL",
+  "negative_control_raw_records_verified": 2400,
+  "fresh_validation_status": "RUNNING",
+  "all_scientific_gates_verified": false,
+  "frozen_observer_unchanged": true,
+  "prepared_at": "2026-10-21T18:10:43.206304+00:00"
+}
