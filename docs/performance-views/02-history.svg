@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">
+<title id="title">MiniMax-H3 agent optimization history: Round 19 selected at 1.869055×</title>
+<desc id="desc">Forty rounds. Burgundy step curve is the cumulative full-check accepted best. Filled circles are full checks, open circles screening times, gray diamonds profile-only observations. Failures and untimed candidates have a separate status rail, not zero speedup. The 2× target was not reached. Round 40 candidate screening completed in Round 41.</desc>
+<metadata>Data SHA256: 2e64e62c1dd0dd8c5bcb10dd730f79b2cfe42ae3c241e5ec98428c6535767b6b</metadata>
+<rect width="1200" height="920" fill="white"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" stroke-linejoin="round">
+<text x="88.00" y="64.00" font-size="31" fill="#292122" text-anchor="start" font-weight="bold">Agent Optimization History</text>
+<text x="1140.00" y="62.00" font-size="40" fill="#8c0000" text-anchor="end" font-weight="bold">1.87×</text>
+<text x="1140.00" y="85.00" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">selected full-check speedup</text>
+<text x="88.00" y="105.00" font-size="17" fill="#79696b" text-anchor="start" font-weight="normal">8 H20 GPUs · BF16 FL2VA LoRA · 33,750 tokens/rank · Rounds 1–40</text>
+<text x="88.00" y="131.00" font-size="14" fill="#79696b" text-anchor="start" font-weight="normal">Two updates per speed arm · update 1 warm-up · timed interval: completion of update 1 → update 2</text>
+<line x1="88.00" y1="164.00" x2="116.00" y2="164.00" stroke="#8c0000" stroke-width="3" />
+<text x="125.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">Accepted best</text>
+<circle cx="278.00" cy="164.00" r="5" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<text x="291.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">Full check</text>
+<circle cx="410.00" cy="164.00" r="5" fill="white" stroke="#8c0000" stroke-width="2"/>
+<text x="423.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">Screening</text>
+<path d="M542.00,159.00 L547.00,164.00 L542.00,169.00 L537.00,164.00 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<text x="555.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">Profile observation only</text>
+<line x1="773.00" y1="160.00" x2="781.00" y2="168.00" stroke="#8c0000" stroke-width="1.8" />
+<line x1="773.00" y1="168.00" x2="781.00" y2="160.00" stroke="#8c0000" stroke-width="1.8" />
+<text x="790.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">Failure</text>
+<line x1="890.00" y1="164.00" x2="900.00" y2="164.00" stroke="#79696b" stroke-width="2" />
+<text x="910.00" y="169.00" font-size="13" fill="#292122" text-anchor="start" font-weight="normal">No candidate timing</text>
+<line x1="88.00" y1="527.93" x2="1140.00" y2="527.93" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="532.93" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">0.75×</text>
+<line x1="88.00" y1="467.57" x2="1140.00" y2="467.57" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="472.57" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">1.00×</text>
+<line x1="88.00" y1="407.21" x2="1140.00" y2="407.21" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="412.21" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">1.25×</text>
+<line x1="88.00" y1="346.86" x2="1140.00" y2="346.86" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="351.86" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">1.50×</text>
+<line x1="88.00" y1="286.50" x2="1140.00" y2="286.50" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="291.50" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">1.75×</text>
+<line x1="88.00" y1="226.14" x2="1140.00" y2="226.14" stroke="#eadfe0" stroke-width="1" />
+<text x="76.00" y="231.14" font-size="13" fill="#79696b" text-anchor="end" font-weight="normal">2.00×</text>
+<line x1="88.00" y1="226.14" x2="1140.00" y2="226.14" stroke="#8c0000" stroke-width="1.5" stroke-dasharray="6 6"/>
+<text x="1140.00" y="216.14" font-size="13" fill="#8c0000" text-anchor="end" font-weight="normal">2.0× target · not reached</text>
+<polygon points="88,540 88.00,467.57 101.15,467.57 101.15,467.57 127.45,467.57 127.45,467.57 153.75,467.57 153.75,467.57 180.05,467.57 180.05,388.75 206.35,388.75 206.35,388.75 232.65,388.75 232.65,338.61 258.95,338.61 258.95,338.61 285.25,338.61 285.25,322.37 311.55,322.37 311.55,322.37 337.85,322.37 337.85,322.37 364.15,322.37 364.15,299.32 390.45,299.32 390.45,290.44 416.75,290.44 416.75,290.44 443.05,290.44 443.05,281.65 469.35,281.65 469.35,281.65 495.65,281.65 495.65,272.35 521.95,272.35 521.95,272.35 548.25,272.35 548.25,272.35 574.55,272.35 574.55,257.76 600.85,257.76 600.85,257.76 627.15,257.76 627.15,257.76 653.45,257.76 653.45,257.76 679.75,257.76 679.75,257.76 706.05,257.76 706.05,257.76 732.35,257.76 732.35,257.76 758.65,257.76 758.65,257.76 784.95,257.76 784.95,257.76 811.25,257.76 811.25,257.76 837.55,257.76 837.55,257.76 863.85,257.76 863.85,257.76 890.15,257.76 890.15,257.76 916.45,257.76 916.45,257.76 942.75,257.76 942.75,257.76 969.05,257.76 969.05,257.76 995.35,257.76 995.35,257.76 1021.65,257.76 1021.65,257.76 1047.95,257.76 1047.95,257.76 1074.25,257.76 1074.25,257.76 1100.55,257.76 1100.55,257.76 1126.85,257.76 1126.85,257.76 1140.00,257.76 1140,540" fill="#faf5f5" fill-opacity="0.7"/>
+<polyline points="88.00,467.57 101.15,467.57 101.15,467.57 127.45,467.57 127.45,467.57 153.75,467.57 153.75,467.57 180.05,467.57 180.05,388.75 206.35,388.75 206.35,388.75 232.65,388.75 232.65,338.61 258.95,338.61 258.95,338.61 285.25,338.61 285.25,322.37 311.55,322.37 311.55,322.37 337.85,322.37 337.85,322.37 364.15,322.37 364.15,299.32 390.45,299.32 390.45,290.44 416.75,290.44 416.75,290.44 443.05,290.44 443.05,281.65 469.35,281.65 469.35,281.65 495.65,281.65 495.65,272.35 521.95,272.35 521.95,272.35 548.25,272.35 548.25,272.35 574.55,272.35 574.55,257.76 600.85,257.76 600.85,257.76 627.15,257.76 627.15,257.76 653.45,257.76 653.45,257.76 679.75,257.76 679.75,257.76 706.05,257.76 706.05,257.76 732.35,257.76 732.35,257.76 758.65,257.76 758.65,257.76 784.95,257.76 784.95,257.76 811.25,257.76 811.25,257.76 837.55,257.76 837.55,257.76 863.85,257.76 863.85,257.76 890.15,257.76 890.15,257.76 916.45,257.76 916.45,257.76 942.75,257.76 942.75,257.76 969.05,257.76 969.05,257.76 995.35,257.76 995.35,257.76 1021.65,257.76 1021.65,257.76 1047.95,257.76 1047.95,257.76 1074.25,257.76 1074.25,257.76 1100.55,257.76 1100.55,257.76 1126.85,257.76 1126.85,257.76 1140.00,257.76" fill="none" stroke="#8c0000" stroke-width="3"/>
+<line x1="97.15" y1="578.00" x2="105.15" y2="586.00" stroke="#8c0000" stroke-width="1.8" />
+<line x1="97.15" y1="586.00" x2="105.15" y2="578.00" stroke="#8c0000" stroke-width="1.8" />
+<path d="M127.45,462.46 L132.45,467.46 L127.45,472.46 L122.45,467.46 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="122.45" y1="582.00" x2="132.45" y2="582.00" stroke="#79696b" stroke-width="2" />
+<path d="M153.75,463.14 L158.75,468.14 L153.75,473.14 L148.75,468.14 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="148.75" y1="582.00" x2="158.75" y2="582.00" stroke="#79696b" stroke-width="2" />
+<circle cx="180.05" cy="387.17" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="180.05" cy="388.75" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="206.35" cy="384.83" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="232.65" cy="338.89" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="232.65" cy="338.61" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="258.95" cy="521.58" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="285.25" cy="322.87" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="285.25" cy="322.37" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="311.55" cy="384.24" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<path d="M337.85,325.59 L342.85,330.59 L337.85,335.59 L332.85,330.59 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="333.85" y1="578.00" x2="341.85" y2="586.00" stroke="#8c0000" stroke-width="1.8" />
+<line x1="333.85" y1="586.00" x2="341.85" y2="578.00" stroke="#8c0000" stroke-width="1.8" />
+<circle cx="364.15" cy="299.41" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="364.15" cy="299.32" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="390.45" cy="296.85" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="390.45" cy="290.44" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="416.75" cy="299.35" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="443.05" cy="281.41" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="443.05" cy="281.65" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="469.35" cy="305.59" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="495.65" cy="277.06" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="495.65" cy="272.35" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="521.95" cy="288.87" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="548.25" cy="352.61" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="574.55" cy="257.73" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="574.55" cy="257.76" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<circle cx="600.85" cy="257.37" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="627.15" cy="257.97" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="653.45" cy="256.11" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="679.75" cy="267.46" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<path d="M706.05,254.33 L711.05,259.33 L706.05,264.33 L701.05,259.33 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="701.05" y1="582.00" x2="711.05" y2="582.00" stroke="#79696b" stroke-width="2" />
+<circle cx="732.35" cy="276.96" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="758.65" cy="258.27" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="784.95" cy="260.06" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="811.25" cy="258.44" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="837.55" cy="260.02" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<path d="M863.85,253.41 L868.85,258.41 L863.85,263.41 L858.85,258.41 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="858.85" y1="582.00" x2="868.85" y2="582.00" stroke="#79696b" stroke-width="2" />
+<circle cx="890.15" cy="408.55" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<path d="M916.45,253.76 L921.45,258.76 L916.45,263.76 L911.45,258.76 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="911.45" y1="582.00" x2="921.45" y2="582.00" stroke="#79696b" stroke-width="2" />
+<path d="M942.75,253.44 L947.75,258.44 L942.75,263.44 L937.75,258.44 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="938.75" y1="578.00" x2="946.75" y2="586.00" stroke="#8c0000" stroke-width="1.8" />
+<line x1="938.75" y1="586.00" x2="946.75" y2="578.00" stroke="#8c0000" stroke-width="1.8" />
+<path d="M969.05,253.34 L974.05,258.34 L969.05,263.34 L964.05,258.34 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="964.05" y1="582.00" x2="974.05" y2="582.00" stroke="#79696b" stroke-width="2" />
+<path d="M995.35,269.50 L1000.35,274.50 L995.35,279.50 L990.35,274.50 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="991.35" y1="578.00" x2="999.35" y2="586.00" stroke="#8c0000" stroke-width="1.8" />
+<line x1="991.35" y1="586.00" x2="999.35" y2="578.00" stroke="#8c0000" stroke-width="1.8" />
+<circle cx="1021.65" cy="259.71" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<path d="M1047.95,253.62 L1052.95,258.62 L1047.95,263.62 L1042.95,258.62 Z" fill="white" stroke="#79696b" stroke-width="1.6"/>
+<line x1="1042.95" y1="582.00" x2="1052.95" y2="582.00" stroke="#79696b" stroke-width="2" />
+<circle cx="1074.25" cy="266.31" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="1100.55" cy="282.20" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<circle cx="1126.85" cy="257.75" r="4.7" fill="white" stroke="#8c0000" stroke-width="2"/>
+<text x="101.15" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">1</text>
+<text x="206.35" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">5</text>
+<text x="337.85" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">10</text>
+<text x="469.35" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">15</text>
+<text x="574.55" y="561.00" font-size="13" fill="#8c0000" text-anchor="middle" font-weight="bold">19</text>
+<text x="732.35" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">25</text>
+<text x="863.85" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">30</text>
+<text x="995.35" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">35</text>
+<text x="1126.85" y="561.00" font-size="13" fill="#79696b" text-anchor="middle" font-weight="normal">40</text>
+<text x="88.00" y="611.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Untimed candidate status rail: × failed gate/preflight; — profile-only or component-only round.</text>
+<circle cx="574.55" cy="257.76" r="12" fill="none" stroke="#e8baba" stroke-width="3"/>
+<circle cx="574.55" cy="257.76" r="6.3" fill="#8c0000" stroke="#8c0000" stroke-width="2"/>
+<line x1="582.55" y1="265.76" x2="675.00" y2="300.00" stroke="#8c0000" stroke-width="1.3" />
+<rect x="675" y="300" width="368" height="70" rx="7" fill="white" stroke="#eadfe0"/>
+<text x="691.00" y="327.00" font-size="17" fill="#8c0000" text-anchor="start" font-weight="bold">R19 selected · full check PASS</text>
+<text x="691.00" y="352.00" font-size="16" fill="#292122" text-anchor="start" font-weight="normal">62.621896 s · 1.869055×</text>
+<text x="1116.85" y="243.75" font-size="12" fill="#79696b" text-anchor="end" font-weight="normal">R40 → R41 screen</text>
+<text x="88.00" y="640.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Gray profile markers observe the current accepted version; they are not candidate speed claims.</text>
+<text x="88.00" y="662.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Screens use a fixed denominator; full checks use fresh paired references. See README table and audit.</text>
+<rect x="88" y="694" width="512" height="70" rx="7" fill="#faf5f5"/>
+<text x="104.00" y="723.00" font-size="16" fill="#8c0000" text-anchor="start" font-weight="bold">R4</text>
+<text x="164.00" y="722.00" font-size="16" fill="#292122" text-anchor="start" font-weight="bold">Native cuDNN SDPA</text>
+<text x="164.00" y="746.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Full check · 1.326490×</text>
+<rect x="628" y="694" width="512" height="70" rx="7" fill="#faf5f5"/>
+<text x="644.00" y="723.00" font-size="16" fill="#8c0000" text-anchor="start" font-weight="bold">R16</text>
+<text x="704.00" y="722.00" font-size="16" fill="#292122" text-anchor="start" font-weight="bold">Retention, RMSNorm and RoPE</text>
+<text x="704.00" y="746.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Full checks through R16 · 1.808602×</text>
+<rect x="88" y="776" width="512" height="70" rx="7" fill="#faf5f5"/>
+<text x="104.00" y="805.00" font-size="16" fill="#8c0000" text-anchor="start" font-weight="bold">R19</text>
+<text x="164.00" y="804.00" font-size="16" fill="#292122" text-anchor="start" font-weight="bold">GPU / host cache headroom</text>
+<text x="164.00" y="828.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">Selected R19 · 1.869055×</text>
+<rect x="628" y="776" width="512" height="70" rx="7" fill="#faf5f5"/>
+<text x="644.00" y="805.00" font-size="16" fill="#8c0000" text-anchor="start" font-weight="bold">R40</text>
+<text x="704.00" y="804.00" font-size="16" fill="#292122" text-anchor="start" font-weight="bold">Compiled packed SwiGLU</text>
+<text x="704.00" y="828.00" font-size="13" fill="#79696b" text-anchor="start" font-weight="normal">R41 screen · 62.639154 s · no gain</text>
+<text x="88.00" y="890.00" font-size="12" fill="#79696b" text-anchor="start" font-weight="normal">The R40 final opportunity completed in R41. No later full-check best; fallback selected. 2× was not achieved.</text>
+</g></svg>

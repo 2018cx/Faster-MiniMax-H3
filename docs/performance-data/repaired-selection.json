@@ -1,0 +1,221 @@
+{
+  "status": "VALIDATION_RUNNING",
+  "selection": {
+    "schema": "targeted-repair-final-selection@1",
+    "status": "PASS",
+    "status_scope": "Repaired selection and existing authoritative full-check PASS only; fresh six-arm50 validation NOT RUN",
+    "selection": "targeted_numerical_repair",
+    "selection_route": "repaired_round60_fallback",
+    "selection_round": 60,
+    "selected_candidate_origin_round": 50,
+    "run_namespace": "runs/target-2x/repair-20261021-v1",
+    "commit": "5c47dee7974a8b69990f05ab4e32cf298bf4ee7e",
+    "rollback_ref": "rollback/accepted-1.8570097438x",
+    "worktree_clean": true,
+    "source_digest": "6d3c7990fcc88448e2a958fbc4883241bd469a6263b77a883532a12ac5ff0ed5",
+    "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+    "authoritative_check_path": "runs/target-2x/repair-20261021-v1/round-50/check/check.json",
+    "authoritative_check_sha256": "8e78d83c78eb64fff746318fc62dc9820af7cfe78b1735a9a4bae8255ff575ae",
+    "authoritative_check_status": "PASS",
+    "authoritative_check_complete": true,
+    "speedup": 1.8570097438259385,
+    "performance": {
+      "candidate_step_seconds": 63.176236236002296,
+      "reference_step_seconds": 117.3188862685056,
+      "required_speedup": 1.02,
+      "speedup": 1.8570097438259385
+    },
+    "authoritative_check_confirmed_at": "2026-10-21T17:32:14.965105+00:00",
+    "authoritative_check_independent_audit": {
+      "path": "runs/target-2x/repair-20261021-v1/round-50/independent-full-check-audit.json",
+      "sha256": "84b5e73a8b6a1164d3855999922cd60e5d9067bf74bdf2fc803ea8130f8d3890"
+    },
+    "repair_diagnostics_pass": true,
+    "repair_diagnostics": {
+      "component_and_replay": {
+        "path": "runs/target-2x/repair-20261021-v1/round-48/shared-qk2/arm.json",
+        "sha256": "6456eb5503898ab16a27e5ebf4819a40c16b8bb1e51af6976fc202ca0827c9fc"
+      },
+      "nine_update_independent_audit": {
+        "path": "runs/target-2x/repair-20261021-v1/round-57/independent-diagnostic-audit.json",
+        "sha256": "75b2987be0e02c188bfdbdb4966e80fa0667cc9185b8b39324a815f86545c310"
+      }
+    },
+    "selection_reason": "At terminal Round60 no repaired authoritative full-check reached the early-stop target. Protected Round50 remains the highest complete frozen bracketed speedup among clean repaired diagnostic/numerical-PASS candidates. Later smaller raw candidate times had different reference denominators and did not establish a new accepted speedup best. No claim of statistically resolved differences between these small ratios.",
+    "candidate_ranking": {
+      "path": "runs/target-2x/repair-20261021-v1/repaired-candidate-ledger.json",
+      "sha256": "ad2c3596c10eba433f29e175f89ba09147bec29c902cf8b5c8dc727c6e3a0b17"
+    },
+    "terminal_no_new_best_evidence": {
+      "path": "runs/target-2x/repair-20261021-v1/round-59/check/check.json",
+      "sha256": "f1ad0cd5ec25964f0d4823a865dfa585bd092728bc70e3b1fcd14f548b28ec27"
+    },
+    "terminal_independent_audit": {
+      "path": "runs/target-2x/repair-20261021-v1/round-59/independent-check-audit.json",
+      "sha256": "70e028e0099c9ff1c2c926e7907b19ae8138dbfd8235587d9b25d1ccbab7066b"
+    },
+    "preservation_source_audit": {
+      "path": "runs/target-2x/repair-20261021-v1/round-60/preservation-source-audit.json",
+      "sha256": "c082f5894d40fc22dd48641d83eb471ac263b117481a1c775b3c66fd6f97c2cd"
+    },
+    "early_stop_target_only": true,
+    "early_stop_target": 1.8690552846103328,
+    "early_stop_target_met": false,
+    "primary_2x_target_reached": false,
+    "speed_exploration_stopped": true,
+    "no_round61": true,
+    "unrepaired_fallback_forbidden": true,
+    "publication_minimum_speedup": null,
+    "publication_allowed": false,
+    "publication_requires": [
+      "Complete authoritative frozen full-check PASS",
+      "Original unchanged fresh six-arm50 validation PASS",
+      "All integrity/fingerprint/raw-evidence/current audits/documentation gates"
+    ],
+    "statistical_validation_status": "NOT_RUN",
+    "statistical_validation_summary": "runs/target-2x/repair-20261021-v1/validation/summary.json",
+    "statistical_validation_manifest": "runs/target-2x/repair-20261021-v1/validation/manifest.json",
+    "statistical_protocol": {
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "fresh_arms": 6,
+      "optimizer_steps_each": 50,
+      "endpoints": [
+        25,
+        50
+      ],
+      "metrics": [
+        "total_loss",
+        "video_loss",
+        "audio_loss",
+        "gradient_l2"
+      ],
+      "absolute_standardized_mean_difference_limit": 2.0,
+      "reference_sample_sd_ddof": 1,
+      "zero_sd_rule": "exact",
+      "balanced_pair_order": [
+        "reference,candidate",
+        "candidate,reference",
+        "reference,candidate"
+      ]
+    },
+    "pending_duration_constraint": "RESOLVED_BY_EXPLICIT_USER: only six mandatory final50step arms exempt; every diagnostic/optimization run remains under30minutes.",
+    "overall_status": "SELECTED_PENDING_FRESH_VALIDATION",
+    "goal_complete": false,
+    "selected_at": "2026-10-21T17:32:15.006158+00:00",
+    "final_validation_user_authorization": {
+      "path": "runs/target-2x/repair-20261021-v1/authorization/final-validation-duration-and-destination-resolved.json",
+      "sha256": "492f3c04d01f8cf3bb4ed5eff9d4226e423ff7a8e2f2dc1558fdf6fd527ee436"
+    },
+    "public_github_destination": "2018cx/Faster-MiniMax-H3",
+    "github_auth_and_nonexistence_checks": "Defer until validation and required audits PASS; verify gh identity2018cx."
+  },
+  "authoritative_candidates": [
+    {
+      "candidate_seconds": 63.176236236002296,
+      "check_path": "runs/target-2x/repair-20261021-v1/round-50/check/check.json",
+      "check_sha256": "8e78d83c78eb64fff746318fc62dc9820af7cfe78b1735a9a4bae8255ff575ae",
+      "commit": "5c47dee7974a8b69990f05ab4e32cf298bf4ee7e",
+      "frozen_bracketed_speedup": 1.8570097438259385,
+      "full_check_verdict": "PASS",
+      "reference_a_seconds": 117.13126584101701,
+      "reference_b_seconds": 117.50650669599418,
+      "reference_mean_seconds": 117.3188862685056,
+      "round": 50,
+      "source_digest": "6d3c7990fcc88448e2a958fbc4883241bd469a6263b77a883532a12ac5ff0ed5"
+    },
+    {
+      "candidate_seconds": 63.02741081395652,
+      "check_path": "runs/target-2x/repair-20261021-v1/round-52/check/check.json",
+      "check_sha256": "ec0482374dd2e87a476c80401a243c141f1e9381b9290e945b5ee6c6cce9d459",
+      "commit": "adc12ed7b81694ee26f5f163569485ed84328c14",
+      "frozen_bracketed_speedup": 1.8561817791040844,
+      "full_check_verdict": "PASS",
+      "reference_a_seconds": 116.9894413749571,
+      "reference_b_seconds": 116.99122169899056,
+      "reference_mean_seconds": 116.99033153697383,
+      "round": 52,
+      "source_digest": "7f822a51f81dc5a6525fe6ec98141b9dcf83aea67d0b8dc51ee1d10a9cefe5b0"
+    },
+    {
+      "candidate_seconds": 62.92777983297128,
+      "check_path": "runs/target-2x/repair-20261021-v1/round-56/check/check.json",
+      "check_sha256": "384f323f026d446685d0b0084392caf3e25ee42673c3e85322eb1762205c5bea",
+      "commit": "90c7ac2679a91e71c7f6b053d6bec7214c36b8f1",
+      "frozen_bracketed_speedup": 1.8564980502107082,
+      "full_check_verdict": "PASS",
+      "reference_a_seconds": 116.67125535797095,
+      "reference_b_seconds": 116.97934577002889,
+      "reference_mean_seconds": 116.82530056399992,
+      "round": 56,
+      "source_digest": "fcc7a9d85d386198d6de6549a173ce0fa2541b18f4568777fb7b77f1145e6675"
+    },
+    {
+      "candidate_seconds": 62.954279293015134,
+      "check_path": "runs/target-2x/repair-20261021-v1/round-59/check/check.json",
+      "check_sha256": "f1ad0cd5ec25964f0d4823a865dfa585bd092728bc70e3b1fcd14f548b28ec27",
+      "commit": "6cd674a4b3e327689de5f2161d1787bdc2f3b38c",
+      "frozen_bracketed_speedup": 1.855816389092575,
+      "full_check_verdict": "PASS",
+      "reference_a_seconds": 116.98977839195868,
+      "reference_b_seconds": 116.67338815901894,
+      "reference_mean_seconds": 116.83158327548881,
+      "round": 59,
+      "source_digest": "669909195e6ac7272c043e5bb2b7bac3f036d5a455cdf56faa597454760b308e"
+    }
+  ],
+  "validator_preparation": {
+    "absolute_standardized_difference_limit": 2.0,
+    "endpoints": [
+      25,
+      50
+    ],
+    "exact_zero_sample_sd_rule_unchanged": true,
+    "launch_requires": "Resolve pending user clarification about30minute runlimit versus uninterrupted50step arms",
+    "only_adaptations": [
+      "Fresh output directory depth",
+      "Repaired selected commit",
+      "Repair selection label",
+      "Additional no-reuse/accepted-check/source/evaluator/rollback preflight guards"
+    ],
+    "original_observer_sha256": "02cc3612bed2a06f1dc9e343c2064091d67e2461ff9950ece1f8391aec029e93",
+    "protected_components_ast_identical": [
+      "tensor_hash",
+      "object_hash",
+      "rng_hash",
+      "precision",
+      "Observer",
+      "Instrument",
+      "worker",
+      "load_arm",
+      "paired",
+      "summarize",
+      "terminate"
+    ],
+    "seeds": [
+      424242,
+      424243,
+      424244
+    ],
+    "selected_commit": "5c47dee7974a8b69990f05ab4e32cf298bf4ee7e",
+    "status": "PREPARED_NOT_RUN",
+    "steps_each": 50,
+    "validator_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080"
+  },
+  "original_failed_validation_summary_sha256": "c43d8e4da32bd85386419df2767609db063385207df837a5516e0984e5eb9394",
+  "publication_minimum_speedup": null,
+  "publication_allowed": false,
+  "current_validation": {
+    "status": "RUNNING",
+    "driver_pid": 576431,
+    "started_at": "2026-10-21T17:39:59.733768+00:00",
+    "duration_exception": "Onlysixmandatoryfinal50-updatearms; all diagnostics/optimizationremainunder30minutes",
+    "scientific_protocol_unchanged": true,
+    "result": null
+  },
+  "public_github_destination": "2018cx/Faster-MiniMax-H3",
+  "github_checks_deferred_until_validation_and_audits_pass": true
+}

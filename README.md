@@ -15,6 +15,67 @@ learned every one of them the hard way).
 Proven at production scale: LoRA over 2,000 ~30-second clips (448×768, ~65k tokens per sequence, real
 stereo audio in the loss) on 8×A800, with lockstep validation and multi-day-run guard rails.
 
+<!-- BEGIN GENERATED OPTIMIZATION HISTORY -->
+## Agent Optimization History
+
+Measured on **8×H20**, BF16 FL2VA LoRA/ZeRO-3, batch one per rank and approximately 33,750 tokens per sample. Each speed arm has two optimizer updates: update 1 is warm-up, and the interval to update 2 is timed. **Round 19 is the final full-check accepted best for Rounds 1–40 at approximately 1.87×.** The final Round 40 compiled-SwiGLU candidate completed in Round 41 without beating it, triggering the user-authorized fallback selection.
+
+![Rounds 1–40: candidate observations and cumulative full-check accepted best; Round 19 selected, 2× target not reached](docs/performance-views/02-history.svg)
+
+**F** = fresh reference/candidate/reference full check (numerics, benefit and integrity). **T** = uninstrumented screening time; a timing PASS alone does not accept a candidate. **P** = profile-only observation, excluded from speed claims. **—** = no valid candidate timing. The T column selects the lowest valid candidate screening latency in each round. Accepted best changes only after F; 1.000000× in rounds 1–3 denotes the unchanged reference anchor.
+
+| Round | Experiment | Best T: seconds / ratio | F or other result | Accepted best at round end |
+|---:|---|---:|---|---:|
+| 1 | Lock preflight | — | **Failure; no candidate time.** Lock permission error before GPU acquisition; CPU quick passed; no valid timing. | 1.000000× |
+| 2 | Unchanged baseline | — | **P only**: 117.026331 s; no candidate time. Baseline observation only; no optimization or full acceptance. | 1.000000× |
+| 3 | Nsight baseline observation | — | **P only**: 117.356360 s; no candidate time. Instrumented profile only; raw trace import failed (missing libdw); no optimization. | 1.000000× |
+| 4 | Native cuDNN SDPA | 87.829333 / 1.333024× | **F PASS**: 88.074620 s / 1.326490×. Accepted native backend substitution; fresh full check followed the round. | 1.326490× |
+| 5 | Strided cuDNN inputs | 87.195134 / 1.342719× | **T only; not accepted.** Rejected: approximately 0.72% versus prior screen, below noise resolution; profiler failure retried separately. | 1.326490× |
+| 6 | Checkpoint attention O/LSE retention | 76.372563 / 1.532993× | **F PASS**: 76.148855 s / 1.534143×. Accepted checkpoint-scoped native attention reuse; all 108 tensors passed. | 1.534143× |
+| 7 | Memory-efficient attention | 150.820727 / 0.776277× | **T only; not accepted.** Rejected: substantially slower; timing structure PASS is not numerical acceptance. | 1.534143× |
+| 8 | Compiled RMSNorm | 73.203333 / 1.599362× | **F PASS**: 73.052049 s / 1.601428×. Accepted; first compile/cache failure retried; no measured-window recompilation. Full check logged compiler cache hits; do not assume every artifact was cold. | 1.601428× |
+| 9 | FlexAttention backends | 87.035622 / 1.345180× | **T only; not accepted.** Rejected: standard Flex slower; experimental TMA failed numerics; backend-name launch error has no timing. | 1.601428× |
+| 10 | Initial frozen-Linear cache | — | **Failure; no candidate time.** No candidate attempt completed update 1: a stream-lifetime fix and busy preflights preceded a rank SIGKILL. Pinned allocation pressure is suspected. | 1.601428× |
+| 11 | Bounded native Linear cache | 69.011473 / 1.696509× | **F PASS**: 69.093446 s / 1.696914×. Accepted 16 GiB GPU / 64 GiB host cache; full check authoritative despite slightly faster standalone screen. | 1.696914× |
+| 12 | Fused RoPE and layout | 68.582903 / 1.707110× | **F PASS**: 67.394364 s / 1.733697×. Accepted N0 rotary component / N1 stack. Full check passed the predeclared 68.848 s cutoff; screen/full-check variation is recorded separately. | 1.733697× |
+| 13 | cuBLASLt/workspace search | 69.000824 / 1.696771× | **T only; not accepted.** Rejected both default and 128 MiB workspace settings; neither beat accepted cuBLAS. | 1.733697× |
+| 14 | Host cache 96 GiB | 66.105282 / 1.771093× | **F PASS**: 66.096057 s / 1.770093×. Accepted 96 GiB host budget; the 160 GiB trial ended in SIGKILL before update 1, without a valid time. | 1.770093× |
+| 15 | Packed frozen QKV | 70.068271 / 1.670922× | **T only; not accepted.** Rejected native cuBLAS and cuBLASLt packed variants; both slower. | 1.770093× |
+| 16 | Power-of-two pinned slabs | 65.440259 / 1.789091× | **F PASS**: 64.746800 s / 1.808602×. Accepted 176 GiB host / 24 GiB GPU slabs, with all 700 replays. The 112 GiB screen was slower; full check passed the 65.75 s cutoff. | 1.808602× |
+| 17 | NUMA placement | 67.278752 / 1.740202× | **T only; not accepted.** Rejected: slower; instrumented operator durations are not additive critical-path evidence. | 1.808602× |
+| 18 | DeepSpeed communication overlap | 79.312700 / 1.476165× | **T only; not accepted.** Both overlap trials rejected; even the best was slower. Extra headroom alone did not recover performance. | 1.808602× |
+| **19 · selected** | Cache headroom: 16 GiB GPU / 184 GiB host | 62.636536 / 1.869174× | **F PASS**: 62.621896 s / 1.869055×. Selected exact protected commit `fe2ccd6`; all 700 expected cache replays, no misses. | **1.869055×** |
+| 20 | Grouped block parameter fetch | 62.586782 / 1.870660× | **T only; not accepted.** Only 0.056% lower latency than the accepted result: unresolved, with no full check or new accepted best. | 1.869055× |
+| 21 | Sequential/grouped fetch | 62.670310 / 1.868167× | **T only; not accepted.** Rejected: no gain. All-reduce alternative rejected before timing for unsupported dtype/padding assumptions. | 1.869055× |
+| 22 | Compiled modulated RMSNorm | 62.412514 / 1.875883× | **T only; not accepted.** Only 0.334% lower latency; missed the predeclared 61.5 s cutoff. No full check. | 1.869055× |
+| 23 | Attention head folding | 64.016940 / 1.828869× | **T only; not accepted.** Head group 1 was slower; group 8 had component PASS but no timing. Nsight trace import failed. | 1.869055× |
+| 24 | Repaired native Flex TMA components | — | **No candidate time** (accepted-best P only). Component/operator/opcheck PASS only; no candidate end-to-end time. Accepted-best profile is observation only. | 1.869055× |
+| 25 | Flex TMA/CuDNN hybrid forward | 65.424116 / 1.789533× | **T only; not accepted.** Rejected default and tile-128 configurations; actual fast paths were active but slower. | 1.869055× |
+| 26 | Small parameter persistence | 62.712242 / 1.866918× | **T only; not accepted.** Rejected: persistence fast path active but no gain; independent updated-shard freshness passed. | 1.869055× |
+| 27 | Native fetch/prefetch configuration | 62.962044 / 1.859511× | **T only; not accepted.** Rejected: grouped leaf failed fixed FP64 norm bound (3.2577 > 3); corrected no-leaf trial passed numerics but was slower. | 1.869055× |
+| 28 | Classic cuBLAS 128 MiB workspace | 62.736147 / 1.866206× | **T only; not accepted.** Rejected: production/training numerical gates passed; frozen timing showed no gain. | 1.869055× |
+| 29 | Frozen Linear backward weight layout | 62.956861 / 1.859664× | **T only; not accepted.** Rejected: native contiguous weight-transpose gradient fast path active but slower. | 1.869055× |
+| 30 | Native cuDNN plan wrapper | — | **No candidate time** (accepted-best P only). Component-only engine 1/index 1 PASS; no trainer timing. The default wrapper selected the existing engine, not a new gain. | 1.869055× |
+| 31 | cuDNN engine 1/index 1 | 94.079174 / 1.244469× | **T only; not accepted.** Rejected: actual selected native backward plan active but much slower. | 1.869055× |
+| 32 | cuDNN engine 2 knob inventory | — | **No candidate time** (accepted-best P only). Only existing config 26 supported among 0..35; no new eligible candidate and no candidate timing. | 1.869055× |
+| 33 | cuDNN engine 0/3 probes | — | **Failure; no candidate time.** Engine 0 unsupported; engine 3/config 31 built but execution returned CUDNN_STATUS_INTERNAL_ERROR; no candidate timing. | 1.869055× |
+| 34 | Native FA3 compiler/ABI feasibility | — | **No candidate time** (accepted-best P only). Compiler/ABI feasibility only, with corrected build issues; no native attention execution or candidate timing. | 1.869055× |
+| 35 | Native FA3 forward runtime | — | **Failure; no candidate time.** FP64/single-thread component PASS, but concurrent cold-call wrapper failed context/factory gates; no integration or candidate timing. | 1.869055× |
+| 36 | Native FA3 forward/CuDNN backward | 62.912493 / 1.860975× | **T only; not accepted.** Rejected: full production path active, no gain; no full check. | 1.869055× |
+| 37 | Native FA3 backward components | — | **No candidate time** (accepted-best P only). ABI/TMA/factory/runtime/FP64 component gates passed; no trainer integration or candidate timing. | 1.869055× |
+| 38 | Native FA3 M80 backward | 63.850828 / 1.833627× | **T only; not accepted.** Rejected: matched eight-rank numerical fixture passed; native production backward active but slower. | 1.869055× |
+| 39 | Native FA3 M64 backward | 66.227518 / 1.767824× | **T only; not accepted.** Rejected: native M64 path active but slower; fast-exp/global-fast-math hypothesis rejected before policy change. | 1.869055× |
+| 40 | Compiled packed SwiGLU | 62.639154 / 1.869096× (R41) | **T only; not accepted.** Repaired FP32 SiLU opmath passed component/integration gates. No timing in R40; the terminal R41 screen was slower and triggered fallback. No new full-check best. | 1.869055× |
+
+R40 includes its candidate’s terminal R41 screen; no new accepted best followed. Full-check ratios use their fresh paired-reference mean; screening ratios use the frozen reference. Profile observations and failed/missing runs never advance the accepted curve. See [data and artifact hashes](docs/performance-data/rounds-01-40.json), [denominators, cutoffs and selection audit](docs/performance-audit.md), and the [generator](docs/performance-views/generate_history.py).
+
+Reproduce the figure and table with `python docs/performance-views/generate_history.py`; verify checked-in outputs with `python docs/performance-views/generate_history.py --check`.
+
+Separate matched 50-update, three-seed trajectory gate: **FAIL**. See the [validation method and results](docs/validation-results.md).
+<!-- END GENERATED OPTIMIZATION HISTORY -->
+
+Targeted repair later selected protected `5c47dee` at **1.8570097438×** in the Round 60 closeout. Its fresh six-arm 50-update validation is **running**; see the [repair evidence and selection](docs/repair-results.md).
+
 ## How it works
 
 **Two-stage design** (so the 33B transformer is the only thing in GPU memory during training):

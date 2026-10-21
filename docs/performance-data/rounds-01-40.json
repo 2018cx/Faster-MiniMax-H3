@@ -1,0 +1,3558 @@
+{
+  "schema": "minimax-h3-optimization-history@1",
+  "scope": {
+    "gpu_count": 8,
+    "gpu_model": "H20",
+    "variant": "FL2VA",
+    "strategy": "ZeRO-3",
+    "precision": "BF16 model/activations; FP32 loss/optimizer state",
+    "trainable_elements": 10655744,
+    "tokens_per_rank": 33750,
+    "frames": 328,
+    "video_size": [
+      448,
+      768
+    ],
+    "batch_per_rank": 1,
+    "updates_per_speed_arm": 2,
+    "warmup_updates": 1,
+    "timing_window": "completion of update1 to completion of update2",
+    "screening_reference_seconds": 117.07859285798622,
+    "target_speedup": 2.0,
+    "validation_status": "FAIL",
+    "validation_evidence": "docs/performance-data/validation-50-step.json"
+  },
+  "style_reference": {
+    "url": "https://github.com/AI4AI-for-Anything/Faster-LLaVA/blob/main/docs/performance-views/02-history.svg",
+    "reference_svg_sha256": "52217392c44c664c1a958446c3b832df670a286d7cadffd9352762758456ce2e",
+    "design": "Original artwork using the reference view white background, muted burgundy palette, cumulative curve, open/filled observations and compact milestone cards."
+  },
+  "selection": {
+    "round": 19,
+    "commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+    "rollback_ref": "rollback/accepted-1.8691x",
+    "authoritative_path": "runs/target-2x/round-19/check/check.json",
+    "speedup": 1.8690552846103328,
+    "primary_2x_target_reached": false,
+    "fallback_final_candidate_origin_round": 40,
+    "fallback_terminal_round": 41,
+    "fallback_terminal_path": "runs/target-2x/round-41/time/time.json",
+    "fallback_reason": "Final compiled-SwiGLU screen was slower; no new full-check PASS best. Round42 profiling cancelled; no subsequent optimization."
+  },
+  "provenance": {
+    "work_log_path": "WORK_LOG.md",
+    "work_log_sha256_at_extraction": "80ee72e5381c4b7dc909ca68b96f30847d4a4b3b3619b8ef2c38d43063d77888",
+    "rule": "Full checks use fresh R-C-R mean denominators. Screens use frozen reference117.07859285798622s. Profiles are observations only, never candidate speed claims. Best screen is minimum completed valid candidate screen latency; acceptance is independently tracked from full checks only."
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "experiment": "Lock preflight",
+      "classification": "failure",
+      "outcome": "Lock permission error before GPU acquisition; CPU quick passed; no valid timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": null,
+      "accepted_best_speedup": 1.0,
+      "accepted_best_round": 0,
+      "accepted_commit": null,
+      "selected": false,
+      "source_evidence_paths": []
+    },
+    {
+      "round": 2,
+      "experiment": "Unchanged baseline",
+      "classification": "profile_only",
+      "outcome": "Baseline observation only; no optimization or full acceptance.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/round-2/profile/time.json",
+        "observed_round": 2,
+        "seconds": 117.02633117802907,
+        "speedup": 1.0004465805210765,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.0,
+      "accepted_best_round": 0,
+      "accepted_commit": null,
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/round-2/profile/time.json"
+      ]
+    },
+    {
+      "round": 3,
+      "experiment": "Nsight baseline observation",
+      "classification": "profile_only",
+      "outcome": "Instrumented profile only; raw trace import failed (missing libdw); no optimization.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/round-3/profile/time.json",
+        "observed_round": 3,
+        "seconds": 117.35636040201643,
+        "speedup": 0.9976331274838561,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.0,
+      "accepted_best_round": 0,
+      "accepted_commit": null,
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/round-3/profile/time.json"
+      ]
+    },
+    {
+      "round": 4,
+      "experiment": "Native cuDNN SDPA",
+      "classification": "full_check",
+      "outcome": "Accepted native backend substitution; fresh full check followed the round.",
+      "best_screen": {
+        "path": "runs/round-4/time/time.json",
+        "observed_round": 4,
+        "seconds": 87.8293327880092,
+        "speedup": 1.3330238217859973,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/final/check/check.json",
+        "observed_round": 4,
+        "seconds": 88.07462009298615,
+        "speedup": 1.326490050802289,
+        "reference_seconds": 116.8301072815375
+      },
+      "profile_observation": {
+        "path": "runs/round-4/profile/time.json",
+        "observed_round": 4,
+        "seconds": 117.04577485600021,
+        "speedup": 1.0002803860457705,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.326490050802289,
+      "accepted_best_round": 4,
+      "accepted_commit": "2d5a1f1f424d540b96bb0f0f226e1e6c89922dac",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/round-4/profile/time.json",
+        "runs/round-4/time/time.json",
+        "runs/final/check/check.json"
+      ]
+    },
+    {
+      "round": 5,
+      "experiment": "Strided cuDNN inputs",
+      "classification": "screening",
+      "outcome": "Rejected: approximately 0.72% versus prior screen, below noise resolution; profiler failure retried separately.",
+      "best_screen": {
+        "path": "runs/target-2x/round-5/time/time.json",
+        "observed_round": 5,
+        "seconds": 87.19513403996825,
+        "speedup": 1.342719340328327,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-5/profile-stage/time.json",
+        "observed_round": 5,
+        "seconds": 87.59570629399968,
+        "speedup": 1.33657912940427,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.326490050802289,
+      "accepted_best_round": 4,
+      "accepted_commit": "2d5a1f1f424d540b96bb0f0f226e1e6c89922dac",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-5/profile-stage/time.json",
+        "runs/target-2x/round-5/time/time.json"
+      ]
+    },
+    {
+      "round": 6,
+      "experiment": "Checkpoint attention O/LSE retention",
+      "classification": "full_check",
+      "outcome": "Accepted checkpoint-scoped native attention reuse; all 108 tensors passed.",
+      "best_screen": {
+        "path": "runs/target-2x/round-6/time/time.json",
+        "observed_round": 6,
+        "seconds": 76.37256252596853,
+        "speedup": 1.5329928574568472,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-6/check/check.json",
+        "observed_round": 6,
+        "seconds": 76.14885484601837,
+        "speedup": 1.5341427386232587,
+        "reference_seconds": 116.82321271649562
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-6/profile/time.json",
+        "observed_round": 6,
+        "seconds": 89.30125731602311,
+        "speedup": 1.3110520095328948,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.5341427386232587,
+      "accepted_best_round": 6,
+      "accepted_commit": "430d120d28844c71924cc0a84e2e539c73f9af8d",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-6/check/check.json",
+        "runs/target-2x/round-6/profile/time.json",
+        "runs/target-2x/round-6/time/time.json"
+      ]
+    },
+    {
+      "round": 7,
+      "experiment": "Memory-efficient attention",
+      "classification": "screening",
+      "outcome": "Rejected: substantially slower; timing structure PASS is not numerical acceptance.",
+      "best_screen": {
+        "path": "runs/target-2x/round-7/time/time.json",
+        "observed_round": 7,
+        "seconds": 150.8207274680026,
+        "speedup": 0.7762765425118711,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-7/profile/time.json",
+        "observed_round": 7,
+        "seconds": 77.81382574903546,
+        "speedup": 1.5045988515663937,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.5341427386232587,
+      "accepted_best_round": 6,
+      "accepted_commit": "430d120d28844c71924cc0a84e2e539c73f9af8d",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-7/profile/time.json",
+        "runs/target-2x/round-7/time/time.json"
+      ]
+    },
+    {
+      "round": 8,
+      "experiment": "Compiled RMSNorm",
+      "classification": "full_check",
+      "outcome": "Accepted; first compile/cache failure retried; no measured-window recompilation. Full check logged compiler cache hits; do not assume every artifact was cold.",
+      "best_screen": {
+        "path": "runs/target-2x/round-8/time-retry1/time.json",
+        "observed_round": 8,
+        "seconds": 73.20333320501959,
+        "speedup": 1.5993615007951316,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-8/check/check.json",
+        "observed_round": 8,
+        "seconds": 73.05204941198463,
+        "speedup": 1.601428069817035,
+        "reference_seconds": 116.9876024860132
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-8/profile/time.json",
+        "observed_round": 8,
+        "seconds": 77.68969895801274,
+        "speedup": 1.5070027870910034,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.601428069817035,
+      "accepted_best_round": 8,
+      "accepted_commit": "bccc4490cd6f7644567a37cac03c7658f8b3550f",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-8/check/check.json",
+        "runs/target-2x/round-8/profile/time.json",
+        "runs/target-2x/round-8/time-retry1/time.json"
+      ]
+    },
+    {
+      "round": 9,
+      "experiment": "FlexAttention backends",
+      "classification": "screening",
+      "outcome": "Rejected: standard Flex slower; experimental TMA failed numerics; backend-name launch error has no timing.",
+      "best_screen": {
+        "path": "runs/target-2x/round-9/time-retry1/time.json",
+        "observed_round": 9,
+        "seconds": 87.035622497031,
+        "speedup": 1.345180163007165,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-9/profile/time.json",
+        "observed_round": 9,
+        "seconds": 74.75406659400323,
+        "speedup": 1.5661835963232835,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.601428069817035,
+      "accepted_best_round": 8,
+      "accepted_commit": "bccc4490cd6f7644567a37cac03c7658f8b3550f",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-9/profile/time.json",
+        "runs/target-2x/round-9/time-retry1/time.json"
+      ]
+    },
+    {
+      "round": 10,
+      "experiment": "Initial frozen-Linear cache",
+      "classification": "failure",
+      "outcome": "No candidate attempt completed update 1: a stream-lifetime fix and busy preflights preceded a rank SIGKILL. Pinned allocation pressure is suspected.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-10/profile/time.json",
+        "observed_round": 10,
+        "seconds": 74.69722078397172,
+        "speedup": 1.5673754877250876,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.601428069817035,
+      "accepted_best_round": 8,
+      "accepted_commit": "bccc4490cd6f7644567a37cac03c7658f8b3550f",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-10/profile/time.json"
+      ]
+    },
+    {
+      "round": 11,
+      "experiment": "Bounded native Linear cache",
+      "classification": "full_check",
+      "outcome": "Accepted 16 GiB GPU / 64 GiB host cache; full check authoritative despite slightly faster standalone screen.",
+      "best_screen": {
+        "path": "runs/target-2x/round-11/time/time.json",
+        "observed_round": 11,
+        "seconds": 69.0114730700152,
+        "speedup": 1.6965091114517263,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-11/check/check.json",
+        "observed_round": 11,
+        "seconds": 69.09344587702071,
+        "speedup": 1.6969140882217981,
+        "reference_seconds": 117.24564171250677
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-11/profile/time.json",
+        "observed_round": 11,
+        "seconds": 74.90900037699612,
+        "speedup": 1.5629442692969109,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.6969140882217981,
+      "accepted_best_round": 11,
+      "accepted_commit": "be2c300b30bf28b0c20f84e47f36b7688b51fa70",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-11/check/check.json",
+        "runs/target-2x/round-11/profile/time.json",
+        "runs/target-2x/round-11/time/time.json"
+      ]
+    },
+    {
+      "round": 12,
+      "experiment": "Fused RoPE and layout",
+      "classification": "full_check",
+      "outcome": "Accepted N0 rotary component / N1 stack. Full check passed the predeclared 68.848 s cutoff; screen/full-check variation is recorded separately.",
+      "best_screen": {
+        "path": "runs/target-2x/round-12/time/time.json",
+        "observed_round": 12,
+        "seconds": 68.5829032069887,
+        "speedup": 1.7071104806489985,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-12/check/check.json",
+        "observed_round": 12,
+        "seconds": 67.39436350303004,
+        "speedup": 1.7336967975555213,
+        "reference_seconds": 116.84139217849588
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-12/profile/time.json",
+        "observed_round": 12,
+        "seconds": 88.51109389204066,
+        "speedup": 1.322756139482245,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.7336967975555213,
+      "accepted_best_round": 12,
+      "accepted_commit": "2c594f34e869253300431f995dcf71dfd8e6c40f",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-12/check/check.json",
+        "runs/target-2x/round-12/profile/time.json",
+        "runs/target-2x/round-12/time/time.json"
+      ]
+    },
+    {
+      "round": 13,
+      "experiment": "cuBLASLt/workspace search",
+      "classification": "screening",
+      "outcome": "Rejected both default and 128 MiB workspace settings; neither beat accepted cuBLAS.",
+      "best_screen": {
+        "path": "runs/target-2x/round-13/time/time.json",
+        "observed_round": 13,
+        "seconds": 69.00082369998563,
+        "speedup": 1.6967709453301876,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-13/profile/time.json",
+        "observed_round": 13,
+        "seconds": 84.06355656200321,
+        "speedup": 1.3927389899525835,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.7336967975555213,
+      "accepted_best_round": 12,
+      "accepted_commit": "2c594f34e869253300431f995dcf71dfd8e6c40f",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-13/profile/time.json",
+        "runs/target-2x/round-13/time/time.json",
+        "runs/target-2x/round-13/time-workspace128/time.json"
+      ]
+    },
+    {
+      "round": 14,
+      "experiment": "Host cache 96 GiB",
+      "classification": "full_check",
+      "outcome": "Accepted 96 GiB host budget; the 160 GiB trial ended in SIGKILL before update 1, without a valid time.",
+      "best_screen": {
+        "path": "runs/target-2x/round-14/time-host96/time.json",
+        "observed_round": 14,
+        "seconds": 66.10528153902851,
+        "speedup": 1.7710928708300426,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-14/check/check.json",
+        "observed_round": 14,
+        "seconds": 66.09605669701705,
+        "speedup": 1.770093349672853,
+        "reference_seconds": 116.99619039898971
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-14/profile/time.json",
+        "observed_round": 14,
+        "seconds": 67.24450483801775,
+        "speedup": 1.7410878872557922,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.770093349672853,
+      "accepted_best_round": 14,
+      "accepted_commit": "cf369b3668e6e1a99a737b83fb6ceb21f8ec8477",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-14/check/check.json",
+        "runs/target-2x/round-14/profile/time.json",
+        "runs/target-2x/round-14/time-host96/time.json"
+      ]
+    },
+    {
+      "round": 15,
+      "experiment": "Packed frozen QKV",
+      "classification": "screening",
+      "outcome": "Rejected native cuBLAS and cuBLASLt packed variants; both slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-15/time/time.json",
+        "observed_round": 15,
+        "seconds": 70.068271036027,
+        "speedup": 1.670921675772304,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-15/profile/time.json",
+        "observed_round": 15,
+        "seconds": 85.6971083820099,
+        "speedup": 1.366190704312774,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.770093349672853,
+      "accepted_best_round": 14,
+      "accepted_commit": "cf369b3668e6e1a99a737b83fb6ceb21f8ec8477",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-15/profile/time.json",
+        "runs/target-2x/round-15/time/time.json",
+        "runs/target-2x/round-15/time-lt/time.json"
+      ]
+    },
+    {
+      "round": 16,
+      "experiment": "Power-of-two pinned slabs",
+      "classification": "full_check",
+      "outcome": "Accepted 176 GiB host / 24 GiB GPU slabs, with all 700 replays. The 112 GiB screen was slower; full check passed the 65.75 s cutoff.",
+      "best_screen": {
+        "path": "runs/target-2x/round-16/time-slab176/time.json",
+        "observed_round": 16,
+        "seconds": 65.44025876396336,
+        "speedup": 1.7890912271645703,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-16/check/check.json",
+        "observed_round": 16,
+        "seconds": 64.74679979000939,
+        "speedup": 1.808601717595566,
+        "reference_seconds": 117.10117330902722
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-16/profile/time.json",
+        "observed_round": 16,
+        "seconds": 66.13364841003204,
+        "speedup": 1.7703331915410578,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.808601717595566,
+      "accepted_best_round": 16,
+      "accepted_commit": "b55af4070908970d3db988e4a1ebd9a1fe5962a5",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-16/check/check.json",
+        "runs/target-2x/round-16/profile/time.json",
+        "runs/target-2x/round-16/time/time.json",
+        "runs/target-2x/round-16/time-slab176/time.json"
+      ]
+    },
+    {
+      "round": 17,
+      "experiment": "NUMA placement",
+      "classification": "screening",
+      "outcome": "Rejected: slower; instrumented operator durations are not additive critical-path evidence.",
+      "best_screen": {
+        "path": "runs/target-2x/round-17/time/time.json",
+        "observed_round": 17,
+        "seconds": 67.27875246299664,
+        "speedup": 1.740201602614132,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-17/profile/time.json",
+        "observed_round": 17,
+        "seconds": 83.24218724202365,
+        "speedup": 1.40648145774431,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.808601717595566,
+      "accepted_best_round": 16,
+      "accepted_commit": "b55af4070908970d3db988e4a1ebd9a1fe5962a5",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-17/profile/time.json",
+        "runs/target-2x/round-17/time/time.json"
+      ]
+    },
+    {
+      "round": 18,
+      "experiment": "DeepSpeed communication overlap",
+      "classification": "screening",
+      "outcome": "Both overlap trials rejected; even the best was slower. Extra headroom alone did not recover performance.",
+      "best_screen": {
+        "path": "runs/target-2x/round-18/time-overlap-headroom/time.json",
+        "observed_round": 18,
+        "seconds": 79.31270004902035,
+        "speedup": 1.4761645081509533,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-18/profile/time.json",
+        "observed_round": 18,
+        "seconds": 64.14179950102698,
+        "speedup": 1.8253088277654521,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.808601717595566,
+      "accepted_best_round": 16,
+      "accepted_commit": "b55af4070908970d3db988e4a1ebd9a1fe5962a5",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-18/profile/time.json",
+        "runs/target-2x/round-18/time-overlap/time.json",
+        "runs/target-2x/round-18/time-overlap-headroom/time.json"
+      ]
+    },
+    {
+      "round": 19,
+      "experiment": "Cache headroom: 16 GiB GPU / 184 GiB host",
+      "classification": "full_check",
+      "outcome": "Selected exact protected commit `fe2ccd6`; all 700 expected cache replays, no misses.",
+      "best_screen": {
+        "path": "runs/target-2x/round-19/time-headroom16/time.json",
+        "observed_round": 19,
+        "seconds": 62.63653637695825,
+        "speedup": 1.8691741215284579,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": {
+        "path": "runs/target-2x/round-19/check/check.json",
+        "observed_round": 19,
+        "seconds": 62.62189586297609,
+        "speedup": 1.8690552846103328,
+        "reference_seconds": 117.0437853950134
+      },
+      "profile_observation": {
+        "path": "runs/target-2x/round-19/profile/time.json",
+        "observed_round": 19,
+        "seconds": 67.27220786496764,
+        "speedup": 1.7403708986776918,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": true,
+      "source_evidence_paths": [
+        "runs/target-2x/round-19/check/check.json",
+        "runs/target-2x/round-19/profile/time.json",
+        "runs/target-2x/round-19/time-headroom16/time.json"
+      ]
+    },
+    {
+      "round": 20,
+      "experiment": "Grouped block parameter fetch",
+      "classification": "screening",
+      "outcome": "Only 0.056% lower latency than the accepted result: unresolved, with no full check or new accepted best.",
+      "best_screen": {
+        "path": "runs/target-2x/round-20/time/time.json",
+        "observed_round": 20,
+        "seconds": 62.58678177499678,
+        "speedup": 1.8706600585230722,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-20/profile/time.json",
+        "observed_round": 20,
+        "seconds": 72.40811190201202,
+        "speedup": 1.616926471117291,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-20/profile/time.json",
+        "runs/target-2x/round-20/time/time.json"
+      ]
+    },
+    {
+      "round": 21,
+      "experiment": "Sequential/grouped fetch",
+      "classification": "screening",
+      "outcome": "Rejected: no gain. All-reduce alternative rejected before timing for unsupported dtype/padding assumptions.",
+      "best_screen": {
+        "path": "runs/target-2x/round-21/sequential-time/time.json",
+        "observed_round": 21,
+        "seconds": 62.670310067012906,
+        "speedup": 1.8681668039107344,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-21/profile/time.json",
+        "observed_round": 21,
+        "seconds": 62.65191571199102,
+        "speedup": 1.868715290306413,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-21/profile/time.json",
+        "runs/target-2x/round-21/sequential-time/time.json"
+      ]
+    },
+    {
+      "round": 22,
+      "experiment": "Compiled modulated RMSNorm",
+      "classification": "screening",
+      "outcome": "Only 0.334% lower latency; missed the predeclared 61.5 s cutoff. No full check.",
+      "best_screen": {
+        "path": "runs/target-2x/round-22/time/time.json",
+        "observed_round": 22,
+        "seconds": 62.41251446102979,
+        "speedup": 1.8758832882961285,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-22/profile/time.json",
+        "observed_round": 22,
+        "seconds": 62.5745641659596,
+        "speedup": 1.8710253026688546,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-22/profile/time.json",
+        "runs/target-2x/round-22/time/time.json"
+      ]
+    },
+    {
+      "round": 23,
+      "experiment": "Attention head folding",
+      "classification": "screening",
+      "outcome": "Head group 1 was slower; group 8 had component PASS but no timing. Nsight trace import failed.",
+      "best_screen": {
+        "path": "runs/target-2x/round-23/head1-time/time.json",
+        "observed_round": 23,
+        "seconds": 64.01694041502196,
+        "speedup": 1.8288689228033306,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-23/profile-retry/time.json",
+        "observed_round": 23,
+        "seconds": 66.77100930496817,
+        "speedup": 1.7534345231063455,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-23/head1-time/time.json",
+        "runs/target-2x/round-23/profile-retry/time.json"
+      ]
+    },
+    {
+      "round": 24,
+      "experiment": "Repaired native Flex TMA components",
+      "classification": "no_valid_timing",
+      "outcome": "Component/operator/opcheck PASS only; no candidate end-to-end time. Accepted-best profile is observation only.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-24/profile/time.json",
+        "observed_round": 24,
+        "seconds": 62.85989648796385,
+        "speedup": 1.8625323839087762,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-24/profile/time.json"
+      ]
+    },
+    {
+      "round": 25,
+      "experiment": "Flex TMA/CuDNN hybrid forward",
+      "classification": "screening",
+      "outcome": "Rejected default and tile-128 configurations; actual fast paths were active but slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-25/time/time.json",
+        "observed_round": 25,
+        "seconds": 65.42411606194219,
+        "speedup": 1.7895326663204538,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-25/profile/time.json",
+        "observed_round": 25,
+        "seconds": 64.78309249301674,
+        "speedup": 1.8072399503096683,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-25/profile/time.json",
+        "runs/target-2x/round-25/time/time.json",
+        "runs/target-2x/round-25/time-tile128/time.json"
+      ]
+    },
+    {
+      "round": 26,
+      "experiment": "Small parameter persistence",
+      "classification": "screening",
+      "outcome": "Rejected: persistence fast path active but no gain; independent updated-shard freshness passed.",
+      "best_screen": {
+        "path": "runs/target-2x/round-26/time/time.json",
+        "observed_round": 26,
+        "seconds": 62.71224197099218,
+        "speedup": 1.8669176731417358,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-26/profile/time.json",
+        "observed_round": 26,
+        "seconds": 62.74391577002825,
+        "speedup": 1.8659752331542043,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-26/profile/time.json",
+        "runs/target-2x/round-26/time/time.json"
+      ]
+    },
+    {
+      "round": 27,
+      "experiment": "Native fetch/prefetch configuration",
+      "classification": "screening",
+      "outcome": "Rejected: grouped leaf failed fixed FP64 norm bound (3.2577 > 3); corrected no-leaf trial passed numerics but was slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-27/time/time.json",
+        "observed_round": 27,
+        "seconds": 62.962043629959226,
+        "speedup": 1.8595106846607616,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-27/profile/time.json",
+        "observed_round": 27,
+        "seconds": 62.64210836798884,
+        "speedup": 1.8690078592216626,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-27/profile/time.json",
+        "runs/target-2x/round-27/time/time.json"
+      ]
+    },
+    {
+      "round": 28,
+      "experiment": "Classic cuBLAS 128 MiB workspace",
+      "classification": "screening",
+      "outcome": "Rejected: production/training numerical gates passed; frozen timing showed no gain.",
+      "best_screen": {
+        "path": "runs/target-2x/round-28/time/time.json",
+        "observed_round": 28,
+        "seconds": 62.73614684003405,
+        "speedup": 1.8662063061749024,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-28/profile/time.json",
+        "observed_round": 28,
+        "seconds": 70.53202727797907,
+        "speedup": 1.659935172380045,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-28/profile/time.json",
+        "runs/target-2x/round-28/time/time.json"
+      ]
+    },
+    {
+      "round": 29,
+      "experiment": "Frozen Linear backward weight layout",
+      "classification": "screening",
+      "outcome": "Rejected: native contiguous weight-transpose gradient fast path active but slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-29/time/time.json",
+        "observed_round": 29,
+        "seconds": 62.95686133601703,
+        "speedup": 1.859663750279855,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-29/profile/time.json",
+        "observed_round": 29,
+        "seconds": 62.63807320903288,
+        "speedup": 1.8691282611340383,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-29/profile/time.json",
+        "runs/target-2x/round-29/time/time.json"
+      ]
+    },
+    {
+      "round": 30,
+      "experiment": "Native cuDNN plan wrapper",
+      "classification": "no_valid_timing",
+      "outcome": "Component-only engine 1/index 1 PASS; no trainer timing. The default wrapper selected the existing engine, not a new gain.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-30/profile/time.json",
+        "observed_round": 30,
+        "seconds": 62.73141396895517,
+        "speedup": 1.8663471050712592,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-30/profile/time.json"
+      ]
+    },
+    {
+      "round": 31,
+      "experiment": "cuDNN engine 1/index 1",
+      "classification": "screening",
+      "outcome": "Rejected: actual selected native backward plan active but much slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-31/time/time.json",
+        "observed_round": 31,
+        "seconds": 94.07917351799551,
+        "speedup": 1.2444687647643011,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-31/profile/time.json",
+        "observed_round": 31,
+        "seconds": 65.82107345701661,
+        "speedup": 1.7787402530656464,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-31/profile/time.json",
+        "runs/target-2x/round-31/time/time.json"
+      ]
+    },
+    {
+      "round": 32,
+      "experiment": "cuDNN engine 2 knob inventory",
+      "classification": "no_valid_timing",
+      "outcome": "Only existing config 26 supported among 0..35; no new eligible candidate and no candidate timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-32/profile/time.json",
+        "observed_round": 32,
+        "seconds": 62.77949148399057,
+        "speedup": 1.8649178273105715,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-32/profile/time.json"
+      ]
+    },
+    {
+      "round": 33,
+      "experiment": "cuDNN engine 0/3 probes",
+      "classification": "failure",
+      "outcome": "Engine 0 unsupported; engine 3/config 31 built but execution returned CUDNN_STATUS_INTERNAL_ERROR; no candidate timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-33/profile/time.json",
+        "observed_round": 33,
+        "seconds": 62.73533974599559,
+        "speedup": 1.8662303150348265,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-33/profile/time.json"
+      ]
+    },
+    {
+      "round": 34,
+      "experiment": "Native FA3 compiler/ABI feasibility",
+      "classification": "no_valid_timing",
+      "outcome": "Compiler/ABI feasibility only, with corrected build issues; no native attention execution or candidate timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-34/profile/time.json",
+        "observed_round": 34,
+        "seconds": 62.722091482020915,
+        "speedup": 1.8666245032907811,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-34/profile/time.json"
+      ]
+    },
+    {
+      "round": 35,
+      "experiment": "Native FA3 forward runtime",
+      "classification": "failure",
+      "outcome": "FP64/single-thread component PASS, but concurrent cold-call wrapper failed context/factory gates; no integration or candidate timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-35/profile/time.json",
+        "observed_round": 35,
+        "seconds": 65.05463029100792,
+        "speedup": 1.7996965371144262,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-35/profile/time.json"
+      ]
+    },
+    {
+      "round": 36,
+      "experiment": "Native FA3 forward/CuDNN backward",
+      "classification": "screening",
+      "outcome": "Rejected: full production path active, no gain; no full check.",
+      "best_screen": {
+        "path": "runs/target-2x/round-36/time/time.json",
+        "observed_round": 36,
+        "seconds": 62.91249295201851,
+        "speedup": 1.8609752588770976,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-36/profile/time.json",
+        "observed_round": 36,
+        "seconds": 62.799970637017395,
+        "speedup": 1.8643096751541208,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-36/profile/time.json",
+        "runs/target-2x/round-36/time/time.json"
+      ]
+    },
+    {
+      "round": 37,
+      "experiment": "Native FA3 backward components",
+      "classification": "no_valid_timing",
+      "outcome": "ABI/TMA/factory/runtime/FP64 component gates passed; no trainer integration or candidate timing.",
+      "best_screen": null,
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-37/profile/time.json",
+        "observed_round": 37,
+        "seconds": 62.76028819702333,
+        "speedup": 1.8654884517171348,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-37/profile/time.json"
+      ]
+    },
+    {
+      "round": 38,
+      "experiment": "Native FA3 M80 backward",
+      "classification": "screening",
+      "outcome": "Rejected: matched eight-rank numerical fixture passed; native production backward active but slower.",
+      "best_screen": {
+        "path": "runs/target-2x/round-38/time/time.json",
+        "observed_round": 38,
+        "seconds": 63.85082778905053,
+        "speedup": 1.8336268598551118,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-38/profile/time.json",
+        "observed_round": 38,
+        "seconds": 62.79798381199362,
+        "speedup": 1.8643686588489756,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-38/profile/time.json",
+        "runs/target-2x/round-38/time/time.json"
+      ]
+    },
+    {
+      "round": 39,
+      "experiment": "Native FA3 M64 backward",
+      "classification": "screening",
+      "outcome": "Rejected: native M64 path active but slower; fast-exp/global-fast-math hypothesis rejected before policy change.",
+      "best_screen": {
+        "path": "runs/target-2x/round-39/time/time.json",
+        "observed_round": 39,
+        "seconds": 66.22751799505204,
+        "speedup": 1.7678239559986733,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-39/profile/time.json",
+        "observed_round": 39,
+        "seconds": 62.630348826001864,
+        "speedup": 1.8693587861573495,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-39/profile/time.json",
+        "runs/target-2x/round-39/time/time.json"
+      ]
+    },
+    {
+      "round": 40,
+      "experiment": "Compiled packed SwiGLU",
+      "classification": "screening",
+      "outcome": "Repaired FP32 SiLU opmath passed component/integration gates. No timing in R40; the terminal R41 screen was slower and triggered fallback. No new full-check best.",
+      "best_screen": {
+        "path": "runs/target-2x/round-41/time/time.json",
+        "observed_round": 41,
+        "seconds": 62.639154232048895,
+        "speedup": 1.8690960038231768,
+        "reference_seconds": 117.07859285798622
+      },
+      "full_check": null,
+      "profile_observation": {
+        "path": "runs/target-2x/round-40/profile/time.json",
+        "observed_round": 40,
+        "seconds": 62.83998833899386,
+        "speedup": 1.8631224472289707,
+        "reference_seconds": 117.07859285798622
+      },
+      "accepted_best_speedup": 1.8690552846103328,
+      "accepted_best_round": 19,
+      "accepted_commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "selected": false,
+      "source_evidence_paths": [
+        "runs/target-2x/round-40/profile/time.json",
+        "runs/target-2x/round-41/time/time.json"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "round": 2,
+      "kind": "profile",
+      "path": "runs/round-2/profile/time.json",
+      "sha256": "2bf66114d84c4dc288f1e99c915a6f5bf6c0c9c55480397faa1332efe2d947c4",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 117.02633117802907,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.0004465805210765
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "0e4b744913a8d1ea97d2651a2f2b99a3cbdf346d1af61eb1df68f46432dd7508"
+    },
+    {
+      "round": 3,
+      "kind": "profile",
+      "path": "runs/round-3/profile/time.json",
+      "sha256": "16ad427ad93d0de912fd11a9cd09f9b5cd14f2fbb8bd3f2988d1530b6fa5197d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 117.35636040201643,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 0.9976331274838561
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "0e4b744913a8d1ea97d2651a2f2b99a3cbdf346d1af61eb1df68f46432dd7508"
+    },
+    {
+      "round": 4,
+      "kind": "profile",
+      "path": "runs/round-4/profile/time.json",
+      "sha256": "0db093578e1154fd2d05097c47ae7dff4ad5bc3f6e82eeb3293fc6437aa4037d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 117.04577485600021,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.0002803860457705
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "4aba8f327f6ec9f6052fbd3b78c3c6a774bed29d21108bfa7820c828213f8a32"
+    },
+    {
+      "round": 4,
+      "kind": "screening",
+      "path": "runs/round-4/time/time.json",
+      "sha256": "6c9a06555e516d7c1646a021330ce7cf1733f85edfa47d0a50d92dc9dd11d739",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 87.8293327880092,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.3330238217859973
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "28bc4d4bda76ee36cf7030ddde5baa5262cc9385c9350bce6efaab08b7e3c70d"
+    },
+    {
+      "round": 5,
+      "kind": "profile",
+      "path": "runs/target-2x/round-5/profile-stage/time.json",
+      "sha256": "9b354634047c23090fe9836e174536deec31ac478f979294f123dc31cadb1368",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 87.59570629399968,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.33657912940427
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "c97e071e6b7e32a28ddf3987002677e63c97312dab8d223e6f80d9db249b9fe9"
+    },
+    {
+      "round": 5,
+      "kind": "screening",
+      "path": "runs/target-2x/round-5/time/time.json",
+      "sha256": "4d40d141cd4c70ef49e90984d12b808b06e4c6a198a007f3f027601c3abd5165",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 87.19513403996825,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.342719340328327
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "ca14032adb39b4a166e8f8bfdf44ec194797fb69d2b2bfc9fb49be3da356b271"
+    },
+    {
+      "round": 6,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-6/check/check.json",
+      "sha256": "ce1d4efdec63915d1405318bbc062e221ce34f8fa050821fd8d5f8831f7ab05e",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 76.14885484601837,
+        "reference_step_seconds": 116.82321271649562,
+        "required_speedup": 1.02,
+        "speedup": 1.5341427386232587
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "2d1e3804db739bbe4d5cf9bf23390e90659f66aa8c172809ea3d82c2e7653faf",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00013626121463094763,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00013626121463094763,
+        "reference": {
+          "max_abs": 3.8743019104003906e-05,
+          "relative_l2": 7.47769896240651e-05,
+          "worst_tensor": "transformer_blocks.19.attn.to_out.0.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.002641449364775701,
+        "required": 1.02,
+        "speedup": 1.5341427386232587,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 116.97750401700614,
+          "checkpoint_sha256": "1d2f1b9613ebd2fc448d1c7804a0705d4165c9e17790e59a2fa3ffdbb74fe6fa"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 76.14885484601837,
+          "checkpoint_sha256": "80d6bb0a92f42eb2620df822c7ee3083d399b2417e701fabe519826b4fc97ddb"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.6689214159851,
+          "checkpoint_sha256": "f2db0cc7a15971119fe66d235563368bc393ad45aa2c7ebbfd23fe3ecd8b1b1d"
+        }
+      ]
+    },
+    {
+      "round": 6,
+      "kind": "profile",
+      "path": "runs/target-2x/round-6/profile/time.json",
+      "sha256": "76d9b198d20e565ba23f1cce897a91771add018e9e6282f6a2f6883b068eac41",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 89.30125731602311,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.3110520095328948
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cc203c90f0fd2db2663e57251fd1fb3ed74d79f5172d720fc587caee6232dc9b"
+    },
+    {
+      "round": 6,
+      "kind": "screening",
+      "path": "runs/target-2x/round-6/time/time.json",
+      "sha256": "c1b1858464d3937953538473be4b9bcac18453d0a7ae6df5bcfa5f10708dfd36",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 76.37256252596853,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5329928574568472
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "df15952b89d2a3aab6da79897b7aee69dd0d81e98c71d1d068b99e7056706bb5"
+    },
+    {
+      "round": 7,
+      "kind": "profile",
+      "path": "runs/target-2x/round-7/profile/time.json",
+      "sha256": "a33b81ad1ff77f629c85673db555d27239f46dd16046f3fa90340b5bf94cd464",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 77.81382574903546,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5045988515663937
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "ed413b8c042fda1dc3f71a9c8c37d0438c95c9231a38e27f9f7dac2901f5f1b7"
+    },
+    {
+      "round": 7,
+      "kind": "screening",
+      "path": "runs/target-2x/round-7/time/time.json",
+      "sha256": "11751257a43ecf5ed8cc9b127c2a1c628f30d1fbd9b750541b4d181e39a58ac7",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 150.8207274680026,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 0.7762765425118711
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "e419a767121e0a2913f25a6b91f75612e2415ed52087e0f2784d95e7102c9303"
+    },
+    {
+      "round": 8,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-8/check/check.json",
+      "sha256": "1776c28b0d14673098f3cbcd393d7c3144ea320a5ee60822780096c1fd58a7fb",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 73.05204941198463,
+        "reference_step_seconds": 116.9876024860132,
+        "required_speedup": 1.02,
+        "speedup": 1.601428069817035
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "6135ebe1fe5cf89d58960478df62a2fe9121bee4f75dc230988d5e8270c33f4e",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.0001614111140403683,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.0001614111140403683,
+        "reference": {
+          "max_abs": 3.8743019104003906e-05,
+          "relative_l2": 7.839546858005227e-05,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 1.1825065212617537e-05,
+        "required": 1.02,
+        "speedup": 1.601428069817035,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 116.98691079299897,
+          "checkpoint_sha256": "bcbf844c6c9e6aa466302645669e9008c15bc3ecc213167840b2ec96a38e07a6"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 73.05204941198463,
+          "checkpoint_sha256": "329e60ddd82613439922e94fc6d44e12aaa652b4368fa725bc435ac8ab0187f9"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.98829417902743,
+          "checkpoint_sha256": "18b8f5d713eb4bff8436473b4ef9420c26f86bae7300fdb11c29be9f34c99c49"
+        }
+      ]
+    },
+    {
+      "round": 8,
+      "kind": "profile",
+      "path": "runs/target-2x/round-8/profile/time.json",
+      "sha256": "c3e33fdde0b841e30fafaf406856551f597d234d4e99b769eb5120d47c700dfd",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 77.68969895801274,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5070027870910034
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "ed413b8c042fda1dc3f71a9c8c37d0438c95c9231a38e27f9f7dac2901f5f1b7"
+    },
+    {
+      "round": 8,
+      "kind": "screening",
+      "path": "runs/target-2x/round-8/time-retry1/time.json",
+      "sha256": "dcb8f7bd389e08866a8792106a25f55c25a5751bee701b5ed6a4507120125b49",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 73.20333320501959,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5993615007951316
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "8b730ed94ab85c71c19d7a001a7d88a2854b9cbb077ce44b004869e01a7de1da"
+    },
+    {
+      "round": 9,
+      "kind": "profile",
+      "path": "runs/target-2x/round-9/profile/time.json",
+      "sha256": "f8e0ba13a35e4dbfe2ba7a6832f7bb40dff35e91a8cd31f506887dadd93a5f60",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 74.75406659400323,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5661835963232835
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f6b7e394cb42c78d84de664cce77fe83c4554712c0696b64d1c4f2153782f9fb"
+    },
+    {
+      "round": 9,
+      "kind": "screening",
+      "path": "runs/target-2x/round-9/time-retry1/time.json",
+      "sha256": "6a2b34dae3412703635736ade38d257fc06f16896e137e2afd95f27b559215e6",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 87.035622497031,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.345180163007165
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "8c74d3523ed196ee73d5e4dd86603234ef06c824719cf0fb8336408352922a3c"
+    },
+    {
+      "round": 10,
+      "kind": "profile",
+      "path": "runs/target-2x/round-10/profile/time.json",
+      "sha256": "bbab47ad6e195c210f4f464b31f6649d60d26aafe88d251c950638e4652b3832",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 74.69722078397172,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5673754877250876
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f6b7e394cb42c78d84de664cce77fe83c4554712c0696b64d1c4f2153782f9fb"
+    },
+    {
+      "round": 11,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-11/check/check.json",
+      "sha256": "319ab080dd6da2c627070eae915b747d075b02d50743ed464724fec58cde9c5c",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 69.09344587702071,
+        "reference_step_seconds": 117.24564171250677,
+        "required_speedup": 1.02,
+        "speedup": 1.6969140882217981
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "baa1809d52ef07da3f357d931eab29d2dde3463f566cdd6a4c0690cded231337",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00014896308726210415,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00014896308726210415,
+        "reference": {
+          "max_abs": 3.9577484130859375e-05,
+          "relative_l2": 6.0300037609201176e-05,
+          "worst_tensor": "transformer_blocks.3.attn.to_out.0.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.006167194485095019,
+        "required": 1.02,
+        "speedup": 1.6969140882217981,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 116.88410337502137,
+          "checkpoint_sha256": "4c081b0428b4328488495590982bbaaf1e25390c2a98dac05eb934c5d63aaeba"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 69.09344587702071,
+          "checkpoint_sha256": "7242a579f9994065a8697699d976b0ff11d15b16272ea2c512a77e33492392eb"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 117.60718004999217,
+          "checkpoint_sha256": "6c704f18f74a165776dbed5a4ef722ca9bc68a1a7295ae030a87e7e1773c74fc"
+        }
+      ]
+    },
+    {
+      "round": 11,
+      "kind": "profile",
+      "path": "runs/target-2x/round-11/profile/time.json",
+      "sha256": "896b9d90500603351e3edac4ff5c446a16ca387d5d79117ee9660e1d12405e5e",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 74.90900037699612,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.5629442692969109
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f6b7e394cb42c78d84de664cce77fe83c4554712c0696b64d1c4f2153782f9fb"
+    },
+    {
+      "round": 11,
+      "kind": "screening",
+      "path": "runs/target-2x/round-11/time/time.json",
+      "sha256": "81620e255db63cc1361746e2f6068811808b4467fb4ad05b4b5f5dbb9376270a",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 69.0114730700152,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.6965091114517263
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "9166deba50f733c36d4bc603f6d70726f59a2a42313d88765f0e2184d204d77a"
+    },
+    {
+      "round": 12,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-12/check/check.json",
+      "sha256": "f1b03634f5de2d82e309fb5b998df2c9d4eb5d2b2b690014fbbc7eec4a11f3b5",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 67.39436350303004,
+        "reference_step_seconds": 116.84139217849588,
+        "required_speedup": 1.02,
+        "speedup": 1.7336967975555213
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "62000279e2abb99169e23e099c268bf0b230ea32cffc62b1bc0a3ae8b8e67780",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00015089194238772003,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00015089194238772003,
+        "reference": {
+          "max_abs": 3.9577484130859375e-05,
+          "relative_l2": 6.304123181790857e-05,
+          "worst_tensor": "transformer_blocks.19.attn.to_out.0.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.002831169629695291,
+        "required": 1.02,
+        "speedup": 1.7336967975555213,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 117.00679107900942,
+          "checkpoint_sha256": "c37c238e11c77faef91c00d297787dd489145cea4699be37113a2059f852d062"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 67.39436350303004,
+          "checkpoint_sha256": "f9b51777fadbd635efe0f0218a91b2eded0f451e6fdbb6b44796f624f73c8e23"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.67599327798234,
+          "checkpoint_sha256": "999c5fbc2d3d1cd0a4b21ef28910bfdecefab6a1bae0af39229b67f3103dd4de"
+        }
+      ]
+    },
+    {
+      "round": 12,
+      "kind": "profile",
+      "path": "runs/target-2x/round-12/profile/time.json",
+      "sha256": "dd2341c8246d2158e682275f90179a4b6d0f9e7e48ffe90901be133526eb283e",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 88.51109389204066,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.322756139482245
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "40aabc67d25275114249877c94cbbe771b6364b371e806cd0fe381da6c8ff89e"
+    },
+    {
+      "round": 12,
+      "kind": "screening",
+      "path": "runs/target-2x/round-12/time/time.json",
+      "sha256": "15c16689499c12359c7ed8747140e60ed65c7f4885ae586da32c981c098d9055",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 68.5829032069887,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7071104806489985
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "17dab59af620d9ff6e3c08388c959bea67328cf3e296886c7922cae62b2f1168"
+    },
+    {
+      "round": 13,
+      "kind": "profile",
+      "path": "runs/target-2x/round-13/profile/time.json",
+      "sha256": "657ab2096fb8cfc226f09e91d559bb109ea8386b188752d897a8ae6cca9c22a8",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 84.06355656200321,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.3927389899525835
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "32c88f968a0a13d0b21754084d0c8153474dd51061be06ee6117378dfc30a41d"
+    },
+    {
+      "round": 13,
+      "kind": "screening",
+      "path": "runs/target-2x/round-13/time/time.json",
+      "sha256": "f07ddc60a28f34e9ab29c80d7416b07de7ba0fc0b2b134a2700b50fbfbb3217d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 69.00082369998563,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.6967709453301876
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "99316f6f492c5e123f8b423dacc5e09942662e89105d5326d3bf10e47d59359d"
+    },
+    {
+      "round": 13,
+      "kind": "screening",
+      "path": "runs/target-2x/round-13/time-workspace128/time.json",
+      "sha256": "2518b4a54f4f79f6a24ff62ee607e8c32c9bad9d827b0e5b39427181cb6faf60",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 70.43624642898794,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.6621923909023448
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "0d311045fdb7b4e4fefad071d3c0e5e937e45f06e12e958429ca8c3fd3393e4e"
+    },
+    {
+      "round": 14,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-14/check/check.json",
+      "sha256": "511a56520059c6fa3b6765c43dd75a9f69765524519f27754adc26c3cd48e12f",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 66.09605669701705,
+        "reference_step_seconds": 116.99619039898971,
+        "required_speedup": 1.02,
+        "speedup": 1.770093349672853
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f8d41b9e4c2c856a916998826c49d0993897778175697fdbe1c13a31e92233c4",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00015092405984732562,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00015092405984732562,
+        "reference": {
+          "max_abs": 3.7789344787597656e-05,
+          "relative_l2": 6.635620147690631e-05,
+          "worst_tensor": "time_embedder.linear_2.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.00013048112039532522,
+        "required": 1.02,
+        "speedup": 1.770093349672853,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 117.00382329599233,
+          "checkpoint_sha256": "1a72a08c967c2facfef562f65fa17dc8086732bf815e73bbd5c68b4e483b5864"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 66.09605669701705,
+          "checkpoint_sha256": "0fe01642709b569a6995115c1bed7fb28cb1c48425c5bb5bec8e012bdb76c11e"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.98855750198709,
+          "checkpoint_sha256": "6b9766368696f2d722c21e8229f6ae090ba65d2780a1b7ac06407e4c84b3e5c7"
+        }
+      ]
+    },
+    {
+      "round": 14,
+      "kind": "profile",
+      "path": "runs/target-2x/round-14/profile/time.json",
+      "sha256": "ac01a796675ccf778188d78587805f49848987e140c340a93b18bfa2fdb5d0fe",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 67.24450483801775,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7410878872557922
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "c1b9673539fb2e5e64a82c78e55d4212af1fd1396494fb11983b25e85c253edc"
+    },
+    {
+      "round": 14,
+      "kind": "screening",
+      "path": "runs/target-2x/round-14/time-host96/time.json",
+      "sha256": "298cc8596d37751e881b1b5b510cdb56be3852dabc3d05d08dbdcea4375957a7",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 66.10528153902851,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7710928708300426
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "b270b49007132e190a6f911fc627d9fd5e90055074cbf907f8dc1a89bbac16de"
+    },
+    {
+      "round": 15,
+      "kind": "profile",
+      "path": "runs/target-2x/round-15/profile/time.json",
+      "sha256": "e2d05ca972ee8e9c5935f2e37ef83f7705cede264b8757f4ecde3b4ba1d486af",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 85.6971083820099,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.366190704312774
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "c07d128f9b051e06f2b7a3061a164d11ff3e616a369c930a744c2ffab51630d0"
+    },
+    {
+      "round": 15,
+      "kind": "screening",
+      "path": "runs/target-2x/round-15/time/time.json",
+      "sha256": "920eb5a6e755824be236c2ec4b003afd85125a0c69f510f98a75a6efe9255817",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 70.068271036027,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.670921675772304
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "d6df523c9c99b059d254d02d175fd017050d3830930b7006da7ee91f9aba22c2"
+    },
+    {
+      "round": 15,
+      "kind": "screening",
+      "path": "runs/target-2x/round-15/time-lt/time.json",
+      "sha256": "6085827ae9b4eb12570c83edf10360de77d61dc9af8c6731549f8f48f2ffa6ef",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 70.57503316900693,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.6589236674904089
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "72072cccbc6130eb232e62de41d51fda7cd2a027f8ca9ea0c4ac097029c00047"
+    },
+    {
+      "round": 16,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-16/check/check.json",
+      "sha256": "4c3e8a6de07d3b81fa731e9e6bb0fb40aa119def6be95015535caf5e1348faf8",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 64.74679979000939,
+        "reference_step_seconds": 117.10117330902722,
+        "required_speedup": 1.02,
+        "speedup": 1.808601717595566
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f3e98cdd0e67f877585d263febcf004d6afbb7de7a332a2f966b34214eb49b78",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.0001480880854656813,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.0001480880854656813,
+        "reference": {
+          "max_abs": 3.921985626220703e-05,
+          "relative_l2": 5.238178799279101e-05,
+          "worst_tensor": "transformer_blocks.16.attn.to_out.0.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.005868830913868909,
+        "required": 1.02,
+        "speedup": 1.808601717595566,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 117.44479680201039,
+          "checkpoint_sha256": "b1cae448b03274a7bc586c91d81ff4d91ec1fa38ee2637a44d287d25c2f9f4e0"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 64.74679979000939,
+          "checkpoint_sha256": "c81c7ff3bc74c01c6c5db4d6a2fe8db1ef38c788240fce4cda86b95f9d62a009"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.75754981604405,
+          "checkpoint_sha256": "a8471758e5b7045ce39f78a6e91a1566a9d5026cb0d6a87bfb88ef3a5b99b003"
+        }
+      ]
+    },
+    {
+      "round": 16,
+      "kind": "profile",
+      "path": "runs/target-2x/round-16/profile/time.json",
+      "sha256": "c65d3f1fb0fe99e425cdb082d73c49f8c42bd03ad1b51042fe799e3689eaf708",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 66.13364841003204,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7703331915410578
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "91061221d2bee76010dfd863e97bfd63252ef1b3dc2d637cb4870010ef75fd73"
+    },
+    {
+      "round": 16,
+      "kind": "screening",
+      "path": "runs/target-2x/round-16/time/time.json",
+      "sha256": "2edb82460ce70e58e32d4d53a1193051c08f643bc98ed08989c5e361b19f4a82",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 68.96512088598683,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.697649353091697
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "c592ea63ed081a867a862cc412da5a593ceb80b9bfd802a6019ef2debbe12cbc"
+    },
+    {
+      "round": 16,
+      "kind": "screening",
+      "path": "runs/target-2x/round-16/time-slab176/time.json",
+      "sha256": "6c566fbae3ceb0ade0ec87d4195faf48fda039bcb112aa3944b6b93f009c5b3b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 65.44025876396336,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7890912271645703
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "9ffe563eb0d5559fd3b144a590ff78b751ac2ec7c21b9930abf2744c420f3247"
+    },
+    {
+      "round": 17,
+      "kind": "profile",
+      "path": "runs/target-2x/round-17/profile/time.json",
+      "sha256": "b6a4c4f43f25a608e413f5ea2ddf719d9d850ea2a79bfdcd37e66f74b779338f",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 83.24218724202365,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.40648145774431
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "199068cb5f0cce154be89c1760606763771f86504575b564900fddaff8d81d45"
+    },
+    {
+      "round": 17,
+      "kind": "screening",
+      "path": "runs/target-2x/round-17/time/time.json",
+      "sha256": "38568304fcc256d2a95bd1c5f880a681abcf82ef1030189433b907a683dc8dd6",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 67.27875246299664,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.740201602614132
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "3453ca134f30240b0cd47dfabdb638d4fca6d287e5b3f3123971628cb0c882cc"
+    },
+    {
+      "round": 18,
+      "kind": "profile",
+      "path": "runs/target-2x/round-18/profile/time.json",
+      "sha256": "90c72702af7ea65a234be2a1c4123367aadaca10db04d8bd65decf9bcaf2f6aa",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 64.14179950102698,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8253088277654521
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "751600cee6920948c4755264baeccdf62bc9cb4212f200b6b31505ee335fc984"
+    },
+    {
+      "round": 18,
+      "kind": "screening",
+      "path": "runs/target-2x/round-18/time-overlap/time.json",
+      "sha256": "d3c56d098df31b6c5852628b41e8371f70762216bafeb319b3413227e7f75fc4",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 81.11165733804228,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.4434249860047559
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f7bb3509ec9e5db446ef6d5ce024e45f76a6c9edcfcbadb4acae2672d260671c"
+    },
+    {
+      "round": 18,
+      "kind": "screening",
+      "path": "runs/target-2x/round-18/time-overlap-headroom/time.json",
+      "sha256": "4c0df4a16cd471079cf16d9ce9fcf41ee4cde8766f9f863893c6b1ec2b61ea9b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 79.31270004902035,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.4761645081509533
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "f8de0f92b9ef020dbb87ff28fbfbaa8686c17329bbfa0b8551f25bf467f1de1c"
+    },
+    {
+      "round": 19,
+      "kind": "full_check",
+      "path": "runs/target-2x/round-19/check/check.json",
+      "sha256": "25538f5bb4b7e6a0200c706c15b58836acfc341aa6ef14156d597eec7cf4876a",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.62189586297609,
+        "reference_step_seconds": 117.0437853950134,
+        "required_speedup": 1.02,
+        "speedup": 1.8690552846103328
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "8eaa4bb9b3354cfe51a7c3e4b1ad1fe0a8fbd8c1f075b3b5d4459766b7b562ad",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00014503513111936508,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00014503513111936508,
+        "reference": {
+          "max_abs": 3.838539123535156e-05,
+          "relative_l2": 6.358137205246154e-05,
+          "worst_tensor": "time_embedder.linear_2.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 4.92659392511203e-05,
+        "required": 1.02,
+        "speedup": 1.8690552846103328,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 117.0409022590029,
+          "checkpoint_sha256": "c4617fb1d088105903b31762336f16a442fd683e85112fe33b65ed0710343f32"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 62.62189586297609,
+          "checkpoint_sha256": "f4375ffc70fbefbc3beb732762326e8faf15673badae2c94f9533ba136ea6d7c"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 117.0466685310239,
+          "checkpoint_sha256": "2cd785fe9b2e99190d9d8f495e195ff0e3e9356346e98d6ad46fd89503c6a2be"
+        }
+      ]
+    },
+    {
+      "round": 19,
+      "kind": "profile",
+      "path": "runs/target-2x/round-19/profile/time.json",
+      "sha256": "b8ddb62eaf2bd070a6c33bd00d1d35fcd6707507dbc3e8bf1142f4451539d7f7",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 67.27220786496764,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7403708986776918
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "da9065b817236579aeeeb8c8ac7cad14a13b071d41be0a6a3179ce04705cabfe"
+    },
+    {
+      "round": 19,
+      "kind": "screening",
+      "path": "runs/target-2x/round-19/time-headroom16/time.json",
+      "sha256": "9aefb1f6ec0700c9ff097d823dcbc559d3f7149e730aa40b137d4e922b469a5a",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.63653637695825,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8691741215284579
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "40f17fadf27745f140c53d760e8b4873e8948fadbb47bd2fafb30e33e7e41b82"
+    },
+    {
+      "round": 20,
+      "kind": "profile",
+      "path": "runs/target-2x/round-20/profile/time.json",
+      "sha256": "545d6c45a10bdb8c1aa363dd93ce753d680183abe00ae86cb629aa29546b7e8b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 72.40811190201202,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.616926471117291
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "28307f83907828ee66df1ce96eb67c4c4f9b620238a251953727aa9d04d8c427"
+    },
+    {
+      "round": 20,
+      "kind": "screening",
+      "path": "runs/target-2x/round-20/time/time.json",
+      "sha256": "5244182e879065432d41302a1ac43e335ba4f855253b0d3a66ca7a94a8732fee",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.58678177499678,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8706600585230722
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "d1b5418f829543ce686a3175d2f0116e5bf5e7c505e76398278bebc52d818544"
+    },
+    {
+      "round": 21,
+      "kind": "profile",
+      "path": "runs/target-2x/round-21/profile/time.json",
+      "sha256": "bb44b50d8f3615952599846d8a7b182dd62307cb81b3d13420fe0c3dc7f85368",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.65191571199102,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.868715290306413
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 21,
+      "kind": "screening",
+      "path": "runs/target-2x/round-21/sequential-time/time.json",
+      "sha256": "5c7c4d8f74c06d75d66d1731693cbb55fcc6ad8d1fea5c12b7cf2fefdc82aac1",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.670310067012906,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8681668039107344
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "dabde98b493e04696e518489045b89f31596d4e62ea7bc1b882839e65c1b3d4d"
+    },
+    {
+      "round": 22,
+      "kind": "profile",
+      "path": "runs/target-2x/round-22/profile/time.json",
+      "sha256": "62e136682d49c5c4496416b6b3fe225c53dfa4c3667c13125f22e112d6149c98",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.5745641659596,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8710253026688546
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 22,
+      "kind": "screening",
+      "path": "runs/target-2x/round-22/time/time.json",
+      "sha256": "f158738553101d5030ffe46f0082a1b86a9c3440740f480b1307faedae4790b1",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.41251446102979,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8758832882961285
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "13205f920f4cc88bae0799708411af7ef6389e5cde49db0aff3617a8aa304539"
+    },
+    {
+      "round": 23,
+      "kind": "screening",
+      "path": "runs/target-2x/round-23/head1-time/time.json",
+      "sha256": "1cc21223503aafa8c64abad6cffdbb0ff91c0288b4d177b535d948858038ec1b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 64.01694041502196,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8288689228033306
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "a8dea7ad124e7f1b8f467ae5845471974222387597e18d5e2ac68b1677e4590b"
+    },
+    {
+      "round": 23,
+      "kind": "profile",
+      "path": "runs/target-2x/round-23/profile-retry/time.json",
+      "sha256": "51a3b047f4118ab2de5691dfa39ce445a9014ebfbbdf4dd3184a6e8e05f73318",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 66.77100930496817,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7534345231063455
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "b2b521780b1d52c0b9b677bdfa4eae406f383f87eabfde6b43e16dea4f56a9d0"
+    },
+    {
+      "round": 24,
+      "kind": "profile",
+      "path": "runs/target-2x/round-24/profile/time.json",
+      "sha256": "6814e5fd015f49ad934cc927e58e60319564ba6f05b70fb665c99b1d8564950a",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.85989648796385,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8625323839087762
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 25,
+      "kind": "profile",
+      "path": "runs/target-2x/round-25/profile/time.json",
+      "sha256": "1938c1f56bda0f069f3681890cac4b9e99a9c7d1497e618bc30827c18e1fd538",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 64.78309249301674,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8072399503096683
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 25,
+      "kind": "screening",
+      "path": "runs/target-2x/round-25/time/time.json",
+      "sha256": "8e6152e36acb9366d166f2356467ae5bc89b8fd64a73d0ea69e362fee1df2fb0",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 65.42411606194219,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7895326663204538
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "40f2cc24d2153abaf6c7c93b3ace0874f627f62e932099f7987dbcf765dd93aa"
+    },
+    {
+      "round": 25,
+      "kind": "screening",
+      "path": "runs/target-2x/round-25/time-tile128/time.json",
+      "sha256": "b12930dd09217e032341055ff15f15d561854d9aede4a7e11dee58443208a42e",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 73.09167506999802,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.6018047574619554
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "4578d13b732aff74563cabdb20dee6ee03bd6c1300d7282bf38413296fc1b76a"
+    },
+    {
+      "round": 26,
+      "kind": "profile",
+      "path": "runs/target-2x/round-26/profile/time.json",
+      "sha256": "0f69fb63adbb778794ac5ebdfe337767a174823db5015dda13e60b814a2e78f0",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.74391577002825,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8659752331542043
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "129f51ce6d0f402a444e31f1da75dac101ee3e63ae7d13832a655d17b44e9a35"
+    },
+    {
+      "round": 26,
+      "kind": "screening",
+      "path": "runs/target-2x/round-26/time/time.json",
+      "sha256": "306e611d3bfb7dc9eba4936fdae846c2ddf755f7af6e16814bdfcbd2266ec63d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.71224197099218,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8669176731417358
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "51dc49f7b6ce0478a2b4ed45f06f3b72f563d42d065980a68dc7a53557eda1ef"
+    },
+    {
+      "round": 27,
+      "kind": "profile",
+      "path": "runs/target-2x/round-27/profile/time.json",
+      "sha256": "04a7a4fece0970a35a6429ec32d7d74c8194bf108a273737d43dfb23d1ea0d0b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.64210836798884,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8690078592216626
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "7e9f91fb2f957a26dde922cebc53ebd62ed6dca70f00b79c85fe2da54a861153"
+    },
+    {
+      "round": 27,
+      "kind": "screening",
+      "path": "runs/target-2x/round-27/time/time.json",
+      "sha256": "ebb8f27a3818bac6497e56165823ed2672b62e6fd5fd4cc0a772e38268b38edd",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.962043629959226,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8595106846607616
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "3c338c178a5ab74fdac7396aa6429fecc1a305790669ec5e3e8d422861027ce7"
+    },
+    {
+      "round": 28,
+      "kind": "profile",
+      "path": "runs/target-2x/round-28/profile/time.json",
+      "sha256": "1e51085880f336c5f892ece25682ac1b85ed2d3849d4f16e21bd891049a36210",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 70.53202727797907,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.659935172380045
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "b988eecba9567ec1e61989e5b35a3e9ca9df2e343a23a9d50bb1117f7ab6d580"
+    },
+    {
+      "round": 28,
+      "kind": "screening",
+      "path": "runs/target-2x/round-28/time/time.json",
+      "sha256": "9798e9203192a77f7bcb5caf2f176da199b7cfe45bb788f478740627a266a36f",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.73614684003405,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8662063061749024
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "214a39ae836951bceafc662572d21749db7199c948a3a0b928467f4fe4113cfa"
+    },
+    {
+      "round": 29,
+      "kind": "profile",
+      "path": "runs/target-2x/round-29/profile/time.json",
+      "sha256": "6e58d84c5f2bc27d2de81328d81b63701f4404e788582b7ebd95dde6ffd30f42",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.63807320903288,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8691282611340383
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 29,
+      "kind": "screening",
+      "path": "runs/target-2x/round-29/time/time.json",
+      "sha256": "2b003e9761671da57d69e9e399d33c63a559ccd2284ea2cb38d295cca146b0c8",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.95686133601703,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.859663750279855
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cbb24807dff92a499d2f22a99c0f7f629fe107f546afb789c74015a8121e0a44"
+    },
+    {
+      "round": 30,
+      "kind": "profile",
+      "path": "runs/target-2x/round-30/profile/time.json",
+      "sha256": "6d60c49f3351c5132ca2231a86b33bad080e8e93e93ca7953f6359484ad8b2d7",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.73141396895517,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8663471050712592
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "e4dfbe73440ff7ef72767de664d9123f1a18559ae00275226c2bff2718ecae2b"
+    },
+    {
+      "round": 31,
+      "kind": "profile",
+      "path": "runs/target-2x/round-31/profile/time.json",
+      "sha256": "3e10f4e1eccb64cceb0ab03e911e5c1ce4ecea7dfd5bee335495a5d77431f990",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 65.82107345701661,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7787402530656464
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 31,
+      "kind": "screening",
+      "path": "runs/target-2x/round-31/time/time.json",
+      "sha256": "aea9465497376d42c403be49d3a79d3d8ab8256c0d3af5a906ab17e5a84026ee",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 94.07917351799551,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.2444687647643011
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "652d9d088b5e1e2e839feaf466d01f4ccd8ff296e7e4695fedea2ce37f3e3e7a"
+    },
+    {
+      "round": 32,
+      "kind": "profile",
+      "path": "runs/target-2x/round-32/profile/time.json",
+      "sha256": "c3627fd0996e92bb117d06ce22c703eb1c64d9912b8b12165581255106454e74",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.77949148399057,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8649178273105715
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 33,
+      "kind": "profile",
+      "path": "runs/target-2x/round-33/profile/time.json",
+      "sha256": "24f66b7a6e6eb0fbb8d878a1204decfa00d60446233edf82918f1fc9a18493a3",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.73533974599559,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8662303150348265
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 34,
+      "kind": "profile",
+      "path": "runs/target-2x/round-34/profile/time.json",
+      "sha256": "9e154dfceaa0f1d216deb1a8e08af2ac7fbe26cfcaa244191aa8df113d4a17e4",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.722091482020915,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8666245032907811
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 35,
+      "kind": "profile",
+      "path": "runs/target-2x/round-35/profile/time.json",
+      "sha256": "c596a57101521cccc15c1e32a8adae11a52d2b6ae1f21df1adf0355fbc89af0d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 65.05463029100792,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7996965371144262
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 36,
+      "kind": "profile",
+      "path": "runs/target-2x/round-36/profile/time.json",
+      "sha256": "67b0a4d0ef96b90b740916e3865e6a3f4f8b7d26a15c2604894f91e103f5c1bc",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.799970637017395,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8643096751541208
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 36,
+      "kind": "screening",
+      "path": "runs/target-2x/round-36/time/time.json",
+      "sha256": "367e2ed815f9cb4b3a156abc9031dcf1f5b69c41811cbdfb52a109357d9a67f0",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.91249295201851,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8609752588770976
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "8a70f697418da2db9d3d26d952b1dcc22a1c0e4a1c88887bfd1653e8d7bcb6c4"
+    },
+    {
+      "round": 37,
+      "kind": "profile",
+      "path": "runs/target-2x/round-37/profile/time.json",
+      "sha256": "59a28eeef9959500c03de6c5ba4bea6375fa04b3deeacdaae557e60f6af9cc11",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.76028819702333,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8654884517171348
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 38,
+      "kind": "profile",
+      "path": "runs/target-2x/round-38/profile/time.json",
+      "sha256": "3a1a74d678efba56f93e299aa66b8e4ff63a3f6594793a3a464c0a93fb5bea19",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.79798381199362,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8643686588489756
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 38,
+      "kind": "screening",
+      "path": "runs/target-2x/round-38/time/time.json",
+      "sha256": "47548c3e7175586500f4f2a2d5f8e276df2eb25c85206d986f56d7c0101ca494",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 63.85082778905053,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8336268598551118
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "60446c9086968d700ba9e124509b4c9148b31084f39449ede05ed8230965a394"
+    },
+    {
+      "round": 39,
+      "kind": "profile",
+      "path": "runs/target-2x/round-39/profile/time.json",
+      "sha256": "9c8779d09b786cf2d59cccab8a191c386257aaf55d12446295909d6234909a7e",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.630348826001864,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8693587861573495
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 39,
+      "kind": "screening",
+      "path": "runs/target-2x/round-39/time/time.json",
+      "sha256": "daaa495cf740c4d5ce131e20dd3e2d9735323d19e5175689d69e0436a0573f9d",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 66.22751799505204,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.7678239559986733
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "1dcbd9d05bfa8ef1f0d6966ea437bf5937f4ac091b4f4a7e0ee93cbe5eb7b9c5"
+    },
+    {
+      "round": 40,
+      "kind": "profile",
+      "path": "runs/target-2x/round-40/profile/time.json",
+      "sha256": "d743f419eef0039728d296fe7a04957fd44db0d2d0c526250432d3dcd8ab2fae",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.83998833899386,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8631224472289707
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 41,
+      "kind": "profile",
+      "path": "runs/target-2x/round-41/profile/time.json",
+      "sha256": "8bace25613b4a33a834481e2f3fdad771a0744a0c5f0f6aaf1823c91fc0e9f3c",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.6241952169803,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8695424739963897
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "cf18036a9da34d16570bba7d610809e05494efb60e701ce6ddba4a094f9f3fbc"
+    },
+    {
+      "round": 41,
+      "kind": "screening",
+      "path": "runs/target-2x/round-41/time/time.json",
+      "sha256": "14d454b6fc0293a93f8bd41414c21b6d39b427bb3b0cd3e6ee03d1143ef35a1b",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 62.639154232048895,
+        "frozen_reference_step_seconds": 117.07859285798622,
+        "required_speedup": 1.02,
+        "speedup": 1.8690960038231768
+      },
+      "source_unchanged": true,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "53d0a055b034d3ca39aa83cd252aa1c23ca3e6c57a4b24cda7668afb4be5cc06"
+    },
+    {
+      "round": 4,
+      "kind": "full_check",
+      "path": "runs/final/check/check.json",
+      "sha256": "cf59ad377c84bb5e4b51d9d77783296ae983848345be19a2b9088c766a631bc4",
+      "status": "PASS",
+      "complete": true,
+      "performance": {
+        "candidate_step_seconds": 88.07462009298615,
+        "reference_step_seconds": 116.8301072815375,
+        "required_speedup": 1.02,
+        "speedup": 1.326490050802289
+      },
+      "source_unchanged": null,
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "candidate_source_digest": "28bc4d4bda76ee36cf7030ddde5baa5262cc9385c9350bce6efaab08b7e3c70d",
+      "comparison": {
+        "candidate": {
+          "max_abs": 4.00543212890625e-05,
+          "relative_l2": 0.00013707202393999917,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "first_failure": null,
+        "gate": {
+          "max_abs": 0.0005,
+          "max_relative_l2": 0.0005
+        },
+        "max_abs": 4.00543212890625e-05,
+        "max_relative_l2": 0.00013707202393999917,
+        "reference": {
+          "max_abs": 3.981590270996094e-05,
+          "relative_l2": 7.346842261607165e-05,
+          "worst_tensor": "time_embedder.linear_1.lora_B.default.weight"
+        },
+        "tensor_count": 108
+      },
+      "verdict": {
+        "reason": "numerics and benefit gates passed",
+        "reference_spread": 0.002632390863698547,
+        "required": 1.02,
+        "speedup": 1.326490050802289,
+        "verdict": "PASS"
+      },
+      "evaluator_sha256": "da51406d8288501c659ecb6f57847b3528fb5594f0a55674bdf8c8600f9d36e6",
+      "fingerprints_match": true,
+      "arms": [
+        {
+          "label": "reference_a",
+          "train_step_seconds": 116.98387853504391,
+          "checkpoint_sha256": "5a762dfab65a623d5ed70512186c1c4b60d3a86bb9d72f6452557d0a4c4dcd2b"
+        },
+        {
+          "label": "candidate",
+          "train_step_seconds": 88.07462009298615,
+          "checkpoint_sha256": "3457f5dc5a2646b141672bc8e4a69b55484d81dfb597ea195698e5cbe25ee752"
+        },
+        {
+          "label": "reference_b",
+          "train_step_seconds": 116.67633602803107,
+          "checkpoint_sha256": "dda3504f4180d9000dfb60941987fc666603656f2e6d56d4e42f89d062028710"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "kind": "component_or_failure_artifact",
+      "path": "runs/round-1/profile-driver.log",
+      "sha256": "7f08961b679684c465894978e18436743755ed946974a042be837af02da2d40d",
+      "not_a_performance_result": true
+    },
+    {
+      "round": 10,
+      "kind": "component_or_failure_artifact",
+      "path": "runs/target-2x/round-10/time-retry3-driver.log",
+      "sha256": "9e4af680f19b346cc729781ac8d3f7097512b89dd5dacd6571200ebc88c7d848",
+      "not_a_performance_result": true
+    },
+    {
+      "round": 20,
+      "kind": "component_or_failure_artifact",
+      "path": "runs/target-2x/round-20/block-numerics-fp64/summary.json",
+      "sha256": "b30554f4f5db8503062ae77c635b963148d64e4e43a14cbfb377cb6b4970d94f",
+      "not_a_performance_result": true
+    },
+    {
+      "round": 32,
+      "kind": "component_or_failure_artifact",
+      "path": "runs/target-2x/round-32/configs/independent-audit.json",
+      "sha256": "ebf7f88619568870af348c78970b2a028eb542408f3bfc5bf08d3ca6e6c19d86",
+      "not_a_performance_result": true
+    },
+    {
+      "round": 40,
+      "kind": "component_or_failure_artifact",
+      "path": "runs/target-2x/round-40/swiglu-training-retry/summary.json",
+      "sha256": "20e7e61951d1a28ec8e459e47753e99c088bdc22617bcffbb536719c17d295a2",
+      "not_a_performance_result": true
+    }
+  ]
+}

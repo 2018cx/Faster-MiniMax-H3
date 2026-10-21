@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "round_count": 40,
+  "artifact_hashes_verified": 87,
+  "accepted_source_checks": [
+    {
+      "round": 4,
+      "commit": "2d5a1f1f424d540b96bb0f0f226e1e6c89922dac",
+      "computed_source_digest": "28bc4d4bda76ee36cf7030ddde5baa5262cc9385c9350bce6efaab08b7e3c70d",
+      "checked_source_digest": "28bc4d4bda76ee36cf7030ddde5baa5262cc9385c9350bce6efaab08b7e3c70d",
+      "match": true
+    },
+    {
+      "round": 6,
+      "commit": "430d120d28844c71924cc0a84e2e539c73f9af8d",
+      "computed_source_digest": "2d1e3804db739bbe4d5cf9bf23390e90659f66aa8c172809ea3d82c2e7653faf",
+      "checked_source_digest": "2d1e3804db739bbe4d5cf9bf23390e90659f66aa8c172809ea3d82c2e7653faf",
+      "match": true
+    },
+    {
+      "round": 8,
+      "commit": "bccc4490cd6f7644567a37cac03c7658f8b3550f",
+      "computed_source_digest": "6135ebe1fe5cf89d58960478df62a2fe9121bee4f75dc230988d5e8270c33f4e",
+      "checked_source_digest": "6135ebe1fe5cf89d58960478df62a2fe9121bee4f75dc230988d5e8270c33f4e",
+      "match": true
+    },
+    {
+      "round": 11,
+      "commit": "be2c300b30bf28b0c20f84e47f36b7688b51fa70",
+      "computed_source_digest": "baa1809d52ef07da3f357d931eab29d2dde3463f566cdd6a4c0690cded231337",
+      "checked_source_digest": "baa1809d52ef07da3f357d931eab29d2dde3463f566cdd6a4c0690cded231337",
+      "match": true
+    },
+    {
+      "round": 12,
+      "commit": "2c594f34e869253300431f995dcf71dfd8e6c40f",
+      "computed_source_digest": "62000279e2abb99169e23e099c268bf0b230ea32cffc62b1bc0a3ae8b8e67780",
+      "checked_source_digest": "62000279e2abb99169e23e099c268bf0b230ea32cffc62b1bc0a3ae8b8e67780",
+      "match": true
+    },
+    {
+      "round": 14,
+      "commit": "cf369b3668e6e1a99a737b83fb6ceb21f8ec8477",
+      "computed_source_digest": "f8d41b9e4c2c856a916998826c49d0993897778175697fdbe1c13a31e92233c4",
+      "checked_source_digest": "f8d41b9e4c2c856a916998826c49d0993897778175697fdbe1c13a31e92233c4",
+      "match": true
+    },
+    {
+      "round": 16,
+      "commit": "b55af4070908970d3db988e4a1ebd9a1fe5962a5",
+      "computed_source_digest": "f3e98cdd0e67f877585d263febcf004d6afbb7de7a332a2f966b34214eb49b78",
+      "checked_source_digest": "f3e98cdd0e67f877585d263febcf004d6afbb7de7a332a2f966b34214eb49b78",
+      "match": true
+    },
+    {
+      "round": 19,
+      "commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
+      "computed_source_digest": "8eaa4bb9b3354cfe51a7c3e4b1ad1fe0a8fbd8c1f075b3b5d4459766b7b562ad",
+      "checked_source_digest": "8eaa4bb9b3354cfe51a7c3e4b1ad1fe0a8fbd8c1f075b3b5d4459766b7b562ad",
+      "match": true
+    }
+  ],
+  "xml_valid": true,
+  "README_internal_links_valid": true,
+  "SVG_visual_review": "1200x920 librsvg/Cairo render inspected; no clipped labels, hidden candidate points or legend collisions",
+  "validator_source_worktree_untouched": true,
+  "generator_negative_controls": {
+    "screen cannot advance accepted curve": "PASS",
+    "R40 cannot masquerade as timed within R40": "PASS",
+    "profile cannot be labeled screening": "PASS",
+    "wrong denominator rejected": "PASS",
+    "missing round rejected": "PASS"
+  }
+}
