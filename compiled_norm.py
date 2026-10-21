@@ -1,4 +1,4 @@
-"""Compile RMSNorm after the enclosing module's ZeRO parameter-gather hook."""
+"""Compile RMSNorm after ZeRO gathers, keeping checkpointed Q/K norms native."""
 
 from types import MethodType
 import atexit
@@ -29,6 +29,7 @@ import torch
 from torch.nn import functional as F
 
 _calls = 0
+_eager_qk_modules = 0
 
 
 def _rms_norm(value, weight, eps):
@@ -48,10 +49,26 @@ def _forward(module, value):
 
 
 def install(model):
+    global _eager_qk_modules
     torch._logging.set_logs(recompiles=True)
+    qk_norms = {
+        id(norm)
+        for module in model.modules()
+        for norm in (getattr(module, "norm_q", None), getattr(module, "norm_k", None))
+        if type(norm) is torch.nn.RMSNorm and len(norm.normalized_shape) == 1
+    }
     count = 0
+    _eager_qk_modules = 0
     for module in model.modules():
         if type(module) is torch.nn.RMSNorm and len(module.normalized_shape) == 1:
+            if id(module) in qk_norms:
+                # Cached attention's O/LSE must match replayed Q/K. Inductor
+                # can select different RMS reductions in no-grad and grad
+                # forwards, so keep these norms on the same native path.
+                if getattr(module.forward, "__func__", None) is _forward:
+                    del module.forward
+                _eager_qk_modules += 1
+                continue
             module.forward = MethodType(_forward, module)
             count += 1
     return count
@@ -60,6 +77,7 @@ def install(model):
 def report():
     from torch._dynamo.utils import counters
     from torch._inductor import metrics
-    return {"calls": _calls, "graphs": dict(counters["stats"]),
+    return {"calls": _calls, "eager_qk_modules": _eager_qk_modules,
+            "graphs": dict(counters["stats"]),
             "inductor": dict(counters["inductor"]),
             "generated_kernels": metrics.generated_kernel_count}
