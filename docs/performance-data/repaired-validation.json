@@ -1,0 +1,2891 @@
+{
+  "all_integrity_gates_pass": true,
+  "arms": [
+    {
+      "checkpoint_sha256": "cd33a03f7f1aa974c238d983caae1f365b3bc0d96df06de8f42f88026dc8cb1d",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "33415",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/reference/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/reference/output",
+        "--seed",
+        "424242",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/reference/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792610382.6214342,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424242,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424242,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "reference",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.1203405410051346,
+          "gradient_l2": 13.45314166750182,
+          "total_loss": 2.9468683004379272,
+          "video_loss": 1.8265277743339539
+        },
+        "50": {
+          "audio_loss": 1.8740824908018112,
+          "gradient_l2": 41.42926624101339,
+          "total_loss": 3.2054693400859833,
+          "video_loss": 1.331386849284172
+        }
+      },
+      "seed": 424242,
+      "source_digest": "0e4b744913a8d1ea97d2651a2f2b99a3cbdf346d1af61eb1df68f46432dd7508",
+      "source_unchanged": true,
+      "started_unix": 1792604406.3533852,
+      "status": "PASS"
+    },
+    {
+      "checkpoint_sha256": "5081ba5f2267a6c9dc9df4ea950090b1a33624e85538c54965033d0f504f69d4",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "56481",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/candidate/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/candidate/output",
+        "--seed",
+        "424242",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424242/candidate/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792613939.6761763,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424242,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424242,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "candidate",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.1220096349716187,
+          "gradient_l2": 13.411132339239991,
+          "total_loss": 2.948164403438568,
+          "video_loss": 1.8261547684669495
+        },
+        "50": {
+          "audio_loss": 2.364085078239441,
+          "gradient_l2": 57.95721044362062,
+          "total_loss": 3.6864874362945557,
+          "video_loss": 1.3224023431539536
+        }
+      },
+      "seed": 424242,
+      "source_digest": "6d3c7990fcc88448e2a958fbc4883241bd469a6263b77a883532a12ac5ff0ed5",
+      "source_unchanged": true,
+      "started_unix": 1792610385.1601253,
+      "status": "PASS"
+    },
+    {
+      "checkpoint_sha256": "003b6e74875ef2eda027e8d1d7d5f7874043724c6fd2827b2322711c5f711706",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "52975",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/candidate/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/candidate/output",
+        "--seed",
+        "424243",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/candidate/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792617506.517841,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424243,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424243,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "candidate",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.4923978596925735,
+          "gradient_l2": 6.304337710706823,
+          "total_loss": 2.6854535043239594,
+          "video_loss": 1.1930556744337082
+        },
+        "50": {
+          "audio_loss": 2.9207954108715057,
+          "gradient_l2": 59.64248198195146,
+          "total_loss": 5.827680170536041,
+          "video_loss": 2.9068847000598907
+        }
+      },
+      "seed": 424243,
+      "source_digest": "6d3c7990fcc88448e2a958fbc4883241bd469a6263b77a883532a12ac5ff0ed5",
+      "source_unchanged": true,
+      "started_unix": 1792613943.000654,
+      "status": "PASS"
+    },
+    {
+      "checkpoint_sha256": "c19c53316bc5656557646d8190cfe4211ce990a2e20fddc4752fee0054d6e59f",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "39851",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/reference/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/reference/output",
+        "--seed",
+        "424243",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424243/reference/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792623519.4770567,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424243,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424243,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "reference",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.4968415647745132,
+          "gradient_l2": 1.9773554445861183,
+          "total_loss": 2.684874325990677,
+          "video_loss": 1.1880327612161636
+        },
+        "50": {
+          "audio_loss": 2.5362709760665894,
+          "gradient_l2": 30.993214753960526,
+          "total_loss": 5.535695850849152,
+          "video_loss": 2.9994249641895294
+        }
+      },
+      "seed": 424243,
+      "source_digest": "0e4b744913a8d1ea97d2651a2f2b99a3cbdf346d1af61eb1df68f46432dd7508",
+      "source_unchanged": true,
+      "started_unix": 1792617508.2540867,
+      "status": "PASS"
+    },
+    {
+      "checkpoint_sha256": "aa1cdd42a9dbe3f99c2f97408820f456921c7f2ccc82473a19cedd07b1253d38",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "46457",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/reference/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/reference/output",
+        "--seed",
+        "424244",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/reference/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792629539.2240806,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424244,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424244,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "reference",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.2425495237112045,
+          "gradient_l2": 16.95251056934531,
+          "total_loss": 2.548562705516815,
+          "video_loss": 1.3060131669044495
+        },
+        "50": {
+          "audio_loss": 2.6105030179023743,
+          "gradient_l2": 244.66132793525495,
+          "total_loss": 8.080851316452026,
+          "video_loss": 5.470348477363586
+        }
+      },
+      "seed": 424244,
+      "source_digest": "0e4b744913a8d1ea97d2651a2f2b99a3cbdf346d1af61eb1df68f46432dd7508",
+      "source_unchanged": true,
+      "started_unix": 1792623521.761118,
+      "status": "PASS"
+    },
+    {
+      "checkpoint_sha256": "ec27f5e1754176d9aa894c8955a7892f531958e273a307f093069fc8c13117f1",
+      "command": [
+        "/diff/faster-minimax-h3-assets/env/bin/python",
+        "-m",
+        "torch.distributed.run",
+        "--nproc_per_node",
+        "8",
+        "--master_port",
+        "47211",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/validate.py",
+        "--worker",
+        "--tree",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/candidate/tree",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/candidate/output",
+        "--seed",
+        "424244",
+        "--",
+        "--model",
+        "/diff/faster-minimax-h3-assets/model_converted",
+        "--variant",
+        "fl2va",
+        "--cache",
+        "/diff/faster-minimax-h3-assets/cache/representative",
+        "--output",
+        "/shanghai_data/researchboost-work/faster-minimax-h3/ws/runs/target-2x/repair-20261021-v1/validation/424244/candidate/output",
+        "--max-steps",
+        "50",
+        "--trainable",
+        "lora",
+        "--strategy",
+        "deepspeed",
+        "--val-every",
+        "1000000",
+        "--ckpt-every",
+        "50",
+        "--max-seq-tokens",
+        "40000"
+      ],
+      "complete": true,
+      "ended_unix": 1792633108.8837068,
+      "fingerprint_after": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424244,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "fingerprint_before": {
+        "gpus": [
+          {
+            "index": 0,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-8ac0826b-4c45-b526-5071-c62355f74fd2"
+          },
+          {
+            "index": 1,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eba9582b-e456-75b9-55d3-8dc4494ee786"
+          },
+          {
+            "index": 2,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-c5251e82-d8a7-e4c0-c5e2-f0dd9bdf287f"
+          },
+          {
+            "index": 3,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6d169836-b86f-cd6c-1163-43fa4b11f541"
+          },
+          {
+            "index": 4,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-98190b42-d525-4cbe-b761-1646053d987a"
+          },
+          {
+            "index": 5,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-6921914c-3b99-e109-e93e-0ac4810bd207"
+          },
+          {
+            "index": 6,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-56301449-5194-1233-bcda-1a6a243c5fcb"
+          },
+          {
+            "index": 7,
+            "memory_total_mib": 97871,
+            "name": "NVIDIA H20",
+            "uuid": "GPU-eca371d6-bbe9-c022-60d3-8ca79811f117"
+          }
+        ],
+        "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+        "python": "3.11.15",
+        "seed": 424244,
+        "steps": 50,
+        "versions": {
+          "deepspeed": "0.18.9",
+          "diffusers": "0.40.0.dev0",
+          "peft": "0.20.0",
+          "torch": "2.8.0+cu128",
+          "transformers": "5.14.1"
+        },
+        "world_size": 8
+      },
+      "inputs_after": {
+        "mismatches": [],
+        "ok": true
+      },
+      "inputs_before": {
+        "mismatches": [],
+        "ok": true
+      },
+      "label": "candidate",
+      "metrics": {
+        "25": {
+          "audio_loss": 1.2260878086090088,
+          "gradient_l2": 11.060613174974888,
+          "total_loss": 2.527539700269699,
+          "video_loss": 1.301451861858368
+        },
+        "50": {
+          "audio_loss": 3.523772269487381,
+          "gradient_l2": 263.5355601819811,
+          "total_loss": 8.70928555727005,
+          "video_loss": 5.185513377189636
+        }
+      },
+      "seed": 424244,
+      "source_digest": "6d3c7990fcc88448e2a958fbc4883241bd469a6263b77a883532a12ac5ff0ed5",
+      "source_unchanged": true,
+      "started_unix": 1792629542.0270174,
+      "status": "PASS"
+    }
+  ],
+  "complete": true,
+  "execution_order": [
+    "424242/reference",
+    "424242/candidate",
+    "424243/candidate",
+    "424243/reference",
+    "424244/reference",
+    "424244/candidate"
+  ],
+  "instrumentation_sha256": "bcc856c9b344f3120245d58b8fba60b9f6fab8584b7eb688a44bf9a2504c2080",
+  "method": "Equal-rank FP64 mean of native FP32 losses; native full preclip unscaled trainable-gradient L2 (all108 trainable tensors, not a sum of rank norms). Mean paired difference / reference sample SD (ddof1), fixed absolute bound2, exact zero-SD rule; no epsilon.",
+  "optimizer_steps": 50,
+  "pairs": {
+    "424242": {
+      "all_rank_initial_input_rng_precision_contracts_exact": true,
+      "candidate": {
+        "25": {
+          "audio_loss": 1.1220096349716187,
+          "gradient_l2": 13.411132339239991,
+          "total_loss": 2.948164403438568,
+          "video_loss": 1.8261547684669495
+        },
+        "50": {
+          "audio_loss": 2.364085078239441,
+          "gradient_l2": 57.95721044362062,
+          "total_loss": 3.6864874362945557,
+          "video_loss": 1.3224023431539536
+        }
+      },
+      "checkpoint_drift": {
+        "l2": 0.20609040904736858,
+        "max_abs": 0.00048828125,
+        "note": "Reported paired checkpoint drift; endpoint statistics are the trajectory gate.",
+        "per_tensor": {
+          "time_embedder.linear_1.lora_A.default.weight": {
+            "l2": 0.004427382242552183,
+            "max_abs": 0.00048828125
+          },
+          "time_embedder.linear_1.lora_B.default.weight": {
+            "l2": 0.01799244014632228,
+            "max_abs": 0.00038123130798339844
+          },
+          "time_embedder.linear_2.lora_A.default.weight": {
+            "l2": 0.02477723674101739,
+            "max_abs": 0.00048828125
+          },
+          "time_embedder.linear_2.lora_B.default.weight": {
+            "l2": 0.012009272380296766,
+            "max_abs": 0.00035953521728515625
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.039653780776557186,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.026034014597141525,
+            "max_abs": 0.0003414154052734375
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03094275657268825,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02117849170230528,
+            "max_abs": 0.00037097930908203125
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02282055184180666,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025068602651426967,
+            "max_abs": 0.00036334991455078125
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023523201874368502,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023471682885902543,
+            "max_abs": 0.0003509521484375
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.028123339198183855,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022710240380652266,
+            "max_abs": 0.0003490447998046875
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02282978911538165,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02416470764817268,
+            "max_abs": 0.0003437995910644531
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02588335973659421,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022672413788015842,
+            "max_abs": 0.000362396240234375
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.027857315506536175,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023312987088643804,
+            "max_abs": 0.0003552436828613281
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.029359532707491885,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023449547434098734,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02719934718396825,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0235041058721746,
+            "max_abs": 0.00034332275390625
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03022667594876539,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022670493961808116,
+            "max_abs": 0.0003523826599121094
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02824467345291862,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.021102452961398187,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023372244496068395,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02205068069579352,
+            "max_abs": 0.0003437995910644531
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.027936383272000057,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022258208534225443,
+            "max_abs": 0.00034999847412109375
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02597848908646139,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.021593789445954654,
+            "max_abs": 0.0003376007080078125
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02521091214778939,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02176896362624741,
+            "max_abs": 0.00036334991455078125
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02479772293794591,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.019921790332621644,
+            "max_abs": 0.00031566619873046875
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.024624955482956904,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.018651518616379804,
+            "max_abs": 0.0003218650817871094
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02685613966410892,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01893386028901292,
+            "max_abs": 0.0003337860107421875
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0235949562859395,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.015071896479499549,
+            "max_abs": 0.0002961158752441406
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020193253293088027,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012733212858031565,
+            "max_abs": 0.0002588033676147461
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.017604643720944353,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00992923510726062,
+            "max_abs": 0.000247955322265625
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016645907142618998,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.008079179803682618,
+            "max_abs": 0.00022363662719726562
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02329228565095422,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022055066508252646,
+            "max_abs": 0.0003566741943359375
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.018490455203163142,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.006525871667606795,
+            "max_abs": 0.00018310546875
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01698363103773718,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0054368503456858515,
+            "max_abs": 0.00017213821411132812
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016386043798234256,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005277746043243447,
+            "max_abs": 0.0001773834228515625
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.017051329138789036,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005060799484276144,
+            "max_abs": 0.0002675056457519531
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.019981628768579625,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00448052430448345,
+            "max_abs": 0.0001437664031982422
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01999349992206766,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.003946678359273518,
+            "max_abs": 0.00016111135482788086
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021896186148783078,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0033302752251517117,
+            "max_abs": 0.00011301040649414062
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02147390079335215,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0031822362652888596,
+            "max_abs": 9.250640869140625e-05
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.019886108004960903,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0030983995563974047,
+            "max_abs": 7.283687591552734e-05
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.022073412086121867,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.003257185859802931,
+            "max_abs": 7.081031799316406e-05
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020360246028736137,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023621891562116096,
+            "max_abs": 0.0003528594970703125
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020018601798335655,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.003136088990814176,
+            "max_abs": 9.918212890625e-05
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020509280824738137,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0032874041202589676,
+            "max_abs": 7.200241088867188e-05
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020522965745387728,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0033259578061090493,
+            "max_abs": 7.867813110351562e-05
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01961507370406973,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.003308728362577355,
+            "max_abs": 7.677078247070312e-05
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.017411535827799703,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.002888016232582885,
+            "max_abs": 7.2479248046875e-05
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01913654021495301,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0032967545258493856,
+            "max_abs": 8.273124694824219e-05
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021075140410354475,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0035999402867073482,
+            "max_abs": 7.05718994140625e-05
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021249389756078426,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.004346690839311076,
+            "max_abs": 9.34600830078125e-05
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021885812936433213,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005279337230465595,
+            "max_abs": 9.900331497192383e-05
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.017778729809621426,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.004169130610456595,
+            "max_abs": 0.00011968612670898438
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02566681792509236,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02267793785858514,
+            "max_abs": 0.000331878662109375
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021352033327046716,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023154313640070243,
+            "max_abs": 0.00035858154296875
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.022787331908444553,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023962214231723396,
+            "max_abs": 0.0003490447998046875
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02222481164917561,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022988229105952412,
+            "max_abs": 0.00035953521728515625
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02236348271094444,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023216286501277997,
+            "max_abs": 0.00038242340087890625
+          }
+        },
+        "relative_l2": 0.0013403020952401457
+      },
+      "reference": {
+        "25": {
+          "audio_loss": 1.1203405410051346,
+          "gradient_l2": 13.45314166750182,
+          "total_loss": 2.9468683004379272,
+          "video_loss": 1.8265277743339539
+        },
+        "50": {
+          "audio_loss": 1.8740824908018112,
+          "gradient_l2": 41.42926624101339,
+          "total_loss": 3.2054693400859833,
+          "video_loss": 1.331386849284172
+        }
+      }
+    },
+    "424243": {
+      "all_rank_initial_input_rng_precision_contracts_exact": true,
+      "candidate": {
+        "25": {
+          "audio_loss": 1.4923978596925735,
+          "gradient_l2": 6.304337710706823,
+          "total_loss": 2.6854535043239594,
+          "video_loss": 1.1930556744337082
+        },
+        "50": {
+          "audio_loss": 2.9207954108715057,
+          "gradient_l2": 59.64248198195146,
+          "total_loss": 5.827680170536041,
+          "video_loss": 2.9068847000598907
+        }
+      },
+      "checkpoint_drift": {
+        "l2": 0.2748704906005413,
+        "max_abs": 0.00048828125,
+        "note": "Reported paired checkpoint drift; endpoint statistics are the trajectory gate.",
+        "per_tensor": {
+          "time_embedder.linear_1.lora_A.default.weight": {
+            "l2": 0.007880846832707717,
+            "max_abs": 0.00048828125
+          },
+          "time_embedder.linear_1.lora_B.default.weight": {
+            "l2": 0.0183529158472188,
+            "max_abs": 0.0002579689025878906
+          },
+          "time_embedder.linear_2.lora_A.default.weight": {
+            "l2": 0.06733088076278054,
+            "max_abs": 0.00048828125
+          },
+          "time_embedder.linear_2.lora_B.default.weight": {
+            "l2": 0.013569587003288742,
+            "max_abs": 0.0002384185791015625
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.032286159495328114,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02488030386434522,
+            "max_abs": 0.0003871917724609375
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.036580971955893854,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023946292909883142,
+            "max_abs": 0.00039196014404296875
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.025160995598673266,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025209551450727962,
+            "max_abs": 0.00038242340087890625
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02499360581234689,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025258630866644635,
+            "max_abs": 0.00034046173095703125
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03358871524889666,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025075803591372375,
+            "max_abs": 0.00035762786865234375
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021978923884629065,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025634657614982247,
+            "max_abs": 0.0003376007080078125
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02710903173094426,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.024516617965798956,
+            "max_abs": 0.0003757476806640625
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03199346315848573,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025012019400368346,
+            "max_abs": 0.0003719329833984375
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03063033878427418,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02431420192745469,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02780916648072687,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023725561014161813,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03199421591308606,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02370034214240729,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03090248395969229,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022888915950365196,
+            "max_abs": 0.00035762786865234375
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02764976375142624,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02505641060380664,
+            "max_abs": 0.00039005279541015625
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03882613273929818,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02262251803160126,
+            "max_abs": 0.00033092498779296875
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0303872000041597,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02359408587557633,
+            "max_abs": 0.0003376007080078125
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.028257573381391322,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022854456369251833,
+            "max_abs": 0.00034809112548828125
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.033182206050063105,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023097171079536877,
+            "max_abs": 0.00036334991455078125
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.04122268431104253,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.022598837746951508,
+            "max_abs": 0.00034332275390625
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03383925192663739,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023015978180354082,
+            "max_abs": 0.00034046173095703125
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.04239497095355936,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.021811042040240845,
+            "max_abs": 0.00029659271240234375
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.036833548036474505,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01925138088456474,
+            "max_abs": 0.00032138824462890625
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03920413316808223,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01741716017011968,
+            "max_abs": 0.000286102294921875
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0358413148679813,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.015019571868034865,
+            "max_abs": 0.00028133392333984375
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.024663729643487876,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025112585326503078,
+            "max_abs": 0.0003685951232910156
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03447487047453278,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.013854218030931812,
+            "max_abs": 0.0002751350402832031
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.032305528643030976,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012591214597406596,
+            "max_abs": 0.00027370452880859375
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03114066682017473,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012488597057853684,
+            "max_abs": 0.0002498626708984375
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.032364123741426463,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011308612680851975,
+            "max_abs": 0.00023508071899414062
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03293362688992559,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011614021372934507,
+            "max_abs": 0.00021219253540039062
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03329605691277766,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011639364865067553,
+            "max_abs": 0.00018393993377685547
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.031143071576671857,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01110315217131442,
+            "max_abs": 0.00018130242824554443
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.031614636502677325,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012028818447099668,
+            "max_abs": 0.00018897652626037598
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03118337218152792,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.010618207046906405,
+            "max_abs": 0.00017082691192626953
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.032192334278528766,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.010312993375764414,
+            "max_abs": 0.00016641616821289062
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02490600242999166,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02555064991550884,
+            "max_abs": 0.00034999847412109375
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.029902306114090442,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01008293582295375,
+            "max_abs": 0.00018930062651634216
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03123765249521009,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011082376227042329,
+            "max_abs": 0.00018310546875
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.033569372961471756,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011562102082271031,
+            "max_abs": 0.00020502920961007476
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.030691479083452444,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.010875783639276273,
+            "max_abs": 0.0001881718635559082
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03165702176074446,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.010656246548561557,
+            "max_abs": 0.00019311904907226562
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0326020236787038,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01154522369229807,
+            "max_abs": 0.00020110607147216797
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03669609607716153,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012490560756549803,
+            "max_abs": 0.0001952648162841797
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.037024676498849,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012849115385258323,
+            "max_abs": 0.00020599365234375
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.035768637690743676,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.012232990752295681,
+            "max_abs": 0.00020843744277954102
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03132245385121642,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.009799358603175549,
+            "max_abs": 0.0002014636993408203
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.03214973034805113,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.023885373280223117,
+            "max_abs": 0.0003390312194824219
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.026684977438271102,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025468672843457104,
+            "max_abs": 0.00035953521728515625
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.022713500874145216,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.025225407065625687,
+            "max_abs": 0.0003552436828613281
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.026162787135957495,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02496440850582378,
+            "max_abs": 0.00034332275390625
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.027500683793337557,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02570035672037242,
+            "max_abs": 0.000377655029296875
+          }
+        },
+        "relative_l2": 0.0017872475649818305
+      },
+      "reference": {
+        "25": {
+          "audio_loss": 1.4968415647745132,
+          "gradient_l2": 1.9773554445861183,
+          "total_loss": 2.684874325990677,
+          "video_loss": 1.1880327612161636
+        },
+        "50": {
+          "audio_loss": 2.5362709760665894,
+          "gradient_l2": 30.993214753960526,
+          "total_loss": 5.535695850849152,
+          "video_loss": 2.9994249641895294
+        }
+      }
+    },
+    "424244": {
+      "all_rank_initial_input_rng_precision_contracts_exact": true,
+      "candidate": {
+        "25": {
+          "audio_loss": 1.2260878086090088,
+          "gradient_l2": 11.060613174974888,
+          "total_loss": 2.527539700269699,
+          "video_loss": 1.301451861858368
+        },
+        "50": {
+          "audio_loss": 3.523772269487381,
+          "gradient_l2": 263.5355601819811,
+          "total_loss": 8.70928555727005,
+          "video_loss": 5.185513377189636
+        }
+      },
+      "checkpoint_drift": {
+        "l2": 0.19899092521164258,
+        "max_abs": 0.00048828125,
+        "note": "Reported paired checkpoint drift; endpoint statistics are the trajectory gate.",
+        "per_tensor": {
+          "time_embedder.linear_1.lora_A.default.weight": {
+            "l2": 0.0054616088487601565,
+            "max_abs": 0.000244140625
+          },
+          "time_embedder.linear_1.lora_B.default.weight": {
+            "l2": 0.011434372438187559,
+            "max_abs": 0.0001742243766784668
+          },
+          "time_embedder.linear_2.lora_A.default.weight": {
+            "l2": 0.05935333046633782,
+            "max_abs": 0.00048828125
+          },
+          "time_embedder.linear_2.lora_B.default.weight": {
+            "l2": 0.01027446634700109,
+            "max_abs": 0.00023162364959716797
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "token_refiner.refiner_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0,
+            "max_abs": 0.0
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023702542136563975,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.0.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02189100488782326,
+            "max_abs": 0.00035762786865234375
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02328614803288794,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.1.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01887754081121846,
+            "max_abs": 0.0003528594970703125
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016227390555024125,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.10.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020860507619845668,
+            "max_abs": 0.0003261566162109375
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016910972591860588,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.11.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020291602176163086,
+            "max_abs": 0.000331878662109375
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023389139980578174,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.12.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01883901118534101,
+            "max_abs": 0.0003228187561035156
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01675580109579128,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.13.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020719194452570762,
+            "max_abs": 0.0003452301025390625
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01983985451802287,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.14.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01936390380850276,
+            "max_abs": 0.00036525726318359375
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.022135960606532286,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.15.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02010662074155413,
+            "max_abs": 0.0003566741943359375
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02266433983828441,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.16.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01949428225246052,
+            "max_abs": 0.000354766845703125
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01948356409224211,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.17.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02009471027739615,
+            "max_abs": 0.0003304481506347656
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02267180994695424,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.18.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0188172763497967,
+            "max_abs": 0.0003185272216796875
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02055311438815043,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.19.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01778667622108736,
+            "max_abs": 0.00032520294189453125
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.019410324220724594,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.2.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01901322376883157,
+            "max_abs": 0.00031757354736328125
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.026555225890986998,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.20.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.018839229825796947,
+            "max_abs": 0.0003314018249511719
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02221868232742707,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.21.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.018103650638530727,
+            "max_abs": 0.0003337860107421875
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021835613498626272,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.22.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.019454143917272976,
+            "max_abs": 0.0003185272216796875
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023425338055379892,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.23.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01796208677538795,
+            "max_abs": 0.000347137451171875
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.024944991945443695,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.24.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.017188315000404002,
+            "max_abs": 0.0003604888916015625
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.024746138253366766,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.25.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.017506056258956605,
+            "max_abs": 0.0003170967102050781
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.025320049291555246,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.26.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01625433263401614,
+            "max_abs": 0.0002789497375488281
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0226157690445532,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.27.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.014579470142959758,
+            "max_abs": 0.0002949237823486328
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020471729559103802,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.28.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011591931125510714,
+            "max_abs": 0.00022864341735839844
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.018571011691770337,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.29.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.011102691342625027,
+            "max_abs": 0.0002357959747314453
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021677310477209267,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.3.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02022268350654889,
+            "max_abs": 0.0003490447998046875
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01865760460327828,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.30.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00966398637460927,
+            "max_abs": 0.0002510547637939453
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.01953448552502027,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.31.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.008699922832874811,
+            "max_abs": 0.00020241737365722656
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.018537991828394537,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.32.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00786299062374329,
+            "max_abs": 0.0001838207244873047
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.020034715079070228,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.33.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.007296326707119446,
+            "max_abs": 0.00017896294593811035
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0204007610705429,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.34.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00694436644096238,
+            "max_abs": 0.0001700371503829956
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021442823544577844,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.35.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.00654461172378749,
+            "max_abs": 0.00017726421356201172
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02121701585932476,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.36.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.006456055452472247,
+            "max_abs": 0.00012852251529693604
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023601541532947256,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.37.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.0058165382376133504,
+            "max_abs": 0.00012230873107910156
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.022881395915821966,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.38.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005773655586184115,
+            "max_abs": 0.00010991096496582031
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.024023208978361167,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.39.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005730799150551647,
+            "max_abs": 0.00011944770812988281
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.0205591076176492,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.4.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.02073415092574158,
+            "max_abs": 0.0003337860107421875
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023002512638870588,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.40.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005588011109243452,
+            "max_abs": 0.00011420249938964844
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.021892518431780694,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.41.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005389763587781721,
+            "max_abs": 0.00010466575622558594
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02274998316678066,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.42.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005722609912191141,
+            "max_abs": 0.000110626220703125
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02236709615925652,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.43.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.005918589266861618,
+            "max_abs": 0.00011274218559265137
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02307716929061557,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.44.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.006300047593787646,
+            "max_abs": 0.00010776519775390625
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02479703487095708,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.45.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.006656051927578049,
+            "max_abs": 0.0001499652862548828
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.025033157567592883,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.46.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.006686431788873955,
+            "max_abs": 0.00011229515075683594
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.026941256522742974,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.47.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.007094614129348113,
+            "max_abs": 0.00013065338134765625
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02895076533139029,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.48.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.007835363427375648,
+            "max_abs": 9.894371032714844e-05
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.02761452660902096,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.49.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.007208678075386839,
+            "max_abs": 0.0001138448715209961
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.023684021147757944,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.5.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020321630555848756,
+            "max_abs": 0.0003304481506347656
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.019240670978263548,
+            "max_abs": 0.000244140625
+          },
+          "transformer_blocks.6.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020812656722699836,
+            "max_abs": 0.00036144256591796875
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016408509726162986,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.7.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020343034931742714,
+            "max_abs": 0.00035858154296875
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.016669635047145918,
+            "max_abs": 0.0003662109375
+          },
+          "transformer_blocks.8.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.01927269147831365,
+            "max_abs": 0.00029850006103515625
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_A.default.weight": {
+            "l2": 0.017320216096718383,
+            "max_abs": 0.00048828125
+          },
+          "transformer_blocks.9.attn.to_out.0.lora_B.default.weight": {
+            "l2": 0.020393359675363112,
+            "max_abs": 0.00034427642822265625
+          }
+        },
+        "relative_l2": 0.0012939854260326264
+      },
+      "reference": {
+        "25": {
+          "audio_loss": 1.2425495237112045,
+          "gradient_l2": 16.95251056934531,
+          "total_loss": 2.548562705516815,
+          "video_loss": 1.3060131669044495
+        },
+        "50": {
+          "audio_loss": 2.6105030179023743,
+          "gradient_l2": 244.66132793525495,
+          "total_loss": 8.080851316452026,
+          "video_loss": 5.470348477363586
+        }
+      }
+    }
+  },
+  "rows": [
+    {
+      "candidate_mean": 2.7203858693440757,
+      "candidate_sample_sd": 0.2124770289311265,
+      "candidate_values": [
+        2.948164403438568,
+        2.6854535043239594,
+        2.527539700269699
+      ],
+      "mean_difference": -0.006382574637730916,
+      "metric": "total_loss",
+      "paired_differences": [
+        0.0012961030006408691,
+        0.0005791783332824707,
+        -0.02102300524711609
+      ],
+      "pass": true,
+      "reference_mean": 2.7267684439818063,
+      "reference_sample_sd": 0.20243066610090543,
+      "reference_values": [
+        2.9468683004379272,
+        2.684874325990677,
+        2.548562705516815
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": -0.031529682536090654,
+      "step": 25,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 1.4402207682530086,
+      "candidate_sample_sd": 0.3385944812794519,
+      "candidate_values": [
+        1.8261547684669495,
+        1.1930556744337082,
+        1.301451861858368
+      ],
+      "mean_difference": 2.9534101486206055e-05,
+      "metric": "video_loss",
+      "paired_differences": [
+        -0.00037300586700439453,
+        0.005022913217544556,
+        -0.004561305046081543
+      ],
+      "pass": true,
+      "reference_mean": 1.4401912341515224,
+      "reference_sample_sd": 0.3397378191218808,
+      "reference_values": [
+        1.8265277743339539,
+        1.1880327612161636,
+        1.3060131669044495
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": 8.693203942540971e-05,
+      "step": 25,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 1.280165101091067,
+      "candidate_sample_sd": 0.19102388443497764,
+      "candidate_values": [
+        1.1220096349716187,
+        1.4923978596925735,
+        1.2260878086090088
+      ],
+      "mean_difference": -0.006412108739217122,
+      "metric": "audio_loss",
+      "paired_differences": [
+        0.0016690939664840698,
+        -0.004443705081939697,
+        -0.01646171510219574
+      ],
+      "pass": true,
+      "reference_mean": 1.2865772098302841,
+      "reference_sample_sd": 0.19207311910727567,
+      "reference_values": [
+        1.1203405410051346,
+        1.4968415647745132,
+        1.2425495237112045
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": -0.033383686218142083,
+      "step": 25,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 10.258694408307234,
+      "candidate_sample_sd": 3.620626707392976,
+      "candidate_values": [
+        13.411132339239991,
+        6.304337710706823,
+        11.060613174974888
+      ],
+      "mean_difference": -0.535641485503849,
+      "metric": "gradient_l2",
+      "paired_differences": [
+        -0.04200932826182857,
+        4.326982266120704,
+        -5.891897394370423
+      ],
+      "pass": true,
+      "reference_mean": 10.794335893811082,
+      "reference_sample_sd": 7.8336296733576045,
+      "reference_values": [
+        13.45314166750182,
+        1.9773554445861183,
+        16.95251056934531
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": -0.06837717735439816,
+      "step": 25,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 6.074484388033549,
+      "candidate_sample_sd": 2.520478026555609,
+      "candidate_values": [
+        3.6864874362945557,
+        5.827680170536041,
+        8.70928555727005
+      ],
+      "mean_difference": 0.46714555223782855,
+      "metric": "total_loss",
+      "paired_differences": [
+        0.4810180962085724,
+        0.29198431968688965,
+        0.6284342408180237
+      ],
+      "pass": true,
+      "reference_mean": 5.60733883579572,
+      "reference_sample_sd": 2.4384804472945354,
+      "reference_values": [
+        3.2054693400859833,
+        5.535695850849152,
+        8.080851316452026
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": 0.19157240024463632,
+      "step": 50,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 3.1382668068011603,
+      "candidate_sample_sd": 1.9419217221124236,
+      "candidate_values": [
+        1.3224023431539536,
+        2.9068847000598907,
+        5.185513377189636
+      ],
+      "mean_difference": -0.1287866234779358,
+      "metric": "video_loss",
+      "paired_differences": [
+        -0.008984506130218506,
+        -0.09254026412963867,
+        -0.2848351001739502
+      ],
+      "pass": true,
+      "reference_mean": 3.267053430279096,
+      "reference_sample_sd": 2.0824191668764818,
+      "reference_values": [
+        1.331386849284172,
+        2.9994249641895294,
+        5.470348477363586
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": -0.0618447167248796,
+      "step": 50,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 2.9362175861994424,
+      "candidate_sample_sd": 0.5799973948260615,
+      "candidate_values": [
+        2.364085078239441,
+        2.9207954108715057,
+        3.523772269487381
+      ],
+      "mean_difference": 0.5959320912758509,
+      "metric": "audio_loss",
+      "paired_differences": [
+        0.4900025874376297,
+        0.3845244348049164,
+        0.9132692515850067
+      ],
+      "pass": true,
+      "reference_mean": 2.3402854949235916,
+      "reference_sample_sd": 0.40544608741225635,
+      "reference_values": [
+        1.8740824908018112,
+        2.5362709760665894,
+        2.6105030179023743
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": 1.469818330420609,
+      "step": 50,
+      "threshold": 2.0
+    },
+    {
+      "candidate_mean": 127.04508420251773,
+      "candidate_sample_sd": 118.20722295978715,
+      "candidate_values": [
+        57.95721044362062,
+        59.64248198195146,
+        263.5355601819811
+      ],
+      "mean_difference": 21.35048122577478,
+      "metric": "gradient_l2",
+      "paired_differences": [
+        16.52794420260723,
+        28.649267227990936,
+        18.874232246726166
+      ],
+      "pass": true,
+      "reference_mean": 105.69460297674296,
+      "reference_sample_sd": 120.46178139530872,
+      "reference_values": [
+        41.42926624101339,
+        30.993214753960526,
+        244.66132793525495
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": 0.1772386310286314,
+      "step": 50,
+      "threshold": 2.0
+    }
+  ],
+  "seeds": [
+    424242,
+    424243,
+    424244
+  ],
+  "selected_commit": "5c47dee7974a8b69990f05ab4e32cf298bf4ee7e",
+  "status": "PASS"
+}

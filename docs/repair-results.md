@@ -1,6 +1,6 @@
 # Targeted numerical repair and Round 60 selection
 
-Status: **selected; fresh six-arm 50-update validation running**. Nothing on this page establishes trajectory acceptance or authorizes publication.
+Status: **frozen fresh six-arm 50-update validation PASS**. See [all eight comparisons, per-seed values and checkpoint drift](repaired-validation-results.md). Independent checkpoint-content and publication audits remain separate required evidence.
 
 The original Round 19 speed result remains historical evidence. Its six-arm trajectory gate failed and is preserved in [the original results](validation-results.md). Targeted repair was separately authorized, with fixed seeds, thresholds and all failed artifacts retained.
 
@@ -21,7 +21,7 @@ The 1.8690552846103328× value was solely the early-stop target before Round 60.
 
 ## Repair evidence and bounded rounds
 
-Two-update capture/replay diagnostics found identical Q/K RMSNorm inputs, weights, epsilon and strides but different compiled outputs on five of eight ranks. This violated the saved attention O/LSE replay contract. The selected repair shares a detached compiled native forward across checkpoint modes and uses the existing compiled native first-order derivative in backward. It changes neither the derivative formula nor precision. Fixed FP64 component envelopes, exact eight-rank local replay bytes, emitted FP32 derivative math and finite matching contracts passed. The evidence identifies a concrete local defect; whether it explains the historical 50-update failure requires the fresh trajectory test.
+Two-update capture/replay diagnostics found identical Q/K RMSNorm inputs, weights, epsilon and strides but different compiled outputs on five of eight ranks. This violated the saved attention O/LSE replay contract. The selected repair shares a detached compiled native forward across checkpoint modes and uses the existing compiled native first-order derivative in backward. It changes neither the derivative formula nor precision. Fixed FP64 component envelopes, exact eight-rank local replay bytes, emitted FP32 derivative math and finite matching contracts passed. The evidence identifies a concrete local defect; the repaired candidate subsequently passed the predeclared fresh three-seed 50-update test. This does not prove that it was the only cause of the historical failure.
 
 | Round | Controlled diagnostic | Observation | Scope |
 |---:|---|---|---|
@@ -44,13 +44,13 @@ Two-update capture/replay diagnostics found identical Q/K RMSNorm inputs, weight
 | 59 | Fresh unchanged native-training-forward profile and full check | Profile63.016257912 seconds; complete frozen PASS at C62.954279293/Rmean116.831583275/speed1.855816389092575. Exact clean6cd674a preserved at repair/native-training-full-pass-1.8558163891x. | No new accepted best; main restored to5c47. Independent terminal timing/numerical/source/runtime/cleanup audit PASS. |
 | 60 | Terminal evidence/selection/documentation closeout | No new source experiment or redundant GPU rerun. Ranked all four complete repaired frozen checks, selected protected clean5c47 at1.8570097438x, verified all358 original files and rollback/source, and prepared the identical scientific validator. | Selection PASS; fresh six-arm50 gate launched after explicit user duration exception for only those six arms. |
 
-## Unchanged next gate
+## Unchanged final validation protocol
 
 Run six fresh eight-GPU arms: reference and selected candidate each for exactly 50 optimizer updates at seeds 424242, 424243 and 424244, in reference/candidate, candidate/reference, reference/candidate order. Record total, video and audio loss and the full preclip LoRA gradient L2 at updates 25 and 50. All six arms must preserve paired initialization, inputs, RNG, precision, optimizer and update contracts, with no skips or nonfinite values. Retain final checkpoints and paired drift.
 
 All eight endpoint comparisons must satisfy `abs(mean(candidate-reference) / reference_sample_SD(ddof=1)) <= 2.0`. Exactly zero reference SD passes only an exactly zero loaded mean difference. No epsilon, extra seed, reroll or weakened bound is permitted. The prepared observer preserves the original scientific function/class ASTs; only fresh paths, selected-commit/selection labels and added integrity preflights change.
 
-The uninterrupted 50-update arms historically required about 100 minutes for reference and 60–64 minutes for candidate. The user explicitly exempted only these six mandatory final arms from the30-minute run limit; every diagnostic and optimization run remains under30minutes. The prepared validator launched at2026-10-21T17:39:59UTC, using the exact clean protected source. Arms will not be shortened, segmented or restarted to evade a limit. Fresh validation status is **RUNNING**, with no statistical verdict yet. The [machine-readable selection and exact evidence hashes](performance-data/repaired-selection.json) distinguish selection, diagnostics and authoritative speed acceptance from this pending gate. All 358 original failed-validation file hashes and both accepted rollback refs were reverified unchanged at closeout.
+The uninterrupted 50-update arms historically required about 100 minutes for reference and 60–64 minutes for candidate. The user explicitly exempted only these six mandatory final arms from the30-minute run limit; every diagnostic and optimization run remains under30minutes. The prepared validator launched at2026-10-21T17:39:59UTC, using the exact clean protected source. Arms will not be shortened, segmented or restarted to evade a limit. Fresh validation completed uninterrupted with **PASS**, all six arms at exactly50 updates and all eight fixed comparisons passing. The [machine-readable selection and exact evidence hashes](performance-data/repaired-selection.json) distinguish selection, diagnostics and authoritative speed acceptance from the completed fresh gate. All 358 original failed-validation file hashes and both accepted rollback refs were reverified unchanged at closeout.
 
 The intended public destination is `2018cx/Faster-MiniMax-H3`. GitHub authentication must be verified as `2018cx` and repository nonexistence checked only after validation and all required audits pass. No GitHub checks or public writes have been performed during validation.
 

@@ -74,7 +74,7 @@ Reproduce the figure and table with `python docs/performance-views/generate_hist
 Separate matched 50-update, three-seed trajectory gate: **FAIL**. See the [validation method and results](docs/validation-results.md).
 <!-- END GENERATED OPTIMIZATION HISTORY -->
 
-Targeted repair later selected protected `5c47dee` at **1.8570097438×** in the Round 60 closeout. Its fresh six-arm 50-update validation is **running**; see the [repair evidence and selection](docs/repair-results.md).
+Targeted repair later selected protected `5c47dee` at **1.8570097438×** in the Round 60 closeout. Its fresh three-seed, six-arm 50-update validation **passed all eight fixed comparisons** (largest absolute standardized difference 1.4698 ≤ 2.0); see the [repair evidence and selection](docs/repair-results.md) and [fresh validation results](docs/repaired-validation-results.md).
 
 ## How it works
 

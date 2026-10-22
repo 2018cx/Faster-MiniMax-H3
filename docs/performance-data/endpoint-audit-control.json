@@ -8,8 +8,10 @@
   "original_validation_summary_sha256": "c43d8e4da32bd85386419df2767609db063385207df837a5516e0984e5eb9394",
   "negative_control_observed_statistical_status": "FAIL",
   "negative_control_raw_records_verified": 2400,
-  "fresh_validation_status": "RUNNING",
+  "fresh_validation_status": "PASS",
   "all_scientific_gates_verified": false,
   "frozen_observer_unchanged": true,
-  "prepared_at": "2026-10-21T18:10:43.206304+00:00"
+  "prepared_at": "2026-10-21T18:10:43.206304+00:00",
+  "fresh_endpoint_audit_path": "runs/target-2x/repair-20261021-v1/authorization/endpoint-audit-fresh-terminal.json",
+  "fresh_endpoint_audit_sha256": "8c6c83478f081672b31c39083dafa85d7084223228124b0ab775107b976ce044"
 }
