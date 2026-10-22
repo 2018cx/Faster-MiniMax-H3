@@ -15,12 +15,36 @@ learned every one of them the hard way).
 Proven at production scale: LoRA over 2,000 ~30-second clips (448×768, ~65k tokens per sequence, real
 stereo audio in the loss) on 8×A800, with lockstep validation and multi-day-run guard rails.
 
+## Released optimized result
+
+The released implementation is the **repaired Round 50 candidate**, selected at the **Round 60 closeout**
+after no repaired candidate reached the 1.8691× early-stop target. Its authoritative
+reference/candidate/reference check measured **63.176236 s/update versus 117.318886 s/update, or
+1.8570097438×** on 8×H20. The published runtime commit is
+[`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394)
+(tree-identical to original audit ID `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e`; only author metadata was normalized for publication).
+
+Why Round 19 was not released: although its two-update speed check passed at 1.869055×, the subsequent
+three-seed 50-update test exposed intermittent, finite pre-clip gradient spikes. At update 25, candidate
+mean gradient L2 was 895,829.90 versus 10.68 for the reference (absolute standardized mean difference
+142,950.33); seed 424243 also reached 11,248,900.41 at update 18 versus 5.95 in its matched reference.
+Gradient clipping kept the updates finite, but the trajectory-equivalence gate correctly failed.
+
+Targeted diagnostics then found a checkpoint-replay invariant defect: on five of eight ranks, identical
+Q/K RMSNorm inputs, weights, epsilon and strides produced different compiled outputs because inference
+and replay selected different XBLOCK configurations. The repair shares one detached compiled Q/K forward
+across checkpoint modes and retains the existing compiled first-order derivative. This is concrete defect
+evidence, not a claim that it was the only possible cause. A fresh three-seed × reference/optimized
+six-arm validation ran exactly 50 updates per arm and passed all eight predeclared comparisons; the largest
+absolute standardized mean difference was 1.4698 ≤ 2.0. See the [repair audit](docs/repair-results.md),
+[original failed validation](docs/validation-results.md), and [fresh repaired validation](docs/repaired-validation-results.md).
+
 <!-- BEGIN GENERATED OPTIMIZATION HISTORY -->
 ## Agent Optimization History
 
-Measured on **8×H20**, BF16 FL2VA LoRA/ZeRO-3, batch one per rank and approximately 33,750 tokens per sample. Each speed arm has two optimizer updates: update 1 is warm-up, and the interval to update 2 is timed. **Round 19 is the final full-check accepted best for Rounds 1–40 at approximately 1.87×.** The final Round 40 compiled-SwiGLU candidate completed in Round 41 without beating it, triggering the user-authorized fallback selection.
+Measured on **8×H20**, BF16 FL2VA LoRA/ZeRO-3, batch one per rank and approximately 33,750 tokens per sample. Each speed arm has two optimizer updates: update 1 is warm-up, and the interval to update 2 is timed. **Round 19 was the full-check best of the original Rounds 1–40 at approximately 1.87×, but it later failed the 50-update trajectory gate and is not the released implementation.** The released repair first passed its authoritative full check in Round 50 and was selected at the Round 60 closeout.
 
-![Rounds 1–40: candidate observations and cumulative full-check accepted best; Round 19 selected, 2× target not reached](docs/performance-views/02-history.svg)
+![Rounds 1–40: candidate observations and cumulative full-check accepted best; Round 19 was the original-stage best, 2× target not reached](docs/performance-views/02-history.svg)
 
 **F** = fresh reference/candidate/reference full check (numerics, benefit and integrity). **T** = uninstrumented screening time; a timing PASS alone does not accept a candidate. **P** = profile-only observation, excluded from speed claims. **—** = no valid candidate timing. The T column selects the lowest valid candidate screening latency in each round. Accepted best changes only after F; 1.000000× in rounds 1–3 denotes the unchanged reference anchor.
 
@@ -44,7 +68,7 @@ Measured on **8×H20**, BF16 FL2VA LoRA/ZeRO-3, batch one per rank and approxima
 | 16 | Power-of-two pinned slabs | 65.440259 / 1.789091× | **F PASS**: 64.746800 s / 1.808602×. Accepted 176 GiB host / 24 GiB GPU slabs, with all 700 replays. The 112 GiB screen was slower; full check passed the 65.75 s cutoff. | 1.808602× |
 | 17 | NUMA placement | 67.278752 / 1.740202× | **T only; not accepted.** Rejected: slower; instrumented operator durations are not additive critical-path evidence. | 1.808602× |
 | 18 | DeepSpeed communication overlap | 79.312700 / 1.476165× | **T only; not accepted.** Both overlap trials rejected; even the best was slower. Extra headroom alone did not recover performance. | 1.808602× |
-| **19 · selected** | Cache headroom: 16 GiB GPU / 184 GiB host | 62.636536 / 1.869174× | **F PASS**: 62.621896 s / 1.869055×. Selected exact protected commit `fe2ccd6`; all 700 expected cache replays, no misses. | **1.869055×** |
+| **19 · original-stage best** | Cache headroom: 16 GiB GPU / 184 GiB host | 62.636536 / 1.869174× | **F PASS**: 62.621896 s / 1.869055×. Original-stage protected commit `fe2ccd6`; all 700 expected cache replays, no misses. Later 50-update validation failed, so this is not the released implementation. | **1.869055×** |
 | 20 | Grouped block parameter fetch | 62.586782 / 1.870660× | **T only; not accepted.** Only 0.056% lower latency than the accepted result: unresolved, with no full check or new accepted best. | 1.869055× |
 | 21 | Sequential/grouped fetch | 62.670310 / 1.868167× | **T only; not accepted.** Rejected: no gain. All-reduce alternative rejected before timing for unsupported dtype/padding assumptions. | 1.869055× |
 | 22 | Compiled modulated RMSNorm | 62.412514 / 1.875883× | **T only; not accepted.** Only 0.334% lower latency; missed the predeclared 61.5 s cutoff. No full check. | 1.869055× |
@@ -71,10 +95,8 @@ R40 includes its candidate’s terminal R41 screen; no new accepted best followe
 
 Reproduce the figure and table with `python docs/performance-views/generate_history.py`; verify checked-in outputs with `python docs/performance-views/generate_history.py --check`.
 
-Separate matched 50-update, three-seed trajectory gate: **FAIL**. See the [validation method and results](docs/validation-results.md).
+Original Round 19 matched 50-update, three-seed trajectory gate: **FAIL**. See the [historical validation results](docs/validation-results.md). The repaired release passed the fresh six-arm validation linked in the release summary above.
 <!-- END GENERATED OPTIMIZATION HISTORY -->
-
-Targeted repair later selected protected `5c47dee` at **1.8570097438×** in the Round 60 closeout. Its fresh three-seed, six-arm 50-update validation **passed all eight fixed comparisons** (largest absolute standardized difference 1.4698 ≤ 2.0); see the [repair evidence and selection](docs/repair-results.md) and [fresh validation results](docs/repaired-validation-results.md).
 
 ## How it works
 

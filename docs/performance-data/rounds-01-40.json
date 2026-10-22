@@ -1,6 +1,7 @@
 {
   "schema": "minimax-h3-optimization-history@1",
   "scope": {
+    "phase": "original_rounds_1_40_historical_only",
     "gpu_count": 8,
     "gpu_model": "H20",
     "variant": "FL2VA",
@@ -28,6 +29,7 @@
     "design": "Original artwork using the reference view white background, muted burgundy palette, cumulative curve, open/filled observations and compact milestone cards."
   },
   "selection": {
+    "status": "historical_stage_best_not_released",
     "round": 19,
     "commit": "fe2ccd6cc564b08a165793a66dce4f01faf2ea21",
     "rollback_ref": "rollback/accepted-1.8691x",
@@ -38,6 +40,15 @@
     "fallback_terminal_round": 41,
     "fallback_terminal_path": "runs/target-2x/round-41/time/time.json",
     "fallback_reason": "Final compiled-SwiGLU screen was slower; no new full-check PASS best. Round42 profiling cancelled; no subsequent optimization."
+  },
+  "released_repair": {
+    "origin_round": 50,
+    "selection_round": 60,
+    "original_audit_commit": "5c47dee7974a8b69990f05ab4e32cf298bf4ee7e",
+    "published_equivalent_commit": "7d7be367a2611193b354570a909c8fcc85216394",
+    "speedup": 1.8570097438259385,
+    "validation_status": "PASS",
+    "evidence": "docs/performance-data/repaired-selection.json"
   },
   "provenance": {
     "work_log_path": "WORK_LOG.md",
@@ -588,7 +599,7 @@
       "round": 19,
       "experiment": "Cache headroom: 16 GiB GPU / 184 GiB host",
       "classification": "full_check",
-      "outcome": "Selected exact protected commit `fe2ccd6`; all 700 expected cache replays, no misses.",
+      "outcome": "Original-stage protected commit `fe2ccd6`; all 700 expected cache replays, no misses. Later 50-update validation failed, so this is not the released implementation.",
       "best_screen": {
         "path": "runs/target-2x/round-19/time-headroom16/time.json",
         "observed_round": 19,

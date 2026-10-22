@@ -14,6 +14,33 @@ rectified-flow 训练器 + latent 离线缓存预处理器,并完整记录了背
 已在生产规模验证:8×A800 上对 2,000 条 ~30 秒片段(448×768,单序列 ~65k token,真实立体声音频
 参与 loss)做 LoRA 微调,带锁步验证集与多天长跑护栏。
 
+## 最终发布的优化结果
+
+最终发布的不是原始 Round 19，而是 **Round 50 首次通过正式速度 check 的修复候选**；由于后续
+修复候选都没有达到 1.8691× 的提前停止目标，它在 **Round 60 收尾时被正式选中**。8×H20 上的
+reference/candidate/reference 正式测量为 **63.176236 秒/step 对 117.318886 秒/step，即
+1.8570097438×**。公开运行时代码 commit 是
+[`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394)，
+与原始审计 ID `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e` 的代码树完全一致，仅发布署名元数据不同。
+
+Round 19 没有发布，是因为它虽然以 1.869055× 通过两步速度检查，随后却在三 seed、每 arm 50 step
+验证中出现间歇性的有限梯度尖峰。第 25 step 的 optimized 平均 pre-clip 梯度 L2 为 895,829.90，
+reference 为 10.68，绝对标准化均值差达到 142,950.33；seed 424243 在第 18 step 也出现
+11,248,900.41 对 5.95 的尖峰。梯度裁剪让更新仍保持有限，但轨迹一致性门槛明确失败。
+
+定向诊断随后发现了 checkpoint replay 不变量缺陷：8 个 rank 中有 5 个在 Q/K RMSNorm 输入、权重、
+epsilon 和 stride 完全相同时，因为 inference 与 replay 选择了不同 XBLOCK，编译输出仍不一致。
+修复方案让两种 checkpoint 模式共享同一个 detached compiled Q/K forward，并保留既有的编译一阶
+导数路径。这个结果证明了一个具体缺陷，但不声称它一定是历史尖峰的唯一原因。修复后重新执行了
+三 seed × reference/optimized 共六个 arm、每 arm 恰好 50 step 的验证，8 项预先声明的比较全部通过，
+最大绝对标准化均值差为 1.4698 ≤ 2.0。详见[修复审计](docs/repair-results.md)、
+[原始失败验证](docs/validation-results.md)和[修复后验证](docs/repaired-validation-results.md)。
+
+原始 Round 1–40 的完整速度探索历史、Round 19 的历史最好点以及 Round 41 的终止 screen，见
+[历史图](docs/performance-views/02-history.svg)和[机器可读数据](docs/performance-data/rounds-01-40.json)。
+
+![原始 Round 1–40 候选观测与累计正式检查最佳值；Round 19 是历史阶段最好点，但不是最终发布版本](docs/performance-views/02-history.svg)
+
 ## 实现原理
 
 **两阶段设计**(训练时 GPU 显存里只有 33B transformer 一个大件):

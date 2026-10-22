@@ -48,9 +48,9 @@ def table(data):
     lines = [BEGIN, '## Agent Optimization History', '',
              'Measured on **8×H20**, BF16 FL2VA LoRA/ZeRO-3, batch one per rank and approximately 33,750 tokens per sample. '
              'Each speed arm has two optimizer updates: update 1 is warm-up, and the interval to update 2 is timed. '
-             f'**Round {data["selection"]["round"]} is the final full-check accepted best for Rounds 1–40 at approximately {data["selection"]["speedup"]:.2f}×.** '
-             'The final Round 40 compiled-SwiGLU candidate completed in Round 41 without beating it, triggering the user-authorized fallback selection.', '',
-             '![Rounds 1–40: candidate observations and cumulative full-check accepted best; Round 19 selected, 2× target not reached](docs/performance-views/02-history.svg)', '',
+             f'**Round {data["selection"]["round"]} was the full-check best of the original Rounds 1–40 at approximately {data["selection"]["speedup"]:.2f}×, but it later failed the 50-update trajectory gate and is not the released implementation.** '
+             'The released repair first passed its authoritative full check in Round 50 and was selected at the Round 60 closeout.', '',
+             '![Rounds 1–40: candidate observations and cumulative full-check accepted best; Round 19 was the original-stage best, 2× target not reached](docs/performance-views/02-history.svg)', '',
              '**F** = fresh reference/candidate/reference full check (numerics, benefit and integrity). '
              '**T** = uninstrumented screening time; a timing PASS alone does not accept a candidate. '
              '**P** = profile-only observation, excluded from speed claims. **—** = no valid candidate timing. '
@@ -76,7 +76,7 @@ def table(data):
         else:
             result = '**T only; not accepted.** '
         result += r['outcome']
-        label = f'**{r["round"]} · selected**' if r['selected'] else str(r['round'])
+        label = f'**{r["round"]} · original-stage best**' if r['selected'] else str(r['round'])
         best = f'{r["accepted_best_speedup"]:.6f}×'
         if r['selected']:
             best = f'**{best}**'
@@ -90,7 +90,7 @@ def table(data):
               'Reproduce the figure and table with `python docs/performance-views/generate_history.py`; '
               'verify checked-in outputs with `python docs/performance-views/generate_history.py --check`.', END]
     if data['scope'].get('validation_status') in ('PASS', 'FAIL'):
-        lines.insert(-1, '\nSeparate matched 50-update, three-seed trajectory gate: **' + data['scope']['validation_status'] + '**. See the [validation method and results](docs/validation-results.md).')
+        lines.insert(-1, '\nOriginal Round 19 matched 50-update, three-seed trajectory gate: **' + data['scope']['validation_status'] + '**. See the [historical validation results](docs/validation-results.md). The repaired release passed the fresh six-arm validation linked in the release summary above.')
     return '\n'.join(lines)
 
 
@@ -103,7 +103,7 @@ def svg(data):
     y = lambda v: bottom - (v - ymin) / (ymax - ymin) * (bottom - top)
     parts = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="920" viewBox="0 0 1200 920" role="img" aria-labelledby="title desc">',
-             f'<title id="title">MiniMax-H3 agent optimization history: Round {data["selection"]["round"]} selected at {data["selection"]["speedup"]:.6f}×</title>',
+             f'<title id="title">MiniMax-H3 original optimization history: Round {data["selection"]["round"]} was the stage best at {data["selection"]["speedup"]:.6f}×</title>',
              '<desc id="desc">Forty rounds. Burgundy step curve is the cumulative full-check accepted best. Filled circles are full checks, open circles screening times, gray diamonds profile-only observations. Failures and untimed candidates have a separate status rail, not zero speedup. The 2× target was not reached. Round 40 candidate screening completed in Round 41.</desc>',
              f'<metadata>Data SHA256: {hashlib.sha256(DATA.read_bytes()).hexdigest()}</metadata>',
              '<rect width="1200" height="920" fill="white"/>',
@@ -118,7 +118,7 @@ def svg(data):
         parts.append(f'<path d="M{tx:.2f},{ty-5:.2f} L{tx+5:.2f},{ty:.2f} L{tx:.2f},{ty+5:.2f} L{tx-5:.2f},{ty:.2f} Z" fill="white" stroke="{MUTED}" stroke-width="1.6"/>')
     text(88,64,'Agent Optimization History',31,weight='bold')
     text(1140,62,f'{data["selection"]["speedup"]:.2f}×',40,BURGUNDY,'end','bold')
-    text(1140,85,'selected full-check speedup',13,MUTED,'end')
+    text(1140,85,'original-stage full-check best',13,MUTED,'end')
     text(88,105,f'{data["scope"]["gpu_count"]} H20 GPUs · BF16 FL2VA LoRA · {data["scope"]["tokens_per_rank"]:,} tokens/rank · Rounds 1–40',17,MUTED)
     text(88,131,'Two updates per speed arm · update 1 warm-up · timed interval: completion of update 1 → update 2',14,MUTED)
     line(88,164,116,164,BURGUNDY,3);text(125,169,'Accepted best',13)
@@ -162,7 +162,7 @@ def svg(data):
     circle(sx,sy,12,'none','#e8baba',3);circle(sx,sy,6.3,BURGUNDY)
     line(sx+8,sy+8,675,300,BURGUNDY,1.3)
     parts.append(f'<rect x="675" y="300" width="368" height="70" rx="7" fill="white" stroke="{GRID}"/>')
-    text(691,327,f'R{selected["round"]} selected · full check PASS',17,BURGUNDY,weight='bold')
+    text(691,327,f'R{selected["round"]} original-stage best · full check PASS',17,BURGUNDY,weight='bold')
     text(691,352,f'{selected["full_check"]["seconds"]:.6f} s · {selected["full_check"]["speedup"]:.6f}×',16)
     text(x(40)-10,y(rows[-1]['best_screen']['speedup'])-14,'R40 → R41 screen',12,MUTED,'end')
     text(88,640,'Gray profile markers observe the current accepted version; they are not candidate speed claims.',13,MUTED)
@@ -170,7 +170,7 @@ def svg(data):
     # Compact milestone cards echo the reference view; measurements come only from data.
     cards=[(4,'Native cuDNN SDPA',f'Full check · {rows[3]["full_check"]["speedup"]:.6f}×'),
            (16,'Retention, RMSNorm and RoPE',f'Full checks through R16 · {rows[15]["full_check"]["speedup"]:.6f}×'),
-           (19,'GPU / host cache headroom',f'Selected R19 · {selected["full_check"]["speedup"]:.6f}×'),
+           (19,'GPU / host cache headroom',f'Original-stage best · {selected["full_check"]["speedup"]:.6f}×'),
            (40,'Compiled packed SwiGLU',f'R41 screen · {rows[-1]["best_screen"]["seconds"]:.6f} s · no gain')]
     for i,(n,title,detail) in enumerate(cards):
         cx=88+(i%2)*540;cy=694+(i//2)*82
@@ -178,7 +178,7 @@ def svg(data):
         text(cx+16,cy+29,f'R{n}',16,BURGUNDY,weight='bold')
         text(cx+76,cy+28,title,16,weight='bold')
         text(cx+76,cy+52,detail,13,MUTED)
-    text(88,890,'The R40 final opportunity completed in R41. No later full-check best; fallback selected. 2× was not achieved.',12,MUTED)
+    text(88,890,'R19 later failed the 50-update gate. A repaired implementation passed at R50 and was selected at R60.',12,MUTED)
     parts.append('</g></svg>\n')
     return '\n'.join(parts)
 
@@ -198,7 +198,8 @@ def main():
         assert readme==generated,'README history is stale; regenerate'
         print('PASS: 40 rounds, evidence types, denominators, accepted curve, README and SVG reproduction')
     else:
-        SVG.write_text(svg_text);path.write_text(generated)
+        # Keep repository text files LF-only even when regenerated on Windows.
+        SVG.write_text(svg_text, newline='\n');path.write_text(generated, newline='\n')
 
 
 if __name__=='__main__':
