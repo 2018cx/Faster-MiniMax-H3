@@ -1,21 +1,26 @@
-# MiniMax-H3-FineTuning
+# Faster-MiniMax-H3
 
-English | [中文](README_zh.md)
+[English](README.md) | [简体中文](README_zh.md)
 
-A minimal, working fine-tuning path for [MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) —
-the open-weight omni-modal model that jointly generates video **and** synchronized stereo audio.
+**1.86× faster MiniMax-H3 LoRA fine-tuning optimizer steps on 8×H20 GPUs, optimized by AI agents.**
 
-MiniMax released the H3 weights "to support further development, including fine-tuning", but ships **no
-trainer**. The Hugging Face Diffusers integration is inference-only. This repository fills the gap with a
-supervised rectified-flow trainer built directly on the official Diffusers integration, plus latent-caching
-preprocessors — and documents the nine hard-won fixes behind it: five H3-specific numeric conventions that
-silently corrupt weights, and four LoRA × ZeRO-3 × long-sequence landmines (see [FIXES.md](FIXES.md); we
-learned every one of them the hard way).
+| Implementation | Time / optimizer step (s) ↓ | Speedup ↑ |
+|---|---:|---:|
+| Reference | 117.318886 | 1.00× |
+| **Faster-MiniMax-H3** | **63.176236** | **1.8570×** |
 
-Proven at production scale: LoRA over 2,000 ~30-second clips (448×768, ~65k tokens per sequence, real
-stereo audio in the loss) on 8×A800, with lockstep validation and multi-day-run guard rails.
+Measured in the authoritative reference/candidate/reference check with BF16 FL2VA LoRA/ZeRO-3,
+batch one per rank and approximately 33,750 tokens per sample. The separate matched three-seed ×
+reference/optimized validation ran exactly 50 optimizer steps in all six arms and passed all eight
+predeclared comparisons. These are short cached-workload results, not a full-convergence or
+generated-output-quality claim.
 
-## Released optimized result
+Faster-MiniMax-H3 is the agent-optimized H20 training path for
+[MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/MiniMax-H3). It includes a supervised
+rectified-flow trainer built on the official Diffusers integration, latent-cache preprocessing, and the
+LoRA × ZeRO-3 correctness fixes documented in [FIXES.md](FIXES.md).
+
+## Selection and validation
 
 The released implementation is the **repaired Round 50 candidate**, selected at the **Round 60 closeout**
 after no repaired candidate reached the 1.8691× early-stop target. Its authoritative
@@ -203,7 +208,7 @@ native result; a mismatch disables the fused path and is logged. Unsupported
 inputs, including trainable rotary tables, use the native formula with counted
 fallbacks. Higher-order gradients are not supported by the fused operator.
 
-**Sequence-length budget (8×A800-80GB, full attention + LoRA + ZeRO-3):** the measured ceiling is ≈**70k
+**Historical upstream trainer capacity note (8×A800-80GB, not the H20 optimization benchmark):** the measured ceiling is ≈**70k
 tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
 448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without
 re-encoding caches: `H3_MAX_LF=<n>` (env) truncates cached samples to *n* video latent frames at load
@@ -212,7 +217,7 @@ time, and `--max-seq-tokens` (default 132000) is a pre-flight all-reduced skip g
 
 ## Does it work?
 
-With the conventions wrong (timestep direction + velocity sign inverted), a heads-only run shows loss
+The original trainer's separate A800 validation found that, with the conventions wrong (timestep direction + velocity sign inverted), a heads-only run shows loss
 *rising* (7.2 → 9.5 over 10 steps). With the fixes in this repo, the same setup trains at loss ≈ 0.3–1.0,
 stable across 1000 steps on 8×A800, and the trained heads produce coherent generations when patched back
 into the inference pipeline. The LoRA path runs 30-second 65k-token sequences with real audio at

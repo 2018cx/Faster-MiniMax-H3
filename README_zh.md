@@ -1,20 +1,24 @@
-# MiniMax-H3-FineTuning
+# Faster-MiniMax-H3
 
-[English](README.md) | 中文
+[English](README.md) | [简体中文](README_zh.md)
 
-[MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) 的一套最小可用微调方案——
-H3 是开放权重的全模态生成模型,能联合生成视频与同步立体声音频。
+**在 8×H20 GPU 上将 MiniMax-H3 LoRA 微调 optimizer step 加速 1.86×，由 AI agents 完成优化。**
 
-MiniMax 放出权重时表示"支持包括微调在内的进一步开发",但**没有发布任何训练器**,Hugging Face
-Diffusers 集成也只覆盖推理。本仓库补上这个缺口:基于官方 Diffusers 集成实现了监督式
-rectified-flow 训练器 + latent 离线缓存预处理器,并完整记录了背后的 **9 条实战修复**:5 个 H3 特有
-的数值约定(搞错任何一个,训练都会悄悄把权重往错误方向推)+ 4 个 LoRA × ZeRO-3 × 长序列的分布式
-地雷(见 [FIXES.md](FIXES.md),每一条都踩过)。
+| 实现 | 每个 optimizer step 时间（秒）↓ | 加速比 ↑ |
+|---|---:|---:|
+| Reference | 117.318886 | 1.00× |
+| **Faster-MiniMax-H3** | **63.176236** | **1.8570×** |
 
-已在生产规模验证:8×A800 上对 2,000 条 ~30 秒片段(448×768,单序列 ~65k token,真实立体声音频
-参与 loss)做 LoRA 微调,带锁步验证集与多天长跑护栏。
+正式结果来自 BF16 FL2VA LoRA/ZeRO-3 的 reference/candidate/reference 检查：每个 rank batch 为 1，
+每个样本约 33,750 token。独立的三 seed × reference/optimized 配对验证共六个 arm，每个 arm 恰好
+运行 50 个 optimizer step，8 项预先声明的比较全部通过。这是短程缓存工作负载结果，不代表完整收敛
+或生成质量结论。
 
-## 最终发布的优化结果
+Faster-MiniMax-H3 是 [MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/MiniMax-H3) 面向 H20
+训练的 agent 优化版本，包含基于官方 Diffusers 集成的监督式 rectified-flow trainer、latent 缓存
+预处理，以及 [FIXES.md](FIXES.md) 中记录的 LoRA × ZeRO-3 正确性修复。
+
+## 版本选择与验证
 
 最终发布的不是原始 Round 19，而是 **Round 50 首次通过正式速度 check 的修复候选**；由于后续
 修复候选都没有达到 1.8691× 的提前停止目标，它在 **Round 60 收尾时被正式选中**。8×H20 上的
@@ -115,7 +119,7 @@ deepspeed --num_gpus 8 train.py \
 来自模型本身的约束:`num_frames % 17 == 5`、宽高均为 32 的倍数、视频 24 fps、音频 32 kHz 立体声、
 `audio_latent_frames = round(num_frames / 24 * 40)`。
 
-**序列长度预算(8×A800-80GB,全注意力 + LoRA + ZeRO-3):** 实测上限约 **70k token**/样本
+**原始训练器的历史容量记录（8×A800-80GB，并非本次 H20 优化 benchmark）：** 实测上限约 **70k token**/样本
 (65k ⇒ 稳态 76 GB;76k 及以上必 OOM)。分辨率 × 时长要按它排布——448×768 @ 27 秒 ≈ 65k 放得下,
 576×1024 @ 30 秒 ≈ 127k 放不下。两个旋钮可以在不重编码缓存的前提下执行预算:环境变量
 `H3_MAX_LF=<n>` 在加载时把缓存样本截断到 n 个视频 latent 帧;`--max-seq-tokens`(默认 132000)是
@@ -123,7 +127,7 @@ deepspeed --num_gpus 8 train.py \
 
 ## 效果验证
 
-数值约定搞错时(timestep 方向 + 速度符号同时反),heads 模式的 loss **越训越高**(10 步内
+原始训练器另行完成的 A800 验证表明：数值约定搞错时(timestep 方向 + 速度符号同时反),heads 模式的 loss **越训越高**(10 步内
 7.2 → 9.5);用本仓库的修正版,同样配置 loss 稳定在 ≈ 0.3–1.0,8×A800 上 1000 步全程平稳,训出的
 输出头 patch 回官方推理管线后生成正常。LoRA 路径在 8×A800 上跑 30 秒 65k-token 序列 + 真实音频,
 约 7.5–8 分钟/步(对照:heads 模式 33k token 约 53 秒/步)。详见 [FIXES.md](FIXES.md)。
