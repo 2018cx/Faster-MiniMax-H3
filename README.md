@@ -223,3 +223,5 @@ frozen GEMM output within its checkpoint and releases every value before updates
 This split leaves more GPU headroom for temporary allocations than the former
 176 GiB host / 24 GiB GPU configuration.
 The arena keeps storage for reuse across updates; it never replays values from earlier updates.
+
+Licensing scope: upstream-derived trainer code has no declared software license; separable new additions are identified without an additional license grant. Model-weight terms remain separate. See [LICENSE](LICENSE), [NOTICE](NOTICE), and the [provenance map](docs/licensing-provenance.json).

@@ -1,0 +1,44 @@
+LICENSING STATUS AND SCOPE
+
+This repository has mixed provenance. This file is a licensing-status notice,
+not a repository-wide grant under MIT, Apache-2.0, or any other software license.
+
+1. Upstream-derived software and documentation
+
+The trainer and other inherited files originate from
+https://github.com/IAmIronMan42/MiniMax-H3-FineTuning
+at upstream commit 74d535b2cae5cd56f9565059e6f2b6c9ddb39df4.
+No declared software license was found in that source tree. Its README links
+the model-weight license, not a separate license for this third-party trainer.
+This project does not grant rights in, or relicense, the upstream authors'
+material. Modified inherited files retain that distinction; adding new code
+to a file does not license the entire file. See NOTICE for the provenance map.
+
+2. Separable new optimization, testing, and documentation contributions
+
+The new contributions identified in NOTICE are distinct from inherited
+material. No additional software or documentation license grant is made by
+this notice for those contributions. In particular, they are not silently
+placed under MIT or Apache-2.0, and their existence does not supply a license
+for upstream-derived code. Any future separate license must identify its
+covered contributions and come from the appropriate rights holders.
+
+3. Model materials and model derivatives
+
+MiniMax H3 model materials, including released weights, and model derivatives
+are governed by the applicable MiniMax H3 Community License Agreement:
+https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
+That agreement includes territory, use, and redistribution conditions. It is
+not replaced by this file and is not asserted here as a blanket software
+license for the upstream third-party fine-tuning repository. Fine-tuned model
+weights and LoRA checkpoints must be considered separately from software/docs.
+The Git source tree contains no model-weight checkpoint or training cache.
+A code/documentation notice does not authorize distribution of model artifacts.
+
+4. Dependencies and example assets
+
+External libraries and separately sourced assets retain their own terms.
+Example-image provenance and notices remain in examples/public_assets/SOURCES.md.
+This file grants no rights in third-party dependencies or assets.
+
+See NOTICE and docs/licensing-provenance.json for scope and primary sources.

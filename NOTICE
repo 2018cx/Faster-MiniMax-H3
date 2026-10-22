@@ -1,0 +1,53 @@
+Faster-MiniMax-H3 — provenance and licensing notice
+
+Upstream attribution
+--------------------
+Upstream repository: https://github.com/IAmIronMan42/MiniMax-H3-FineTuning
+Inspected upstream commit: 74d535b2cae5cd56f9565059e6f2b6c9ddb39df4
+No declared software license was found in the inspected upstream tree.
+The publication review also reported GitHub licenseInfo=null. This is a
+licensing-status observation, not an upstream permission grant.
+Upstream authorship and existing notices are retained through the source and
+Git history; this project claims no authority to license their contributions.
+
+Inherited files, including train.py and the inherited README.md text, remain
+upstream-derived. train.py has local optimization changes, and README.md has
+local optimization history/results additions. Those additions do not relicense
+the inherited portions. Other upstream files remain inherited even when this
+notice does not name each one; the machine-readable map lists every path.
+
+New, separable project contributions
+-----------------------------------
+Added optimization modules: attention_checkpoint.py, compiled_norm.py,
+compiled_rope.py, frozen_linear_cache.py.
+Added tests: tests/check_compiled_rope.py, tests/check_frozen_linear_cache.py.
+Added documentation, evidence data, audit/figure scripts: docs/.
+New optimization/result text in README.md and additions to train.py are
+separable contributions within mixed-provenance files, not whole-file grants.
+LICENSE and this NOTICE are newly authored provenance notices.
+No new license grant for these additions is asserted by these notices.
+This classification does not override any third-party rights or dependency terms.
+
+MiniMax model terms
+------------------
+MiniMax H3 is licensed under the MiniMax H3 Community License Agreement,
+Copyright © 2026 MiniMax. All Rights Reserved.
+
+Authoritative agreement and acceptable-use terms:
+https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE
+Authoritative model card: https://huggingface.co/MiniMaxAI/MiniMax-H3
+
+The model agreement applies to its covered materials and model derivatives,
+including fine-tuned weights; it is not a license grant from the authors of
+the separate upstream fine-tuning repository. Model weights, training caches,
+and validation/checkpoint artifacts are not relicensed by software/docs notices.
+No model weights or training media are included in this Git source tree.
+
+Third-party assets and dependencies
+-----------------------------------
+Preserve examples/public_assets/SOURCES.md for the example images' source
+attributions and recorded public-domain status. Do not apply a software-license
+label to those assets. PyTorch, Diffusers, DeepSpeed, PEFT, Triton and other
+external dependencies remain subject to their respective licenses/notices.
+
+Verified scope and source links are recorded in docs/licensing-provenance.json.
