@@ -29,7 +29,6 @@ from __future__ import annotations
 import argparse
 import glob
 import hashlib
-import json
 import os
 
 # [FIX8] Must take effect before `import torch`: long-sequence ZeRO-3 training
@@ -45,7 +44,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset
 
 from diffusers import MiniMaxH3Transformer3DModel
-from h3_compat import audio_latent_num_frames, build_packed_sequence, build_row_timesteps
+from diffusers.modular_pipelines.minimax_h3.packing import build_packed_sequence, build_row_timesteps
 
 VAL_SIGMAS = (0.3, 0.6, 0.9)
 
@@ -77,7 +76,8 @@ class H3Cache(Dataset):
             tokens_per_lf = item["video"].shape[0] // lf_old
             nf_new = int(item["num_frames"] * max_lf / lf_old)
             nf_new = max(22, ((nf_new - 5) // 17) * 17 + 5)  # re-align to 17n+5 (22 = shortest valid clip)
-            n_a_new = min(audio_latent_num_frames(nf_new), n_a_old)
+            from diffusers.modular_pipelines.minimax_h3.packing import audio_latent_num_frames as _alnf
+            n_a_new = min(_alnf(nf_new), n_a_old)
             item["video"] = item["video"][: max_lf * tokens_per_lf]
             # Audio rows are channel-major ([ch0 x n_a_old, ch1 x n_a_old]):
             # slice each channel's block, then re-concatenate.
@@ -132,23 +132,25 @@ def forward_loss(model, item, layout, device, sigma_v, sigma_a, noise_seed=None)
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", type=Path, required=True); ap.add_argument("--cache", type=Path, required=True); ap.add_argument("--output", type=Path, required=True)
-    # DeepSpeed's launcher injects this CLI argument and also exports
-    # LOCAL_RANK. Keep the argument for launcher compatibility; the runtime
-    # below deliberately reads the environment as its single source of truth.
-    ap.add_argument("--local_rank", type=int, default=-1)
     ap.add_argument("--variant", choices=("fl2va", "ref2va"), default="ref2va")
     ap.add_argument("--attention-backend", default="_native_cudnn",
                     help="Diffusers SDPA backend on CUDA; use native for automatic selection")
+    ap.add_argument("--attention-cache-gib", type=float, default=32,
+                    help="cuDNN outputs retained inside activation checkpoints; 0 recomputes attention")
+    ap.add_argument("--compile-norms", action=argparse.BooleanOptionalAction, default=True,
+                    help="compile CUDA RMSNorm while preserving eager precision casts")
+    ap.add_argument("--compile-rope", action=argparse.BooleanOptionalAction, default=True,
+                    help="compile rotary embedding and attention input layout with eager precision casts")
+    ap.add_argument("--linear-cache-gpu-gib", type=float, default=16,
+                    help="GPU budget for frozen Linear outputs inside LoRA activation checkpoints")
+    ap.add_argument("--linear-cache-cpu-gib", type=float, default=184,
+                    help="maximum pinned host budget per rank, also limited by available node memory")
+    ap.add_argument("--linear-cache-max-entry-gib", type=float, default=2,
+                    help="recompute larger Linear outputs to preserve cache space for smaller outputs")
     ap.add_argument("--strategy", choices=("ddp", "deepspeed"), default="deepspeed")
     ap.add_argument("--deepspeed-config", type=Path, default=Path(__file__).resolve().parent / "deepspeed_zero3.json")
     ap.add_argument("--max-steps", type=int, default=600); ap.add_argument("--lr", type=float, default=1e-5)
-    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--trainable", choices=("heads", "lora", "all"), default="lora"); ap.add_argument("--resume", type=Path)
-    ap.add_argument("--gradient-checkpointing", choices=("on", "off"), default="on")
-    ap.add_argument("--checkpoint-blocks", type=int, default=-1,
-                    help="number of leading transformer blocks to checkpoint; -1 means all")
-    ap.add_argument("--profile-block-calls", action="store_true",
-                    help="record per-block forward-call counts; use only in the separate profile phase")
     ap.add_argument("--video-shift", type=float, default=12.0); ap.add_argument("--audio-shift", type=float, default=3.0)
     ap.add_argument("--val-every", type=int, default=100); ap.add_argument("--ckpt-every", type=int, default=50)
     ap.add_argument("--max-seq-tokens", type=int, default=132000,
@@ -164,16 +166,10 @@ def main():
     device = torch.device(f"cuda:{local_rank}" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
         torch.cuda.set_device(device)
-    torch.manual_seed(args.seed)
-    if device.type == "cuda":
-        torch.cuda.manual_seed_all(args.seed)
     log_handle = None
     if rank == 0:
         log_handle = (args.output / "train.log").open("a", buffering=1)
-        metrics_handle = (args.output / "metrics.jsonl").open("a", buffering=1)
-        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy} seed={args.seed} gradient_checkpointing={args.gradient_checkpointing} checkpoint_blocks={args.checkpoint_blocks}\n")
-    else:
-        metrics_handle = None
+        log_handle.write(f"{datetime.now(timezone.utc).isoformat()} start world_size={world_size} variant={args.variant} trainable={args.trainable} strategy={args.strategy}\n")
     model = MiniMaxH3Transformer3DModel.from_pretrained(args.model, subfolder="transformer_ref" if args.variant == "ref2va" else "transformer", torch_dtype=torch.bfloat16).to(device)
     # Select the installed fused SDPA implementation before checkpointing.
     # Keep the automatic dispatcher available for other hardware and diagnosis.
@@ -183,35 +179,25 @@ def main():
     # checkpointing (reentrant AND non-reentrant) recomputes against already
     # re-partitioned parameters (shape [0]) and crashes. deepspeed's own
     # checkpointing cooperates with the ZeRO gather hooks.
-    if args.gradient_checkpointing == "on" and args.strategy == "deepspeed":
+    linear_cache_enabled = (device.type == "cuda" and args.strategy == "deepspeed"
+                            and args.trainable == "lora"
+                            and (args.linear_cache_gpu_gib > 0 or args.linear_cache_cpu_gib > 0))
+    if args.strategy == "deepspeed":
         import deepspeed
         # Do NOT enable partition_activations / checkpoint_in_cpu here: both
         # slice the 0-d time-embedding scalar and crash the temb linear.
-        model.enable_gradient_checkpointing(deepspeed.checkpointing.checkpoint)
-    elif args.gradient_checkpointing == "on":
+        checkpoint = deepspeed.checkpointing.checkpoint
+        if device.type == "cuda" and ((args.attention_backend == "_native_cudnn" and args.attention_cache_gib > 0)
+                                      or linear_cache_enabled):
+            from attention_checkpoint import install
+            checkpoint = install(model, checkpoint,
+                                 args.attention_cache_gib if args.attention_backend == "_native_cudnn" else 0,
+                                 args.compile_rope)
+            if rank == 0:
+                print(f"cuDNN attention checkpoint cache: {args.attention_cache_gib:g} GiB", flush=True)
+        model.enable_gradient_checkpointing(checkpoint)
+    else:
         model.enable_gradient_checkpointing()
-    if args.gradient_checkpointing == "on" and args.checkpoint_blocks >= 0:
-        total_blocks = len(model.transformer_blocks)
-        if args.checkpoint_blocks > total_blocks:
-            raise SystemExit(f"--checkpoint-blocks must be in [0, {total_blocks}], got {args.checkpoint_blocks}")
-        checkpointed = {id(block) for block in model.transformer_blocks[: args.checkpoint_blocks]}
-        checkpoint_impl = model._gradient_checkpointing_func
-
-        def selective_checkpoint(module, *inputs):
-            if id(module) in checkpointed:
-                return checkpoint_impl(module, *inputs)
-            return module(*inputs)
-
-        model._gradient_checkpointing_func = selective_checkpoint
-    block_call_counts = [0] * len(model.transformer_blocks)
-    profile_hooks = []
-    if args.profile_block_calls:
-        def count_block(index):
-            def hook(_module, _inputs, _output):
-                block_call_counts[index] += 1
-            return hook
-        profile_hooks = [block.register_forward_hook(count_block(i))
-                         for i, block in enumerate(model.transformer_blocks)]
     for p in model.parameters(): p.requires_grad_(args.trainable == "all")
     if args.trainable == "heads":
         for name, p in model.named_parameters():
@@ -221,6 +207,19 @@ def main():
         # lora_dropout=0: the checkpointed recompute must be deterministic
         # (and at a few hundred steps the regularization buys little anyway).
         model.add_adapter(LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0, target_modules=["to_qkv", "to_out.0", "linear_1", "linear_2"], init_lora_weights="gaussian"))
+    if device.type == "cuda" and args.compile_norms:
+        from compiled_norm import install
+        count = install(model)
+        if rank == 0:
+            print(f"compiled RMSNorm modules: {count}; eager precision casts preserved", flush=True)
+    linear_cache = None
+    if linear_cache_enabled:
+        from frozen_linear_cache import install
+        linear_cache = install(model, args.linear_cache_gpu_gib, args.linear_cache_cpu_gib,
+                               args.linear_cache_max_entry_gib)
+        if rank == 0:
+            print(f"frozen Linear cache: modules={linear_cache.modules} gpu={linear_cache.gpu_limit} "
+                  f"host={linear_cache.cpu_limit} bytes/rank", flush=True)
     # [FIX9] Resume BEFORE DDP wrapping / deepspeed.initialize, while the
     # parameters are still full tensors. After ZeRO-3 partitioning a plain
     # load_state_dict sees shape-[0] shards and silently loads nothing.
@@ -330,11 +329,6 @@ def main():
                     print(msg, flush=True)
                     log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {msg}\n")
                 continue
-            if device.type == "cuda":
-                torch.cuda.reset_peak_memory_stats(device)
-                step_begin = torch.cuda.Event(enable_timing=True)
-                step_end = torch.cuda.Event(enable_timing=True)
-                step_begin.record()
             loss, lv, la, aw = forward_loss(model, item, layout, device, sigma_v, sigma_a)
             # backward and step stay strictly adjacent — see [FIX7].
             if engine is not None:
@@ -342,39 +336,12 @@ def main():
                 engine.step()
             else:
                 optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(params, 1.0); optimizer.step()
-            if device.type == "cuda":
-                step_end.record()
-                step_end.synchronize()
-                step_ms = torch.tensor(step_begin.elapsed_time(step_end), device=device)
-                peak_bytes = torch.tensor(torch.cuda.max_memory_allocated(device), device=device, dtype=torch.int64)
-            else:
-                step_ms = torch.tensor(float("nan"), device=device)
-                peak_bytes = torch.tensor(0, device=device, dtype=torch.int64)
-            if distributed:
-                torch.distributed.all_reduce(step_ms, op=torch.distributed.ReduceOp.MAX)
-                torch.distributed.all_reduce(peak_bytes, op=torch.distributed.ReduceOp.MAX)
             step += 1
             if rank == 0:
                 seq_len = int(layout["token_tags"].numel())
-                metric = {
-                    "step": step,
-                    "loss": float(loss.item()),
-                    "loss_v": float(lv),
-                    "loss_a": float(la),
-                    "seq": seq_len,
-                    "frames": int(item.get("num_frames", -1)),
-                    "sigma_v": float(sigma_v),
-                    "audio_weight": float(aw),
-                    "step_seconds": float(step_ms.item() / 1000.0),
-                    "peak_allocated_bytes": int(peak_bytes.item()),
-                }
-                message = (f"step={step} loss={metric['loss']:.6f} loss_v={metric['loss_v']:.6f} "
-                           f"loss_a={metric['loss_a']:.6f} seq={seq_len} f={item.get('num_frames', '?')} "
-                           f"sigma_v={metric['sigma_v']:.3f} audio_w={aw} step_s={metric['step_seconds']:.6f} "
-                           f"peak_gib={metric['peak_allocated_bytes'] / 2**30:.3f}")
+                message = f"step={step} loss={loss.item():.6f} loss_v={float(lv):.6f} loss_a={float(la):.6f} seq={seq_len} f={item.get('num_frames', '?')} sigma_v={float(sigma_v):.3f} audio_w={aw}"
                 print(message, flush=True)
                 log_handle.write(f"{datetime.now(timezone.utc).isoformat()} {message}\n")
-                metrics_handle.write(json.dumps(metric, sort_keys=True) + "\n")
             # Checkpoint BEFORE validation: a validation forward leaves ZeRO-3
             # prefetch state in flight, and a GatheredParameters gather right
             # after it hits "Cannot partition a param in flight". Saving first
@@ -418,23 +385,23 @@ def main():
             # Anti-spin guard: if the gate skipped every sample, fail loudly
             # instead of looping forever over an epoch that trains nothing.
             raise RuntimeError(f"epoch swept with 0 executed steps (all samples over --max-seq-tokens? skips={n_len_skips})")
-    if args.profile_block_calls and rank == 0:
-        json_dump = {
-            "schema": "faster-h3-block-profile@1",
-            "checkpoint_blocks": args.checkpoint_blocks,
-            "steps": step,
-            "block_forward_calls": block_call_counts,
-            "total_block_forward_calls": sum(block_call_counts),
-        }
-        (args.output / "block_profile.json").write_text(json.dumps(json_dump, indent=2) + "\n")
-    for hook in profile_hooks:
-        hook.remove()
+    if args.strategy == "deepspeed" and hasattr(checkpoint, "saved") and rank == 0:
+        print(f"attention checkpoint cache: saved={checkpoint.saved} replayed={checkpoint.replayed} "
+              f"recomputed={checkpoint.recomputed} peak_bytes={checkpoint.peak_bytes} "
+              f"retained_bytes={checkpoint.retained}", flush=True)
+    if device.type == "cuda" and args.compile_norms and rank == 0:
+        from compiled_norm import report
+        print(f"compiled RMSNorm statistics: {report()}", flush=True)
+    if linear_cache is not None:
+        print(f"frozen Linear cache statistics rank={rank}: {linear_cache.report()}", flush=True)
+    if device.type == "cuda" and args.compile_rope and rank == 0:
+        from compiled_rope import report
+        print(f"compiled rotary statistics: {report()}", flush=True)
     if distributed:
         torch.distributed.destroy_process_group()
     if log_handle is not None:
         log_handle.write(f"{datetime.now(timezone.utc).isoformat()} finished step={step}\n")
         log_handle.close()
-        metrics_handle.close()
 
 
 if __name__ == "__main__": main()

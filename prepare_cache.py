@@ -26,7 +26,7 @@ import torch
 from PIL import Image
 
 from diffusers import AutoencoderKLMiniMaxH3, AutoencoderKLMiniMaxH3Audio
-from h3_compat import (
+from diffusers.modular_pipelines.minimax_h3.packing import (
     MINIMAX_H3_PIXEL_MEAN,
     MINIMAX_H3_PIXEL_STD,
     align_num_frames,

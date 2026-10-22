@@ -1,6 +1,5 @@
 # Local/private training artifacts.
 .venv/
-.assets/
 __pycache__/
 cache/
 runs/

@@ -1,0 +1,196 @@
+{
+  "status": "OBSERVED_TRAJECTORY_DIVERGENCE",
+  "statistical_status": "FAIL",
+  "failed_comparisons": [
+    {
+      "candidate_mean": 895829.9001639953,
+      "candidate_sample_sd": 1551605.0640231012,
+      "candidate_values": [
+        2687469.102919533,
+        2.2826322458354342,
+        18.3149402074098
+      ],
+      "mean_difference": 895819.2167607674,
+      "metric": "gradient_l2",
+      "paired_differences": [
+        2687453.232382317,
+        -1.4378683301926918,
+        5.855768315368463
+      ],
+      "pass": false,
+      "reference_mean": 10.68340322795181,
+      "reference_sample_sd": 6.266646898313023,
+      "reference_values": [
+        15.870537215785967,
+        3.720500576028126,
+        12.459171892041338
+      ],
+      "seeds": [
+        424242,
+        424243,
+        424244
+      ],
+      "standardized_mean_difference": 142950.3259553241,
+      "step": 25,
+      "threshold": 2.0
+    }
+  ],
+  "candidate_gradient_peaks": {
+    "424242": [
+      {
+        "step": 49,
+        "reference": {
+          "total_loss": 4.861148774623871,
+          "video_loss": 1.9941074699163437,
+          "audio_loss": 2.8670413196086884,
+          "gradient_l2": 62.4272625081592
+        },
+        "candidate": {
+          "total_loss": 4.762806713581085,
+          "video_loss": 1.9974649101495743,
+          "audio_loss": 2.765341818332672,
+          "gradient_l2": 472824853.2078685
+        },
+        "gradient_candidate_over_reference": 7574012.285835385
+      },
+      {
+        "step": 25,
+        "reference": {
+          "total_loss": 2.9500587582588196,
+          "video_loss": 1.8301263004541397,
+          "audio_loss": 1.1199324578046799,
+          "gradient_l2": 15.870537215785967
+        },
+        "candidate": {
+          "total_loss": 2.97628253698349,
+          "video_loss": 1.8545220643281937,
+          "audio_loss": 1.1217604279518127,
+          "gradient_l2": 2687469.102919533
+        },
+        "gradient_candidate_over_reference": 169336.9963712624
+      },
+      {
+        "step": 23,
+        "reference": {
+          "total_loss": 2.7344177067279816,
+          "video_loss": 1.5963395982980728,
+          "audio_loss": 1.1380781382322311,
+          "gradient_l2": 16.31913906859284
+        },
+        "candidate": {
+          "total_loss": 2.7272685170173645,
+          "video_loss": 1.5921474546194077,
+          "audio_loss": 1.1351210922002792,
+          "gradient_l2": 2543.704600758457
+        },
+        "gradient_candidate_over_reference": 155.8724752615148
+      }
+    ],
+    "424243": [
+      {
+        "step": 18,
+        "reference": {
+          "total_loss": 3.9966202676296234,
+          "video_loss": 1.528697744011879,
+          "audio_loss": 2.4679225385189056,
+          "gradient_l2": 5.9513447860078
+        },
+        "candidate": {
+          "total_loss": 4.008766084909439,
+          "video_loss": 1.529233142733574,
+          "audio_loss": 2.4795329570770264,
+          "gradient_l2": 11248900.41134833
+        },
+        "gradient_candidate_over_reference": 1890144.2977720946
+      },
+      {
+        "step": 9,
+        "reference": {
+          "total_loss": 3.1687707006931305,
+          "video_loss": 1.2774540483951569,
+          "audio_loss": 1.8913166373968124,
+          "gradient_l2": 1.912107744713824
+        },
+        "candidate": {
+          "total_loss": 3.1682217717170715,
+          "video_loss": 1.2766975462436676,
+          "audio_loss": 1.8915242105722427,
+          "gradient_l2": 6028302.423648674
+        },
+        "gradient_candidate_over_reference": 3152700.176187457
+      },
+      {
+        "step": 28,
+        "reference": {
+          "total_loss": 4.135231792926788,
+          "video_loss": 1.6072705686092377,
+          "audio_loss": 2.5279611945152283,
+          "gradient_l2": 66.24363663254447
+        },
+        "candidate": {
+          "total_loss": 4.145856559276581,
+          "video_loss": 1.6084719151258469,
+          "audio_loss": 2.5373846888542175,
+          "gradient_l2": 2858674.898815532
+        },
+        "gradient_candidate_over_reference": 43153.95476659429
+      }
+    ],
+    "424244": [
+      {
+        "step": 17,
+        "reference": {
+          "total_loss": 2.770746737718582,
+          "video_loss": 1.2012047618627548,
+          "audio_loss": 1.5695419758558273,
+          "gradient_l2": 2.029395748021667
+        },
+        "candidate": {
+          "total_loss": 2.7725047767162323,
+          "video_loss": 1.2016104459762573,
+          "audio_loss": 1.570894256234169,
+          "gradient_l2": 22480633045423.355
+        },
+        "gradient_candidate_over_reference": 11077500811430.37
+      },
+      {
+        "step": 27,
+        "reference": {
+          "total_loss": 2.5462391674518585,
+          "video_loss": 1.1619745045900345,
+          "audio_loss": 1.384264662861824,
+          "gradient_l2": 3.867825218499135
+        },
+        "candidate": {
+          "total_loss": 2.542873501777649,
+          "video_loss": 1.1569381207227707,
+          "audio_loss": 1.3859353214502335,
+          "gradient_l2": 9391467.935934678
+        },
+        "gradient_candidate_over_reference": 2428100.393734681
+      },
+      {
+        "step": 48,
+        "reference": {
+          "total_loss": 3.9425286650657654,
+          "video_loss": 1.7723705470561981,
+          "audio_loss": 2.1701581180095673,
+          "gradient_l2": 203.67213003082702
+        },
+        "candidate": {
+          "total_loss": 2.5248036086559296,
+          "video_loss": 1.4695419073104858,
+          "audio_loss": 1.0552617460489273,
+          "gradient_l2": 53380.09382965489
+        },
+        "gradient_candidate_over_reference": 262.0883565246531
+      }
+    ]
+  },
+  "interpretation": "The fixed step25 gradient-L2 comparison fails, dominated by the seed424242 candidate spike. Seven other required endpoint comparisons pass. Additional per-step gradient spikes are descriptive corroborating evidence only; they do not add or change acceptance gates.",
+  "controls_verified": "Exact matched initial state, data/layout/noise/timesteps, RNG, precision/optimizer contracts;50applied/no skips/finite; native norm globally equal across ranks. Same external observer in both arms. Native gradient clipping1.0 in both.",
+  "causal_limit": "The selected N1 stack differs in multiple numerical implementations, including attention backend and compiled reductions. These observations do not isolate a responsible component. No additional ablation, fix, reroll or speed trial is authorized after the fallback.",
+  "disposition": "Keep exact protectedfe2ccd6; report failed short-trajectory equivalence; do not publish or declare completion.",
+  "summary_sha256": "c43d8e4da32bd85386419df2767609db063385207df837a5516e0984e5eb9394",
+  "recorded_at": "2026-10-21T10:18:05.837123+00:00"
+}
