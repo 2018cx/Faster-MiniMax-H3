@@ -44,7 +44,7 @@ The fixed rule is `abs(mean(candidate-reference) / reference sample SD(ddof=1)) 
 | 424243 | 50 | gradient_l2 | 30.993214754 | 59.642481982 | 28.649267228 |
 | 424244 | 50 | gradient_l2 | 244.661327935 | 263.535560182 | 18.8742322467 |
 
-Final checkpoint drift is descriptive, without an additional acceptance threshold. Independent single-thread CPU reload verified all six checkpoints: step50, 108 finite FP32 trainables and 10,655,744 elements each. Aggregate max-absolute, L2 and relative-L2 drift match the frozen report exactly; a few descriptive per-tensor L2 recomputations differ by one FP64 ULP, which is retained in the independent audit without adding a drift acceptance threshold. Runtime assertions checked finite FP32 master/Adam states every update; those optimizer tensors are not serialized for independent reload.
+Final checkpoint drift is descriptive, without an additional acceptance threshold. Independent single-thread CPU reload verified all six checkpoints: step50, 108 finite FP32 trainables and 10,655,744 elements each. Aggregate max-absolute, L2 and relative-L2 drift match the frozen report exactly; a few descriptive per-tensor L2 recomputations differ by one or two FP64 ULPs, which is retained in the independent audit without adding a drift acceptance threshold. Runtime assertions checked finite FP32 master/Adam states every update; those optimizer tensors are not serialized for independent reload.
 
 | Seed | Maximum absolute drift | L2 drift | Relative L2 drift |
 |---:|---:|---:|---:|
