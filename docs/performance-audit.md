@@ -1,6 +1,6 @@
 # Performance history evidence and selection audit
 
-This page preserves the original Round 19 selection and failed validation. See [targeted repair and the current pending validation](repair-results.md) for the later authorized work.
+This page preserves the original Round 19 selection and failed validation. See [targeted repair and fresh validation results](repair-results.md) for the later authorized work.
 
 This document supplies the detail behind the short **Agent Optimization History** paragraph and complete Round 1–40 table in [README.md](../README.md). The [machine-readable history](performance-data/rounds-01-40.json) retains exact values, observation types, original artifact paths and SHA256 hashes. Local run paths are provenance identifiers, not links to files shipped in the public repository.
 

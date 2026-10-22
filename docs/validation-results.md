@@ -1,6 +1,6 @@
 # Matched 50-update validation
 
-This page preserves the original Round 19 selection and failed validation. See [targeted repair and the current pending validation](repair-results.md) for the later authorized work.
+This page preserves the original Round 19 selection and failed validation. See [targeted repair and fresh validation results](repair-results.md) for the later authorized work.
 
 Selected Round 19 commit: `fe2ccd6cc564b08a165793a66dce4f01faf2ea21`. Trajectory gate: **FAIL**. The separate two-update speed check remains PASS at 1.8690552846103328×; the 2× speed target was not reached.
 
