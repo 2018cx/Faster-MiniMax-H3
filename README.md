@@ -20,29 +20,28 @@ Faster-MiniMax-H3 is the agent-optimized H20 training path for
 rectified-flow trainer built on the official Diffusers integration, latent-cache preprocessing, and the
 LoRA × ZeRO-3 correctness fixes documented in [FIXES.md](FIXES.md).
 
-## Selection and validation
+## Quick Start
 
-The released implementation is the **repaired Round 50 candidate**, selected at the **Round 60 closeout**
-after no repaired candidate reached the 1.8691× early-stop target. Its authoritative
-reference/candidate/reference check measured **63.176236 s/update versus 117.318886 s/update, or
-1.8570097438×** on 8×H20. The published runtime commit is
-[`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394)
-(tree-identical to original audit ID `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e`; only author metadata was normalized for publication).
+Prepare Python 3.11, PyTorch ≥ 2.8, the public MiniMax-H3 weights and a JSONL manifest following
+[`examples/manifest.example.jsonl`](examples/manifest.example.jsonl):
 
-Why Round 19 was not released: although its two-update speed check passed at 1.869055×, the subsequent
-three-seed 50-update test exposed intermittent, finite pre-clip gradient spikes. At update 25, candidate
-mean gradient L2 was 895,829.90 versus 10.68 for the reference (absolute standardized mean difference
-142,950.33); seed 424243 also reached 11,248,900.41 at update 18 versus 5.95 in its matched reference.
-Gradient clipping kept the updates finite, but the trajectory-equivalence gate correctly failed.
+```bash
+bash install_env.sh
+python validate_manifest.py --manifest path/to/train.jsonl --check-files
+python prepare_cache.py \
+  --metadata path/to/train.jsonl --output cache/train \
+  --model /path/to/MiniMax-H3 \
+  --height 256 --width 256 --frames 22 --encode-text --encode-audio
 
-Targeted diagnostics then found a checkpoint-replay invariant defect: on five of eight ranks, identical
-Q/K RMSNorm inputs, weights, epsilon and strides produced different compiled outputs because inference
-and replay selected different XBLOCK configurations. The repair shares one detached compiled Q/K forward
-across checkpoint modes and retains the existing compiled first-order derivative. This is concrete defect
-evidence, not a claim that it was the only possible cause. A fresh three-seed × reference/optimized
-six-arm validation ran exactly 50 updates per arm and passed all eight predeclared comparisons; the largest
-absolute standardized mean difference was 1.4698 ≤ 2.0. See the [repair audit](docs/repair-results.md),
-[original failed validation](docs/validation-results.md), and [fresh repaired validation](docs/repaired-validation-results.md).
+deepspeed --num_gpus 8 train.py \
+  --model /path/to/MiniMax-H3 --variant ref2va \
+  --cache cache/train --output runs/lora \
+  --max-steps 800 --trainable lora --strategy deepspeed
+```
+
+The optimized H20 paths are enabled by default. See `python train.py --help` for cache budgets and
+fallback switches. Model constraints include `num_frames % 17 == 5`, dimensions divisible by 32,
+24 fps video and 32 kHz stereo audio.
 
 <!-- BEGIN GENERATED OPTIMIZATION HISTORY -->
 ## Agent Optimization History
@@ -100,141 +99,65 @@ R40 includes its candidate’s terminal R41 screen; no new accepted best followe
 
 Reproduce the figure and table with `python docs/performance-views/generate_history.py`; verify checked-in outputs with `python docs/performance-views/generate_history.py --check`.
 
-Original Round 19 matched 50-update, three-seed trajectory gate: **FAIL**. See the [historical validation results](docs/validation-results.md). The repaired release passed the fresh six-arm validation linked in the release summary above.
+Original Round 19 matched 50-update, three-seed trajectory gate: **FAIL**. See the [historical validation results](docs/validation-results.md). The repaired Round 50 release passed the fresh six-arm validation summarized below.
 <!-- END GENERATED OPTIMIZATION HISTORY -->
 
-## How it works
+## What changed
 
-**Two-stage design** (so the 33B transformer is the only thing in GPU memory during training):
+- **Attention:** cuDNN SDPA replaces the reference attention path. Checkpoint-local output/LSE retention
+  avoids backward recomputation, while fused RoPE and input layout remove separate launch and layout costs.
+- **Frozen Linear caching:** selective checkpointing caches eligible frozen GEMM outputs in a bounded
+  184 GiB host / 16 GiB GPU arena per rank, using pinned power-of-two slabs, asynchronous copies and prefetch.
+- **RMSNorm and replay correctness:** compiled RMSNorm accelerates the hot path. The released repair makes
+  checkpoint inference and replay share one detached compiled Q/K forward while retaining the compiled
+  first-order derivative, eliminating the observed mode-dependent Q/K mismatch.
+- **Guardrails:** unsupported shapes fall back to native operations; runtime counters report cache hits,
+  fallbacks and peak allocation; frozen numerical checks cover all 108 trainable LoRA tensors.
 
-1. **`prepare_cache.py`** — encodes each training sample offline: target video → H3-VisualVAE latents
-   (patchified rows, cover-fit framing — never stretched), target audio → H3-AudioVAE latents
-   (`--encode-audio`; zero placeholder otherwise), caption → Qwen3-VL layer-50 hidden states. One `.pt`
-   file per sample. **`prepare_cache_pairs.py`** is the long-clip variant: it concatenates two
-   consecutively-shot clips into one ~30 s story-continuous sample (17n+5 re-alignment, seam index kept,
-   both audio tracks joined).
-2. **`train.py`** — loads only the transformer (`transformer` = FL2VA variant or `transformer_ref` = Ref2VA
-   variant), rebuilds the packed video/audio/text sequence layout with the official
-   `build_packed_sequence` / `build_row_timesteps` utilities, and optimizes a rectified-flow MSE loss.
+These are cumulative configuration changes, not isolated ablations. See the
+[performance audit](docs/performance-audit.md), [repair rounds](docs/repair-results.md), and
+[machine-readable selection evidence](docs/performance-data/repaired-selection.json).
 
-**Training objective.** H3's released checkpoints are guidance-distilled rectified-flow models with two
-peculiarities relative to the common SD3/Wan-style convention:
+## Validation: why Round 19 failed and Round 50 passed
 
-- the transformer's time input is `t = 1 − σ` (t=1 clean, t=0 pure noise), and
-- the transformer predicts a **data-ward velocity** `v = x₀ − ε` (the scheduler reconstructs
-  `x₀ = x_t + (1−t)·v` — note the `+`).
+The original Round 19 candidate passed its two-update speed check at **1.869055×**, but failed the
+predeclared three-seed trajectory gate. Across seeds 424242, 424243 and 424244, both reference and optimized
+arms ran exactly 50 optimizer steps and recorded total loss, video loss, audio loss and full trainable LoRA
+pre-clip gradient L2 at steps 25 and 50. The optimized arm showed intermittent finite gradient spikes:
+at step 25 its mean gradient L2 was **895,829.90** versus **10.68** for reference, giving an absolute
+standardized mean difference of **142,950.33**; seed 424243 also reached **11,248,900.41** at step 18 versus
+**5.95** for reference. Gradient clipping kept updates finite, but did not make the trajectory gate pass.
 
-The loss therefore noises `x_t = (1−σ)·x₀ + σ·ε` and regresses `pred → (x₀ − ε)`, with **two different σ
-per step**: video and audio use separate shifted schedules (`σ = shift·u / (1+(shift−1)·u)`, shift 12.0 for
-video and 3.0 for audio) sampled at the same `u`, mirroring how the two schedulers advance in lockstep at
-inference. Real cached audio enters the loss at weight 1.0; zero-placeholder audio is trained at weight 0
-so the audio head is untouched but gradients stay synchronized ([FIXES.md](FIXES.md) #3).
+Targeted replay diagnostics then found a concrete checkpoint invariant defect: on five of eight ranks,
+identical Q/K RMSNorm inputs, weights, epsilon and strides produced different compiled outputs because
+inference and replay selected different XBLOCK variants. The repair makes both checkpoint modes share the
+same detached compiled Q/K forward and preserves the existing compiled first-order derivative. This fixes
+the demonstrated mismatch; it does not claim that the mismatch was necessarily the only cause of every
+historical spike.
 
-**Validation.** Samples whose `md5(sample_id) % 20 == 0` (~5%) form a deterministic val split. Every
-`--val-every` steps, all ranks run a lockstep evaluation on a fixed σ grid {0.3, 0.6, 0.9} with
-per-(file, σ) seeded noise — the val curve is a fixed function of the weights, comparable across steps and
-runs. `plot_loss.py` renders train + per-modality + VAL curves from `train.log`.
+The repaired candidate first completed an authoritative full speed check in **Round 50** and was selected
+at the Round 60 closeout. Its check measured **63.176236 s/step** against **117.318886 s/step**, or
+**1.8570097438×**. A fresh six-arm validation then reran reference and repaired implementations for exactly
+50 steps at the same three seeds. All values were finite, all fingerprints/contracts matched, and all eight
+fixed comparisons passed `|standardized mean difference| ≤ 2.0`:
 
-**Trainable-parameter modes:**
+| Metric | Step 25 | Step 50 | Gate |
+|---|---:|---:|---|
+| Total loss | -0.031530 | +0.191572 | PASS |
+| Video loss | +0.000087 | -0.061845 | PASS |
+| Audio loss | -0.033384 | +1.469818 | PASS |
+| Full LoRA gradient L2 | -0.068377 | +0.177239 | PASS |
 
-| `--trainable` | What trains | Use case |
-|---|---|---|
-| `heads` | `proj_out` + `audio_proj_out` (~1M params) | smoke test the whole pipeline on one GPU |
-| `lora` (default) | PEFT LoRA r=16 on `to_qkv`, `to_out.0`, `linear_1`, `linear_2` (~10.7M params) | practical single-node fine-tuning |
-| `all` | full 33B | requires `--strategy deepspeed` (ZeRO-3 config included) |
-
-Checkpoints store only trainable tensors for `heads`/`lora` (a few MB instead of ~66 GB), gathered from
-ZeRO-3 shards; `--resume` loads them weight-only *before* `deepspeed.initialize` (FIXES.md #5/#9).
-
-## Quickstart
-
-```bash
-# 1. Environment: Python 3.11, torch >= 2.8. The H3 classes are NOT in a released
-#    diffusers wheel yet — install_env.sh installs the pinned integration revision.
-bash install_env.sh
-
-# 2. Write a manifest (schema + placeholder samples in examples/)
-python validate_manifest.py --manifest path/to/train.jsonl --check-files
-
-# 3. Cache latents (debug scale: 256x256, 22 frames; raise for real runs)
-python prepare_cache.py \
-  --metadata path/to/train.jsonl \
-  --output cache/train \
-  --model /path/to/MiniMax-H3 \
-  --height 256 --width 256 --frames 22 --encode-text --encode-audio
-
-# 4. Train (single GPU smoke)
-CUDA_VISIBLE_DEVICES=0 python train.py \
-  --model /path/to/MiniMax-H3 --variant ref2va \
-  --cache cache/train --output runs/smoke \
-  --max-steps 10 --trainable heads --strategy ddp
-
-# 4'. Multi-GPU LoRA (8x, DeepSpeed ZeRO-3) — the production path
-deepspeed --num_gpus 8 train.py \
-  --model /path/to/MiniMax-H3 --variant ref2va \
-  --cache cache/train --output runs/lora \
-  --max-steps 800 --trainable lora --strategy deepspeed
-```
-
-Constraints inherited from the model: `num_frames % 17 == 5`, height/width divisible by 32, 24 fps video,
-32 kHz stereo audio, `audio_latent_frames = round(num_frames / 24 * 40)`.
-
-CUDA training defaults to cuDNN SDPA. With DeepSpeed, `--attention-cache-gib 32`
-retains attention outputs and softmax statistics inside activation checkpoints,
-avoiding their recomputation during backward. This uses additional GPU memory;
-set `--attention-cache-gib 0` to recompute all attention, or lower the budget for
-longer sequences. The cache is discarded during backward and never reused across
-training steps. `--attention-backend native` restores automatic SDPA selection.
-
-CUDA RMSNorm uses PyTorch compilation with eager precision casts preserved.
-Use `--no-compile-norms` for eager execution. By default, each process owns fresh
-temporary compiler caches and removes them on exit; explicit `TRITON_CACHE_DIR`
-and `TORCHINDUCTOR_CACHE_DIR` settings take precedence.
-
-DeepSpeed LoRA training also retains frozen Linear outputs within each activation
-checkpoint using native PyTorch selective checkpointing. The defaults are
-`--linear-cache-gpu-gib 16`, `--linear-cache-cpu-gib 184` per rank, and
-`--linear-cache-max-entry-gib 2`. Larger outputs or budget misses recompute
-normally. Host storage uses a fixed pinned arena with asynchronous copies and
-prefetch; values are released during backward and never reused across updates.
-Choose budgets for the available GPU and host memory; setting both storage
-budgets to zero disables this cache. Final counters on every rank report actual
-cache use, recomputation, live entries, and peak GPU allocation.
-
-The cuDNN checkpoint path fuses rotary embedding and input layout with explicit
-eager rounding and a first-order autograd kernel. `--no-compile-rope` restores
-the native formula. Each new kernel variant checks its first output against the
-native result; a mismatch disables the fused path and is logged. Unsupported
-inputs, including trainable rotary tables, use the native formula with counted
-fallbacks. Higher-order gradients are not supported by the fused operator.
-
-## Current limitations
-
-- Reference media are not yet encoded into the conditioning sequence (H3 reference rows); captions and
-  target video/audio train, reference images/audio do not condition. This is the main open TODO for
-  faithful Ref2VA fine-tuning.
-- No sample shuffling between epochs; batch size is fixed at 1 sequence per step.
-- Sparse attention (used in H3's final training stage) is not released; training runs full attention.
-  The validated H20 benchmark uses approximately 33,750 tokens per sample; larger workloads are outside
-  the scope of the published measurements.
-- `--resume` restores weights only (trainable-only checkpoints carry no optimizer state).
+The public runtime commit is [`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394),
+whose tree matches audited commit `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e`. Full raw and aggregate evidence is
+in the [original failed validation](docs/validation-results.md), [repair audit](docs/repair-results.md), and
+[repaired validation](docs/repaired-validation-results.md). This 50-step test establishes short-trajectory
+agreement only; it is not a full-convergence or generated-output-quality claim.
 
 ## Legal
 
 Model weights are governed by the [MiniMax H3 Community License](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/LICENSE)
 (territory and usage restrictions apply; fine-tuned weights are Model Derivatives). This repository contains
 code only — no model weights and no training media.
-
-The pinned host arena uses separate power-of-two slabs of at most 32 GiB.
-PyTorch rounds each pinned allocation up to a power of two, so these slabs keep
-the allocated bytes within the requested arena budget. Slots and free ranges
-remain separate per slab; fragmentation falls back to native recomputation.
-The runtime report includes slab sizes and process-wide native pinned allocator
-counters, along with GPU peak allocation including prefetched tensors. On the
-8×H20 workload the 184 GiB host / 16 GiB GPU configuration caches every eligible
-frozen GEMM output within its checkpoint and releases every value before updates.
-This split leaves more GPU headroom for temporary allocations than the former
-176 GiB host / 24 GiB GPU configuration.
-The arena keeps storage for reuse across updates; it never replays values from earlier updates.
 
 Licensing scope: upstream-derived trainer code has no declared software license; separable new additions are identified without an additional license grant. Model-weight terms remain separate. See [LICENSE](LICENSE), [NOTICE](NOTICE), and the [provenance map](docs/licensing-provenance.json).

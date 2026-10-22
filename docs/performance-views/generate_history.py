@@ -90,7 +90,7 @@ def table(data):
               'Reproduce the figure and table with `python docs/performance-views/generate_history.py`; '
               'verify checked-in outputs with `python docs/performance-views/generate_history.py --check`.', END]
     if data['scope'].get('validation_status') in ('PASS', 'FAIL'):
-        lines.insert(-1, '\nOriginal Round 19 matched 50-update, three-seed trajectory gate: **' + data['scope']['validation_status'] + '**. See the [historical validation results](docs/validation-results.md). The repaired release passed the fresh six-arm validation linked in the release summary above.')
+        lines.insert(-1, '\nOriginal Round 19 matched 50-update, three-seed trajectory gate: **' + data['scope']['validation_status'] + '**. See the [historical validation results](docs/validation-results.md). The repaired Round 50 release passed the fresh six-arm validation summarized below.')
     return '\n'.join(lines)
 
 

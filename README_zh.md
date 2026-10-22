@@ -18,115 +18,85 @@ Faster-MiniMax-H3 是 [MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/Mi
 训练的 agent 优化版本，包含基于官方 Diffusers 集成的监督式 rectified-flow trainer、latent 缓存
 预处理，以及 [FIXES.md](FIXES.md) 中记录的 LoRA × ZeRO-3 正确性修复。
 
-## 版本选择与验证
-
-最终发布的不是原始 Round 19，而是 **Round 50 首次通过正式速度 check 的修复候选**；由于后续
-修复候选都没有达到 1.8691× 的提前停止目标，它在 **Round 60 收尾时被正式选中**。8×H20 上的
-reference/candidate/reference 正式测量为 **63.176236 秒/step 对 117.318886 秒/step，即
-1.8570097438×**。公开运行时代码 commit 是
-[`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394)，
-与原始审计 ID `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e` 的代码树完全一致，仅发布署名元数据不同。
-
-Round 19 没有发布，是因为它虽然以 1.869055× 通过两步速度检查，随后却在三 seed、每 arm 50 step
-验证中出现间歇性的有限梯度尖峰。第 25 step 的 optimized 平均 pre-clip 梯度 L2 为 895,829.90，
-reference 为 10.68，绝对标准化均值差达到 142,950.33；seed 424243 在第 18 step 也出现
-11,248,900.41 对 5.95 的尖峰。梯度裁剪让更新仍保持有限，但轨迹一致性门槛明确失败。
-
-定向诊断随后发现了 checkpoint replay 不变量缺陷：8 个 rank 中有 5 个在 Q/K RMSNorm 输入、权重、
-epsilon 和 stride 完全相同时，因为 inference 与 replay 选择了不同 XBLOCK，编译输出仍不一致。
-修复方案让两种 checkpoint 模式共享同一个 detached compiled Q/K forward，并保留既有的编译一阶
-导数路径。这个结果证明了一个具体缺陷，但不声称它一定是历史尖峰的唯一原因。修复后重新执行了
-三 seed × reference/optimized 共六个 arm、每 arm 恰好 50 step 的验证，8 项预先声明的比较全部通过，
-最大绝对标准化均值差为 1.4698 ≤ 2.0。详见[修复审计](docs/repair-results.md)、
-[原始失败验证](docs/validation-results.md)和[修复后验证](docs/repaired-validation-results.md)。
-
-原始 Round 1–40 的完整速度探索历史、Round 19 的历史最好点以及 Round 41 的终止 screen，见
-[历史图](docs/performance-views/02-history.svg)和[机器可读数据](docs/performance-data/rounds-01-40.json)。
-
-![原始 Round 1–40 候选观测与累计正式检查最佳值；Round 19 是历史阶段最好点，但不是最终发布版本](docs/performance-views/02-history.svg)
-
-## 实现原理
-
-**两阶段设计**(训练时 GPU 显存里只有 33B transformer 一个大件):
-
-1. **`prepare_cache.py`** —— 离线编码每条训练样本:目标视频 → H3-VisualVAE latent(patch 化行,
-   cover-fit 取景——只裁不拉伸)、目标音频 → H3-AudioVAE latent(`--encode-audio`;否则零占位)、
-   caption → Qwen3-VL 第 50 层 hidden states。每样本一个 `.pt`。**`prepare_cache_pairs.py`** 是
-   长片段变体:把两条连拍片段在时间轴上拼成一条 ~30 秒剧情连续样本(17n+5 重对齐、记录接缝帧、
-   双音轨拼接)。
-2. **`train.py`** —— 只加载 transformer(`transformer` = FL2VA 变体 / `transformer_ref` = Ref2VA
-   变体),用官方 `build_packed_sequence` / `build_row_timesteps` 重建视频/音频/文本打包序列布局,
-   优化 rectified-flow MSE loss。
-
-**训练目标。** H3 发布的是 guidance 蒸馏后的 rectified-flow 权重,相对常见的 SD3/Wan 约定有两个
-特殊点:
-
-- transformer 的时间输入是 `t = 1 − σ`(t=1 干净、t=0 纯噪);
-- transformer 预测的是**指向数据的速度** `v = x₀ − ε`(scheduler 用 `x₀ = x_t + (1−t)·v` 还原,
-  注意是**加号**)。
-
-因此 loss 按 `x_t = (1−σ)·x₀ + σ·ε` 加噪,回归目标为 `pred → (x₀ − ε)`;且每步用**两个不同的 σ**:
-视频和音频各走一条 shift 曲线(`σ = shift·u / (1+(shift−1)·u)`,视频 shift=12.0、音频 shift=3.0),
-共用同一个 `u` 采样——与推理时两个 scheduler 同步推进的 (σ_v, σ_a) 配对分布一致。真实缓存音频以
-权重 1.0 进 loss;零占位音频以权重 0 训练——音频头不动,但梯度保持各 rank 同步([FIXES.md](FIXES.md)
-第 3 条)。
-
-**验证集。** `md5(sample_id) % 20 == 0`(约 5%)构成确定性 val 划分。每 `--val-every` 步,全 rank
-在固定 σ 网格 {0.3, 0.6, 0.9} 上锁步评估,噪声按 (文件, σ) 播种——val 曲线是权重的确定函数,跨步
-数、跨 run 可比。`plot_loss.py` 从 `train.log` 画训练/分模态/VAL 曲线。
-
-**可训练参数模式:**
-
-| `--trainable` | 训练什么 | 适用场景 |
-|---|---|---|
-| `heads` | `proj_out` + `audio_proj_out`(约百万参数) | 单卡冒烟,验证整条链路 |
-| `lora`(默认) | PEFT LoRA r=16(`to_qkv`、`to_out.0`、`linear_1`、`linear_2`,约 10.7M 参数) | 单机实用微调 |
-| `all` | 全部 33B | 需 `--strategy deepspeed`(附 ZeRO-3 配置) |
-
-`heads`/`lora` 模式的 checkpoint 只保存可训练张量(几 MB 而非 ~66 GB),ZeRO-3 下先从分片聚合再存;
-`--resume` 在 `deepspeed.initialize` **之前**以仅权重方式加载(FIXES.md 第 5/9 条)。
-
 ## 快速开始
 
+准备 Python 3.11、PyTorch ≥ 2.8、公开的 MiniMax-H3 权重，以及符合
+[`examples/manifest.example.jsonl`](examples/manifest.example.jsonl) 的 JSONL manifest：
+
 ```bash
-# 1. 环境:Python 3.11、torch >= 2.8。H3 的类还没进 diffusers 正式发行版——
-#    install_env.sh 会安装固定 revision 的集成版本。
 bash install_env.sh
-
-# 2. 按 examples/ 里的 schema 写一份 manifest
 python validate_manifest.py --manifest path/to/train.jsonl --check-files
-
-# 3. 缓存 latent(debug 规格:256x256、22 帧;正式训练自行调大)
 python prepare_cache.py \
-  --metadata path/to/train.jsonl \
-  --output cache/train \
+  --metadata path/to/train.jsonl --output cache/train \
   --model /path/to/MiniMax-H3 \
   --height 256 --width 256 --frames 22 --encode-text --encode-audio
 
-# 4. 训练(单卡冒烟)
-CUDA_VISIBLE_DEVICES=0 python train.py \
-  --model /path/to/MiniMax-H3 --variant ref2va \
-  --cache cache/train --output runs/smoke \
-  --max-steps 10 --trainable heads --strategy ddp
-
-# 4'. 多卡 LoRA(8 卡 DeepSpeed ZeRO-3)——生产路径
 deepspeed --num_gpus 8 train.py \
   --model /path/to/MiniMax-H3 --variant ref2va \
   --cache cache/train --output runs/lora \
   --max-steps 800 --trainable lora --strategy deepspeed
 ```
 
-来自模型本身的约束:`num_frames % 17 == 5`、宽高均为 32 的倍数、视频 24 fps、音频 32 kHz 立体声、
-`audio_latent_frames = round(num_frames / 24 * 40)`。
+优化后的 H20 路径默认启用。缓存预算与 fallback 开关见 `python train.py --help`。模型输入要求包括：
+`num_frames % 17 == 5`、宽高为 32 的倍数、24 fps 视频和 32 kHz 立体声音频。
 
-## 当前局限
+## Agent 优化历史
 
-- 参考素材尚未编码进条件序列(H3 reference 行):caption 与目标视频/音频参与训练,参考图/参考音频
-  还不作为条件。这是实现完整 Ref2VA 微调的主要 TODO。
-- epoch 之间无样本 shuffle;batch 恒为每步 1 条序列。
-- H3 最终训练阶段使用的稀疏注意力实现未开源，训练只能走全注意力。本次 H20 benchmark 验证的
-  工作负载约为每样本 33,750 token；更大的工作负载不在已发布测量范围内。
-- `--resume` 仅恢复权重(trainable-only checkpoint 不含优化器状态)。
+测试环境为 **8×H20**、BF16 FL2VA LoRA/ZeRO-3、每个 rank batch 为 1、每个样本约 33,750 token。
+Round 19 是原始 Round 1–40 中通过完整速度检查的最好结果（约 1.87×），但后来未通过 50-step
+轨迹验证，因此不是发布版本。修复版本在 Round 50 首次通过正式速度检查，并在 Round 60 收尾时入选。
+
+![原始 Round 1–40 候选观测与累计正式检查最佳值；Round 19 是历史阶段最好点，但不是最终发布版本](docs/performance-views/02-history.svg)
+
+完整逐轮结果见英文 README 的 [Round 1–40 表](README.md#agent-optimization-history)、
+[机器可读数据](docs/performance-data/rounds-01-40.json)和[修复轮次](docs/repair-results.md)。
+
+## 改了什么
+
+- **Attention：**用 cuDNN SDPA 替换 reference attention；在 activation checkpoint 内保留 output/LSE，
+  避免 backward 重算；融合 RoPE 与输入布局，减少独立 kernel launch 和 layout 开销。
+- **Frozen Linear 缓存：**在每个 rank 的 184 GiB host / 16 GiB GPU 有界 arena 中缓存符合条件的
+  frozen GEMM 输出，使用 pinned 的 2 次幂 slab、异步拷贝和预取。
+- **RMSNorm 与 replay 正确性：**编译 RMSNorm 加速热点路径；发布修复让 checkpoint inference/replay
+  共享同一个 detached compiled Q/K forward，同时保留编译的一阶导数，消除实际观测到的模式相关 Q/K 不一致。
+- **保护机制：**不支持的 shape 自动回退原生算子；runtime counter 报告 cache hit、fallback 和峰值分配；
+  frozen numerical check 覆盖全部 108 个可训练 LoRA tensor。
+
+这些是累积配置的最终效果，并非各项独立 ablation。详见[性能审计](docs/performance-audit.md)、
+[修复轮次](docs/repair-results.md)和[机器可读选择证据](docs/performance-data/repaired-selection.json)。
+
+## 验证：为什么 Round 19 失败、Round 50 通过
+
+原始 Round 19 以 **1.869055×** 通过两步速度检查，但没有通过预先声明的三 seed 轨迹门槛。
+seeds 424242、424243、424244 的 reference 和 optimized 共六个 arm 都运行了恰好 50 个 optimizer step，
+并在 step 25 和 50 记录 total loss、video loss、audio loss 和全部可训练 LoRA 的 pre-clip 梯度 L2。
+optimized arm 出现了间歇性有限梯度尖峰：step 25 的平均梯度 L2 为 **895,829.90**，reference 为
+**10.68**，绝对标准化均值差为 **142,950.33**；seed 424243 在 step 18 也出现 **11,248,900.41**
+对 **5.95** 的尖峰。梯度裁剪保证更新仍为有限值，但不能让轨迹一致性门槛通过。
+
+定向 replay 诊断随后发现一个明确的 checkpoint 不变量缺陷：8 个 rank 中有 5 个在 Q/K RMSNorm
+输入、权重、epsilon 和 stride 完全相同时，因为 inference 与 replay 选择不同 XBLOCK，编译输出仍然
+不同。修复让两种 checkpoint 模式共享同一个 detached compiled Q/K forward，并保留既有的编译一阶
+导数。它修复了已证实的不一致，但不声称这是所有历史尖峰的唯一原因。
+
+修复候选在 **Round 50** 首次通过正式完整速度检查，并在 Round 60 收尾时入选：**63.176236 秒/step**
+对 reference **117.318886 秒/step**，即 **1.8570097438×**。随后以相同三个 seed 重新运行六个 arm、
+每个 arm 恰好 50 step；所有值有限、输入/RNG/指纹/契约匹配，8 项固定比较全部满足
+`|标准化均值差| ≤ 2.0`：
+
+| 指标 | Step 25 | Step 50 | 门槛 |
+|---|---:|---:|---|
+| Total loss | -0.031530 | +0.191572 | PASS |
+| Video loss | +0.000087 | -0.061845 | PASS |
+| Audio loss | -0.033384 | +1.469818 | PASS |
+| 全量 LoRA 梯度 L2 | -0.068377 | +0.177239 | PASS |
+
+公开运行时代码 commit 为
+[`7d7be36`](https://github.com/2018cx/Faster-MiniMax-H3/commit/7d7be367a2611193b354570a909c8fcc85216394)，
+代码树与审计 commit `5c47dee7974a8b69990f05ab4e32cf298bf4ee7e` 一致。完整证据见
+[原始失败验证](docs/validation-results.md)、[修复审计](docs/repair-results.md)和
+[修复后验证](docs/repaired-validation-results.md)。该验证只证明 50-step 短轨迹一致性，不代表完整收敛
+或生成质量。
 
 ## 许可
 
