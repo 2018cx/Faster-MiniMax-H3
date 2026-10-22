@@ -208,29 +208,15 @@ native result; a mismatch disables the fused path and is logged. Unsupported
 inputs, including trainable rotary tables, use the native formula with counted
 fallbacks. Higher-order gradients are not supported by the fused operator.
 
-**Historical upstream trainer capacity note (8×A800-80GB, not the H20 optimization benchmark):** the measured ceiling is ≈**70k
-tokens** per sample (65k ⇒ 76 GB steady; 76k and above OOM). Size resolution × duration against it —
-448×768 @ 27 s ≈ 65k fits; 576×1024 @ 30 s ≈ 127k does not. Two knobs enforce the budget without
-re-encoding caches: `H3_MAX_LF=<n>` (env) truncates cached samples to *n* video latent frames at load
-time, and `--max-seq-tokens` (default 132000) is a pre-flight all-reduced skip gate. Details in
-[FIXES.md](FIXES.md) #8.
-
-## Does it work?
-
-The original trainer's separate A800 validation found that, with the conventions wrong (timestep direction + velocity sign inverted), a heads-only run shows loss
-*rising* (7.2 → 9.5 over 10 steps). With the fixes in this repo, the same setup trains at loss ≈ 0.3–1.0,
-stable across 1000 steps on 8×A800, and the trained heads produce coherent generations when patched back
-into the inference pipeline. The LoRA path runs 30-second 65k-token sequences with real audio at
-~7.5–8 min/step on 8×A800 (heads at 33k tokens: ~53 s/step). Details in [FIXES.md](FIXES.md).
-
 ## Current limitations
 
 - Reference media are not yet encoded into the conditioning sequence (H3 reference rows); captions and
   target video/audio train, reference images/audio do not condition. This is the main open TODO for
   faithful Ref2VA fine-tuning.
 - No sample shuffling between epochs; batch size is fixed at 1 sequence per step.
-- Sparse attention (used in H3's final training stage) is not released; training runs full attention, so
-  keep the ~70k-token budget above in mind.
+- Sparse attention (used in H3's final training stage) is not released; training runs full attention.
+  The validated H20 benchmark uses approximately 33,750 tokens per sample; larger workloads are outside
+  the scope of the published measurements.
 - `--resume` restores weights only (trainable-only checkpoints carry no optimizer state).
 
 ## Legal
@@ -245,7 +231,7 @@ the allocated bytes within the requested arena budget. Slots and free ranges
 remain separate per slab; fragmentation falls back to native recomputation.
 The runtime report includes slab sizes and process-wide native pinned allocator
 counters, along with GPU peak allocation including prefetched tensors. On the
-8-H20 workload the 184 GiB host / 16 GiB GPU configuration caches every eligible
+8×H20 workload the 184 GiB host / 16 GiB GPU configuration caches every eligible
 frozen GEMM output within its checkpoint and releases every value before updates.
 This split leaves more GPU headroom for temporary allocations than the former
 176 GiB host / 24 GiB GPU configuration.
