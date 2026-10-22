@@ -207,7 +207,6 @@
   },
   "original_failed_validation_summary_sha256": "c43d8e4da32bd85386419df2767609db063385207df837a5516e0984e5eb9394",
   "publication_minimum_speedup": null,
-  "publication_allowed": false,
   "current_validation": {
     "all_integrity_gates_pass": true,
     "arms": [
@@ -3103,5 +3102,6 @@
   "github_checks_deferred_until_validation_and_audits_pass": true,
   "selection_snapshot_scope": "Immutable pre-launch selection snapshot; current_validation records the terminal fresh result.",
   "terminal_summary_sha256": "950608b8819ea71932bbfae330c5376d9c7f288a5f604da35bee7f556ff8b813",
-  "endpoint_recomputation_audit_sha256": "8c6c83478f081672b31c39083dafa85d7084223228124b0ab775107b976ce044"
+  "endpoint_recomputation_audit_sha256": "8c6c83478f081672b31c39083dafa85d7084223228124b0ab775107b976ce044",
+  "publication_allowed_at_documentation_preparation": false
 }
