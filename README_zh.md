@@ -18,6 +18,8 @@ Faster-MiniMax-H3 是 [MiniMaxAI/MiniMax-H3](https://huggingface.co/MiniMaxAI/Mi
 训练的 agent 优化版本，包含基于官方 Diffusers 集成的监督式 rectified-flow trainer、latent 缓存
 预处理，以及 [FIXES.md](FIXES.md) 中记录的 LoRA × ZeRO-3 正确性修复。
 
+相关实现：[Faster-DiffSynth-H3](https://github.com/2018cx/Faster-DiffSynth-H3) 提供对应的 DiffSynth-Studio 训练路径。
+
 ## 快速开始
 
 准备 Python 3.11、PyTorch ≥ 2.8、公开的 MiniMax-H3 权重，以及符合

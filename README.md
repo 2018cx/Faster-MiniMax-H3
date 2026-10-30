@@ -20,6 +20,8 @@ Faster-MiniMax-H3 is the agent-optimized H20 training path for
 rectified-flow trainer built on the official Diffusers integration, latent-cache preprocessing, and the
 LoRA × ZeRO-3 correctness fixes documented in [FIXES.md](FIXES.md).
 
+Related implementation: [Faster-DiffSynth-H3](https://github.com/2018cx/Faster-DiffSynth-H3) provides the corresponding DiffSynth-Studio training path.
+
 ## Quick Start
 
 Prepare Python 3.11, PyTorch ≥ 2.8, the public MiniMax-H3 weights and a JSONL manifest following
